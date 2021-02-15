@@ -5,13 +5,17 @@ import cats.Show
 //The instance is fetch from the implicit scope.
 //Here that is the companion Object
 
-implicit val myshowInt = new cats.Show[Int] {
+/*implicit val myshowInt = new cats.Show[Int] {
   override def show(t: Int) = t.toString
-}
+}*/
 
 cats.Show.apply[Int]
 
-
+/**
+ * If you had the implicit instance myshowInt uncommented,
+ * then the scope of aShowInt and myshowInt would be the same i.e. explicit scope.
+ * Hence you would have an ambiguous implicit issue i.e. clash within scope
+ */
 def printImplicit(e: Int)(implicit aShowInt: Show[Int]): Unit = {
   Show[Int].show(e)
   //import cats.syntax.all._
