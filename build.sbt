@@ -2,10 +2,11 @@ name := "fp-in-scala"
 version := "0.1"
 scalaVersion := "2.13.4"
 
-
+addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.3" cross CrossVersion.full)
 
 libraryDependencies ++= Seq (
   "org.typelevel" %% "cats-core" % "2.2.0"
+
 )
 
 scalacOptions := Seq(
@@ -20,6 +21,6 @@ scalacOptions := Seq(
   "-Xlint:implicit-not-found",
   "-Wextra-implicit",
   "-Wunused:implicits",
-  "-Wself-implicit",
+  //"-Wself-implicit",
   //"-Vimplicits"
 )

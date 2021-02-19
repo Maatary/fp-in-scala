@@ -108,7 +108,7 @@ MyInt(10).display
  *
  *
  * Bottom line is if you have two candidate possible in the same scope (explicit or implicit scope), you have a conflict.
- * Otherwise priority is explicit them implicit scope.
+ * Otherwise priority is explicit then implicit scope.
  * The rule of shadowing only apply to situation where in the same scope you have candidate with the same name.
  *
  * Category 1 implicit are implicit defined at the same level as their syntax or object interface.
