@@ -1,4 +1,4 @@
-
+import scala.annotation.tailrec
 /**
  *  == Critical Point to Remember ==
  *
@@ -187,13 +187,39 @@ object State {
   /**
    * == Critical Notes - Via foldLeft Raw ==
    *
-   * This implementation uses a loop internally and is the same recursion
+   *
+   */
+  def ___sequence[S, A](states: List[State[S, A]]): State[S, List[A]] = {
+
+    @tailrec
+    def ___sequenceRec(acc: State[S, List[A]], states: List[State[S, A]]): State[S, List[A]] = states match {
+
+      case Nil => acc map (_.reverse)
+      case s::xs => ___sequenceRec(acc.map2(s)((b, a) => a :: b), xs)
+
+      // Interesting the threading order of map2 changed my result order in the right way
+      // But this was luck because the functions are the same nextInt
+      //case s::xs => ___sequenceRec(s.map2(acc)(_::_), xs)
+    }
+    ___sequenceRec(unit(Nil), states)
+  }
+
+
+  /**
+   * == Sequence via fold Left Raw (More Raw i.e. Bare Bone) ==
+   *
+   * his implementation uses a loop internally and is the same recursion
    * pattern as a left fold. It is quite common with left folds to build
    * up a list in reverse order, then reverse it at the end.
    * (We could also use a collection.mutable.ListBuffer internally.)
    */
-  def ___sequence[S, A](sas: List[State[S, A]]): State[S, List[A]] = {
-   ???
+  def sequenceBook[S, A](sas: List[State[S, A]]): State[S, List[A]] = {
+    def go(s: S, actions: List[State[S,A]], acc: List[A]): (List[A],S) =
+      actions match {
+        case Nil => (acc.reverse,s)
+        case h :: t => h.run(s) match { case (a,s2) => go(s2, t, a :: acc) }
+      }
+    State((s: S) => go(s,sas,List()))
   }
 
 
@@ -201,6 +227,7 @@ object State {
 }
 
 import State._
+
 
 import scala.util.chaining.scalaUtilChainingOps
 
@@ -229,6 +256,10 @@ val listNextInt = List.fill(10)(nextIntState)
 
 {println("Sequence via foldLeft")} pipe {_ => __sequence(listNextInt).run(SimpleRNG(42)) }
 
-//{println("Sequence via foldLeft Raw")} pipe { _=> ___sequence(listNextInt).run(SimpleRNG(42))}
+{println("Sequence via foldLeft Raw")} pipe { _ => ___sequence(listNextInt).run(SimpleRNG(42))}
+
+{println("Sequence via foldLeft Raw")} pipe { _ => sequenceBook(listNextInt).run(SimpleRNG(42))}
+
+
 
 
