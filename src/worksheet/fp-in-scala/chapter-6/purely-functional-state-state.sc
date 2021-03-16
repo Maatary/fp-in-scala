@@ -1,10 +1,10 @@
 
-/***
- *  == Critical Point to remember ==
+/**
+ *  == Critical Point to Remember ==
  *
- *  The recursive function sequence left or right building a data structure rcursively.
+ *  The recursive function sequence left or right building a data structure recursively.
  *
- *  In nutshell, from a list of function we compose their applicatin to return a function that returns a list of their result.
+ *  In nutshell, from a list of function we compose their applications to return a function that returns a list of their result.
  *
  *  What is important to understand here is that, the list that the combinator function returns is specified as a recursive function.
  *
@@ -29,27 +29,55 @@ case class State[S, +A](run: S => (A, S)) {
     (f(a, b), sb)
   }
 
+  /**
+   *  == Critical Reminder ==
+   *
+   * It is critical to remember that we're combining 2 fips into a function that reuse/apply those 2 fips.
+   *
+   * g(a).run(sa) is important
+   *
+   * g(a) is State[S, B], but your function already define the input parameter (s: S) which is required to run "this",
+   * i.e. the first state.
+   *
+   * Hence to recover State[S, B], you need to apply sa, as in g(a).run(sa) which yield a (B, S)
+   * hence S => (B, S)
+   *
+   * Beyond the technical follow the type explanation above, reminding ourself what we are doing further help with this:
+   *
+   * `It is critical to remember that we're combining 2 fips into a function that reuse/apply those 2 fips.`
+   *
+   *   -- `That is, we are creating a function that sequence the application of the two input function`
+   *
+   * or
+   *
+   *   -- `That is, we are creating a state action that sequence the application of the two input state action`
+   *
+   * This falls in the pattern of composing function. add a new parameter, and apply the internal function to recover
+   * the function you want at this. you get a function that will apply the function you compose,
+   * by specifying how those internals will be applied to the outer new parameter. (to be re-written)
+   *
+   */
   def flatMap[B](g: A => State[S, B]): State[S, B] = State[S, B] { (s: S) =>
     val (a, sa) = run(s)
-    g(a).run(sa)
+    g(a).run(sa) // We pass the new state along
   }
 
   import State._ // To reuse unit
 
   /**
-   * == Remember ==
+   *  == Remember ==
    *
-   * Here you map in terms of flatMap,
-   * hence no need to create the combined function yourself,
-   * that is what flatMap does !!!
+   *  Here you map in terms of flatMap,
+   *  hence no need to create the combined function yourself,
+   *  that is what flatMap does !!!
    *
-   * It combines State[S, A] with the function resulting from unit(f(a)) i.e. constant State[S, B]
+   *  It combines State[S, A] with the function resulting from unit(f(a)) i.e. constant State[S, B]
    *
-   * unit(f(a)) is inferred to be State[S, B] because of the signature of flatMap
+   *  unit(f(a)) is inferred to be State[S, B] because of the signature of flatMap
    *
-   * In particular what is inferred is `"S"`.
+   *  In particular what is inferred is `"S"`.
    *
-   * Without specifying it, it could have been inferred to be nothing (the default for invariant and covariant type)
+   *  Without specifying it, it could have been inferred to be nothing (the default for invariant and covariant type)
    *
    */
   def _map[B](f: A => B): State[S, B] = {
@@ -59,9 +87,9 @@ case class State[S, +A](run: S => (A, S)) {
   /**
    * == Remember ==
    *
-   * flatMap is more powerful than [[map]] and [[map2]].
+   *  flatMap is more powerful than [[map]] and [[map2]].
    *
-   * Both can be implemented in term of [[flatMap]]
+   *  Both can be implemented in term of [[flatMap]]
    */
   def _map2[B, C](stB: State[S, B])(f: (A, B) => C): State[S, C] = {
     flatMap { a => stB.map { b => f(a, b) } }
@@ -122,24 +150,28 @@ object State {
    *
    * Need to `reverse` because it is a `foldLeft`, which build the list by reversing the order !!!
    *
-   * Note however that we reverse before composing. l.reverse.foldLeft
+   * Note however that I originally reverse before composing. {{{l.reverse.foldLeft}}}
    *
-   * We can do that because we are dealing with function composition as opposed to "computation directly"
-   * (for a lack of a better word)
+   * We can not do that because we sequence the computation in the reverse order !!!!
    *
-   * This is wrong in a scenario where a `statefull application/computation`
+   * If we were threading the same input to each function application, that would work,
+   * but here the result of a function application is part of the input of the function that follows it.
+   *
+   * `It is a stateful computation !!!`
+   *
+   * Another way to put it is: it is particularly wrong in a scenario where a `statefull application/computation`
    * happen while doing the folding (see [[intsLeft]] in purely-functional-state-rng)
    *
-   * Indeed the order/sequencing of the application of the computation matters !!!
-   * However it matters at application time !!!
+   * The proper way with a foldLeft in those scenario is to reverse after.
    *
-   * Here we are not applying the function but simply composing function
-   * hence we can reverse the order first and compose next ???? `Really???`
+   * Here we fold into a state action, hence we must map over it to reverse its list
+   *
+   * {{{l.foldLeft.map}}} (it is just further composing the function)
+   *
    *
    * == Book Notes: ==
    *
-   * We can also write the loop using a left fold. This is tail recursive like the
-   * previous solution, but it reverses the list _before_ folding it instead of after.
+   * We can also write the loop using a left fold.
    * You might think that this is slower than the `foldRight` solution since it
    * walks over the list twice, but it's actually faster! The `foldRight` solution
    * technically has to also walk the list twice, since it has to unravel the call
@@ -148,7 +180,7 @@ object State {
    *
    */
   def __sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = {
-    l.reverse.foldLeft(unit[S, List[A]](Nil)) { (b, a) => b.map2(a)((b, a) => a :: b) }
+    l.foldLeft(unit[S, List[A]](Nil)) { (b, a) => b.map2(a)((b, a) => a :: b) } map (_.reverse)
   }
 
 
@@ -161,12 +193,7 @@ object State {
    * (We could also use a collection.mutable.ListBuffer internally.)
    */
   def ___sequence[S, A](sas: List[State[S, A]]): State[S, List[A]] = {
-    def go(s: S, actions: List[State[S,A]], acc: List[A]): (List[A],S) =
-      actions match {
-        case Nil => (acc.reverse,s)
-        case h :: t => h.run(s) match { case (a,s2) => go(s2, t, a :: acc) }
-      }
-    State((s: S) => go(s,sas,List()))
+   ???
   }
 
 
@@ -174,6 +201,8 @@ object State {
 }
 
 import State._
+
+import scala.util.chaining.scalaUtilChainingOps
 
 trait RNG {
   def nextInt: (Int, RNG)
@@ -188,32 +217,18 @@ case class SimpleRNG(seed: Long) extends RNG {
   }
 }
 
-/*
 val nextIntState = State[RNG, Int](s => s.nextInt)
 
 val listNextInt = List.fill(10)(nextIntState)
 
 
-//Sequence Right
-sequence(listNextInt).run(SimpleRNG(42))
+
+{println("Sequence via foldRight")} pipe { _ => sequence(listNextInt).run(SimpleRNG(42))}
+
+{println("Sequence via foldRight Raw")} pipe { _ => sequence(listNextInt).run(SimpleRNG(42))}
+
+{println("Sequence via foldLeft")} pipe {_ => __sequence(listNextInt).run(SimpleRNG(42)) }
+
+//{println("Sequence via foldLeft Raw")} pipe { _=> ___sequence(listNextInt).run(SimpleRNG(42))}
 
 
-//Sequence Left
-__sequence(listNextInt).run(SimpleRNG(42))
-
-//Sequence Left Raw
-
-___sequence(listNextInt).run(SimpleRNG(42))*/
-
-
-List(println("1"), println("2"), println("3"))
-
-def test(n: Int) = {
-  val y = e + 1
-  val e = n
-}
-
-def test2(n: Int) = {
-  val y = e + 1
-  val e = n
-}
