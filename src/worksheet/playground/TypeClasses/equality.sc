@@ -5,7 +5,9 @@ Right(1).withLeft[Double] == Right(1).withLeft[String]
 
 //as opposed to Cats Eq below which would fail
 
-Right(1).withLeft[Double] === Right(1).withLeft[String]
+Right(1).withLeft[Double] === Right(1).withLeft[String] // not ok
+
+Right(1).withLeft[Double] === Right(1).withLeft[Double] //ok
 
 
 

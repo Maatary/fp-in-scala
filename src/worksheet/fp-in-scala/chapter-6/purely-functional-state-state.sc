@@ -222,6 +222,15 @@ object State {
     State((s: S) => go(s,sas,List()))
   }
 
+  def modify[S](f: S => S): State[S, Unit] = for {
+    s <- get // Gets the current state and assigns it to `s`.
+    _ <- set(f(s)) // Sets the new state to `f` applied to `s`.
+  } yield ()
+
+  def get[S]: State[S, S] = State(s => (s, s))
+
+  def set[S](s: S): State[S, Unit] = State(_ => ((), s))
+
 
 
 }
@@ -261,5 +270,66 @@ val listNextInt = List.fill(10)(nextIntState)
 {println("Sequence via foldLeft Raw")} pipe { _ => sequenceBook(listNextInt).run(SimpleRNG(42))}
 
 
+/*sealed trait Input
+case object Coin extends Input
+case object Turn extends Input
 
+case class Machine(locked: Boolean, candies: Int, coins: Int)
+
+def insertCoin: State[Machine, Unit] = State {
+  case s@Machine(true, candies, coins) if candies > 0 => () -> s.copy(coins = coins)
+  case s@Machine(_, _, _) => () -> s
+}
+
+def turn: State[Machine, Int] = ???*/
+
+
+/**
+ * The rules of the machine are as follows:
+ *
+ *  -- Inserting a coin into a locked machine will cause it to unlock if there’s any candy left.
+ *
+ *  -- Turning the knob on an unlocked machine will cause it to dispense candy and become locked.
+ *
+ *  -- Turning the knob on a locked machine or inserting a coin into an unlocked machine does nothing.
+ *
+ *  -- A machine that’s out of candy ignores all inputs.
+ */
+/*
+def simulateMachine(l: List[Input]): State[Machine, (Int, Int)] = {
+
+  l.map{case Coin => insertCoin case Turn => turn}
+
+  ???
+}
+*/
+
+sealed trait Input
+case object Coin extends Input
+case object Turn extends Input
+
+case class Machine(locked: Boolean, candies: Int, coins: Int)
+
+object Candy {
+  def update = (i: Input) => (s: Machine) =>
+    (i, s) match {
+      case (_, Machine(_, 0, _)) => s
+      case (Coin, Machine(false, _, _)) => s
+      case (Turn, Machine(true, _, _)) => s
+      case (Coin, Machine(true, candy, coin)) =>
+        Machine(false, candy, coin + 1)
+      case (Turn, Machine(false, candy, coin)) =>
+        Machine(true, candy - 1, coin)
+    }
+
+  // modify[Machine] _ compose update = input => modify(update(input))
+  // = input => modify[Machine] i.e. ( modify(f: Machine => Machine) )
+  // sequence(modify[Machine])
+  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = for {
+    _ <- sequence(inputs map (modify[Machine] _ compose update) )
+    s <- get
+  } yield (s.coins, s.candies)
+
+  //simulateMachine(Nil).run(machine)
+}
 

@@ -1,11 +1,12 @@
 name := "fp-in-scala"
 version := "0.1"
-scalaVersion := "2.13.4"
+scalaVersion := "2.13.5"
 
 addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.3" cross CrossVersion.full)
 
 libraryDependencies ++= Seq (
-  "org.typelevel" %% "cats-core" % "2.2.0"
+  "org.typelevel" %% "cats-core" % "2.4.2",
+  "org.typelevel" %% "cats-effect" % "3.0.0-RC3"
 
 )
 
