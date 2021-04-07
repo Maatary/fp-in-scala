@@ -127,6 +127,8 @@ list1.sequence
 
 Some(2).flatMap(_ => Some(3))
 
+
+
 def factorial(n: Int) = {
   def factorialRec(acc: Int, n: Int): Int =  n match {
     case 0 => acc
