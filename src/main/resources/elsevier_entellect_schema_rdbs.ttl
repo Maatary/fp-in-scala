@@ -1,0 +1,3243 @@
+# baseURI: https://data.elsevier.com/lifescience/schema/rdbs
+# imports: http://datashapes.org/dash
+# imports: http://topbraid.org/tosh
+
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdbs: <https://data.elsevier.com/lifescience/schema/rdbs/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix swa: <http://topbraid.org/swa#> .
+@prefix tosh: <http://topbraid.org/tosh#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://data.elsevier.com/lifescience/schema/rdbs>
+  a owl:Ontology ;
+  rdfs:comment "Ontology for Relational Database System. Reworked from RDBS-OWL" ;
+  owl:imports <http://datashapes.org/dash> ;
+  owl:imports <http://topbraid.org/tosh> ;
+  sh:declare [
+      sh:namespace "http://www.w3.org/2000/01/rdf-schema#"^^xsd:anyURI ;
+      sh:prefix "rdfs" ;
+    ] ;
+  sh:declare [
+      sh:namespace "http://www.w3.org/2002/07/owl#"^^xsd:anyURI ;
+      sh:prefix "owl" ;
+    ] ;
+  sh:declare [
+      sh:namespace "https://data.elsevier.com/lifescience/schema/rdbs/"^^xsd:anyURI ;
+      sh:prefix "rdbs" ;
+    ] ;
+.
+rdbs:Aggregate
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TopologyOperation ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasAlias ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:name "has alias" ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasCollect ;
+      sh:class rdbs:Collect ;
+      sh:minCount 1 ;
+      sh:name "has collect" ;
+      sh:node rdbs:Collect ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasGroupBy ;
+      sh:class rdbs:GroupBy ;
+      sh:minCount 1 ;
+      sh:name "has group by" ;
+      sh:node rdbs:GroupBy ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+.
+rdbs:AggregatedEdgeAttributeTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TemporaryTable ;
+.
+rdbs:AggregatedVerticeAttributeTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TemporaryTable ;
+.
+rdbs:Alignment
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Alignment" ;
+  rdfs:subClassOf owl:Thing ;
+.
+rdbs:Association
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Association" ;
+  rdfs:subClassOf owl:Thing ;
+.
+rdbs:AttributeTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "A Table that identify attributes in a Graph and the Graph Entity (i.e. Vertice or Edges) to which the attribute Belong"@en ;
+  rdfs:label "AttributeTable"@en ;
+  rdfs:subClassOf rdbs:GraphTable ;
+.
+rdbs:AttributeValueTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Property value table" ;
+  rdfs:subClassOf rdbs:GraphTable ;
+.
+rdbs:AttributeWithType
+  a sh:SPARQLRule ;
+  rdfs:label "Vertice Property with Type TMPE creation for Property Graph" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+# The base node to describe topologies of temporary topics
+	?tmp a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin ;
+			rdbs:hasJoin ?join .
+# The description of the join element of the topology
+    ?join a rdbs:Join ;
+			rdbs:hasTopic ?foreign_topic ;
+			rdbs:hasForeignKey ?fk  ;
+			rdbs:hasKind rdbs:InnerJoin ;
+			rdbs:hasSelect ?select .
+# The description of the select element of the join
+	?select a rdbs:Select ;
+		rdbs:hasValue ?selected_property .
+# The description of the table or topic resulting from the join
+	?table a rdbs:AttributeWithTypeTable ;
+# Set input
+			rdbs:createdFrom ?tmp ;
+# Set output
+			rdfs:label ?output ;
+# Adding the copies of the origin topic columns and the selected foreign topic columns
+			rdbs:hasColumn ?copied_origin_column ;
+			rdbs:hasColumn ?copied_foreign_column .
+# Set up copies of the origin columns
+	?copied_origin_column rdbs:belongsToTable ?table ;
+		?origin_predicate ?origin_object ;
+		rdbs:isCopyOf ?origin_column .
+# Set up copies of the foreign columns
+	?copied_foreign_column rdbs:belongsToTable ?table ;
+		?foreign_predicate ?foreign_object ;
+		rdbs:isCopyOf ?foreign_column .
+}
+WHERE {
+# Pattern to match in order to create join topology
+    ?this a rdbs:AttributeTable ;
+		rdbs:hasColumn ?foreign_key_column .
+	?foreign_key_column	a rdbs:ForeignKeyColumn ;
+			rdbs:refersToPrimaryKey [
+				rdbs:belongsToTable ?foreign_table
+				] .
+	?foreign_table a rdbs:TypeTable .
+	?foreign_table rdbs:hasColumn ?foreign_column.
+	?foreign_column a rdbs:ValueColumn .
+# Find the different columns of the origin topic 
+	?this rdfs:label ?origin ;
+		rdbs:hasColumn ?origin_column .
+
+# Get the different objects for the predicates of our constructed nodes
+	?foreign_key_column rdfs:label ?fk .
+	?foreign_table rdfs:label ?foreign_topic .
+	?foreign_column rdfs:label ?selected_property .
+# Get the predicates and objects of the copied columns
+	?origin_column ?origin_predicate ?origin_object .
+	?foreign_column ?foreign_predicate ?foreign_object .
+#Get the labels of the copied columns
+	?origin_column rdfs:label ?origin_column_label .
+	?foreign_column rdfs:label ?foreign_column_label .
+# Create the new name of the output
+ 	BIND(CONCAT(LCASE(?origin), \"-with-types\") AS ?output) .
+	# Filter topologies already processed
+	FILTER NOT EXISTS {
+		?old_tmp a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin .
+	} 
+# Create the different subject nodes for each matched Pattern
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology\" )) AS ?tmp) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-join-with-\", ?foreign_topic )) AS ?join) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-join-with-\", ?foreign_topic, \"-select-\", ?foreign_column_label )) AS ?select) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output )) AS ?table) .
+# Create the different columns that are copies of the origin columns
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?origin_column_label, \"-from-\", ?output )) AS ?copied_origin_column) .
+# Create the different columns that are copies of the foreign columns
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?foreign_column_label, \"-from-\", ?output )) AS ?copied_foreign_column) .
+# Skip the predicates referencing the belonging of the columns
+	FILTER (?origin_predicate != rdbs:belongsToTable )
+	FILTER (?foreign_predicate != rdbs:belongsToTable )
+}""" ;
+  sh:deactivated false ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:AttributeWithTypeTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TemporaryTable ;
+.
+rdbs:AttributeWithTypeWithIDObject
+  a sh:SPARQLRule ;
+  rdfs:label "Vertice Property with Type with IDObject TMPE creation for Property Graph" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+# The base node to describe topologies of temporary topics
+	?tmp a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin ;
+			rdbs:hasJoin ?join .
+# The description of the join element of the topology
+    ?join a rdbs:Join ;
+			rdbs:hasTopic ?foreign_topic ;
+			rdbs:hasForeignKey ?fk  ;
+			rdbs:hasKind rdbs:InnerJoin ;
+			rdbs:hasSelect ?id_object ;
+			rdbs:hasSelect ?property .
+# The description of the select element of the join
+	?id_object a rdbs:Select ;
+			rdbs:hasValue ?id_object_value .
+	?property a rdbs:Select ;
+			rdbs:hasValue ?property_value .
+# The description of the table or topic resulting from the join
+	?table a rdbs:AttributeWithTypeWithIdObjectTable ;
+# Set input
+			rdbs:createdFrom ?tmp ;
+# Set output
+			rdfs:label ?output ;
+# Adding the copies of the origin topic columns and the selected foreign topic columns
+			rdbs:hasColumn ?copied_origin_column ;
+			rdbs:hasColumn ?copied_id_object_column ;
+			rdbs:hasColumn ?copied_property_column .
+# Set up copies of the origin columns
+	?copied_origin_column rdbs:belongsToTable ?table ;
+		?origin_predicate ?origin_object ;
+		rdbs:isCopyOf ?origin_column .
+# Set up copies of the foreign columns
+	?copied_id_object_column rdbs:belongsToTable ?table ;
+		?id_object_predicate ?id_object_object ;
+		rdbs:isCopyOf ?id_object_column .
+# Set up copies of the foreign columns
+	?copied_property_column a rdbs:ClassifyingColumn ;
+		rdbs:belongsToTable ?table ;
+		rdbs:isCopyOf ?property_column ;
+		?property_predicate ?property_object .
+}
+WHERE {
+# Pattern to match in order to create join topology
+    ?this a rdbs:AttributeValueTable ;
+		rdbs:hasColumn ?foreign_key_column .
+	?foreign_key_column a rdbs:ForeignKeyColumn ;
+		rdbs:refersToPrimaryKey ?original_primary_key .
+	?original_primary_key a rdbs:PrimaryKeyColumn ;
+		rdbs:belongsToTable [
+				a rdbs:AttributeTable 
+			] .
+	?target_primary_key a rdbs:PrimaryKeyColumn ;
+		rdbs:isCopyOf ?original_primary_key ;
+		rdbs:belongsToTable ?foreign_table .
+	?foreign_table a rdbs:AttributeWithTypeTable .
+	?foreign_table rdbs:hasColumn ?id_object_column .
+	?foreign_table rdbs:hasColumn ?property_column .
+	?property_column a rdbs:ValueColumn ;
+		rdbs:isCopyOf [
+			rdbs:belongsToTable [
+				a rdbs:TypeTable
+			]
+		] .
+	VALUES ?target_table {
+		rdbs:VerticeTable
+		rdbs:EdgeTable
+	}
+	?id_object_column a rdbs:ForeignKeyColumn ;
+		rdbs:isCopyOf [
+			rdbs:belongsToTable [
+				a rdbs:AttributeTable 
+			] 
+		] ;
+		rdbs:refersToPrimaryKey [
+			rdbs:belongsToTable [
+				a ?target_table
+			] 
+		] .
+# Find the different columns of the origin topic 
+	?this rdfs:label ?origin ;
+		rdbs:hasColumn ?origin_column .
+# Get the different objects for the predicates of our constructed nodes
+	?foreign_key_column rdfs:label ?fk .
+	?foreign_table rdfs:label ?foreign_topic .
+	?id_object_column rdfs:label ?id_object_value .
+	?property_column rdfs:label ?property_value .
+# Get the predicates and objects of the copied columns
+	?origin_column ?origin_predicate ?origin_object .
+	?id_object_column ?id_object_predicate ?id_object_object .
+	?property_column ?property_predicate ?property_object .
+	#Get the labels of the copied columns
+	?origin_column rdfs:label ?origin_column_label .
+	?id_object_column rdfs:label ?id_object_column_label .
+	?property_column rdfs:label ?property_column_label .
+# Create the new name of the output
+ 	BIND(CONCAT(LCASE(?origin), \"-with-types-with-id-object\") AS ?output) .
+# Filter topologies already processed
+	FILTER NOT EXISTS {
+		?old_tmp a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin .
+	}
+# Create the different subject nodes for each matched Pattern
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology\" )) AS ?tmp) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-join-with-\", ?foreign_topic )) AS ?join) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-join-with-\", ?foreign_topic, \"-select-\", ?id_object_column_label)) AS ?id_object) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-join-with-\", ?foreign_topic, \"-select-\", ?property_column_label)) AS ?property) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output )) AS ?table) .
+# Create the different columns that are copies of the origin columns
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?origin_column_label, \"-from-\", ?output )) AS ?copied_origin_column) .
+# Create the different columns that are copies of the foreign columns
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?id_object_column_label, \"-from-\", ?output )) AS ?copied_id_object_column) .
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?property_column_label, \"-from-\", ?output )) AS ?copied_property_column) .
+# Filter the label of the foreign column since it is renamed
+	FILTER (?origin_predicate != rdbs:belongsToTable )
+	FILTER (?id_object_predicate != rdbs:belongsToTable )
+	FILTER (?property_predicate != rdbs:belongsToTable )
+}""" ;
+  sh:deactivated false ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:AttributeWithTypeWithIDObject_Dictionary_Support
+  a sh:SPARQLRule ;
+  rdfs:label "Vertice Property with Type with IDObject with Dictionary TMPE creation for Property Graph" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+	?join a rdbs:Join ;
+			rdbs:hasTopic ?foreign_topic ;
+			rdbs:hasForeignKey ?fk  ;
+			rdbs:hasKind rdbs:InnerJoin ;
+			rdbs:hasSelect ?select .
+	?select a rdbs:Select ;
+		rdbs:hasValue ?dictionary_value .
+	?origin_tmpe rdbs:hasJoin ?join.
+# Adding the copy of the dictionary value column
+	?this rdbs:hasColumn ?copied_dictionary_value_column .
+# Set up copies of the dictionary value column
+	?copied_dictionary_value_column rdbs:belongsToTable ?this ;
+		?dictionary_value_predicate ?dictionary_value_object ;
+		rdbs:isCopyOf ?dictionary_value_column .
+}
+WHERE {
+# Match pattern to add dictionary value
+	?this a rdbs:AttributeWithTypeWithIdObjectTable ;
+	rdfs:label ?origin_table_label ;
+	rdbs:createdFrom ?origin_tmpe ;
+	rdbs:hasColumn [
+		rdbs:isCopyOf ?dictionary_column
+	] .
+	?dictionary_column a rdbs:ForeignKeyColumn ;
+		rdbs:belongsToTable [
+			a rdbs:AttributeValueTable
+		] ;
+		rdbs:refersToPrimaryKey [
+			rdbs:belongsToTable ?dictionary_table 
+		] .
+	?dictionary_table a rdbs:DictTable ;
+		rdfs:label ?dictionary_table_label ;
+		rdbs:hasColumn ?dictionary_value_column .
+	?dictionary_value_column a rdbs:ValueColumn .
+# Gert the attached labels
+	?dictionary_table rdfs:label ?foreign_topic .
+	?dictionary_column rdfs:label ?fk .
+	?dictionary_value_column rdfs:label ?dictionary_value .
+# Get the predicates and objects of the copied columns
+	?dictionary_value_column ?dictionary_value_predicate ?dictionary_value_object  .
+    FILTER NOT EXISTS {
+		?old_join a rdbs:Join ;
+			rdbs:hasTopic ?foreign_topic ;
+			rdbs:hasForeignKey ?fk  ;
+			rdbs:hasKind rdbs:InnerJoin ;
+			rdbs:hasSelect ?dictionary_value .
+         ?origin_tmpe rdbs:hasJoin ?old_join.
+	}
+# Create the join with the dictionary table
+	BIND(IRI(CONCAT(STR(rdbs:), ?origin_table_label, \"-topology-join-with-\", ?dictionary_table_label )) AS ?join) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?origin_table_label, \"-topology-join-with-\", ?dictionary_table_label, \"-select-\", ?dictionary_value )) AS ?select) .
+# Create the different columns that are copies of the foreign columns
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?dictionary_value, \"-from-\", ?origin_table_label )) AS ?copied_dictionary_value_column) .
+}""" ;
+  sh:deactivated false ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:AttributeWithTypeWithIdObjectTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TemporaryTable ;
+.
+rdbs:BOOLEAN
+  a rdbs:DataType ;
+  rdfs:label "BOOLEAN" ;
+.
+rdbs:CLOB
+  a rdbs:DataType ;
+  rdfs:label "CLOB" ;
+.
+rdbs:ClassifyingColumn
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:Column ;
+.
+rdbs:Collect
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TopologyOperation ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasClassifier ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has classifier" ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasValue ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+    ] ;
+.
+rdbs:Column
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Column is the field of a table line type."@en ;
+  rdfs:label "Column"@en ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdfs:label ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:belongsToTable ;
+      sh:class rdbs:Table ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "belongs to table" ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasDataType ;
+      sh:class rdbs:DataType ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "defined by data type" ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:isNullable ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "is nullable" ;
+    ] ;
+.
+rdbs:CreateAlignmentForManyToManyWithoutClassifier
+  a sh:SPARQLRule ;
+  rdfs:label "Map an Object property from a many to many relationship." ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT{
+  ?alignment a rdbs:Alignment ;
+      rdbs:atype \"OTP\" ;
+      rdbs:topic ?origin ;
+      rdbs:field ?ascollect ;
+      rdbs:targetClass ?range ;
+      rdbs:uri ?puri ;
+      rdbs:generatedBy rdbs:CreateAlignmentForManyToManyWithoutClassifier ;
+      .
+}
+WHERE {
+   $this      rdbs:topic ?origin ;
+      rdbs:relation ?relation ;
+      rdbs:groupby ?groupby ;
+      rdbs:collect [
+          rdbs:value ?collect ;
+          rdbs:as ?ascollect ;
+          rdbs:extendTable ?domaint ;
+          rdbs:withValuesFromTable ?ranget ;
+          rdbs:property ?puri ;
+      ].
+
+   FILTER NOT EXISTS { $this rdbs:classifier []}
+   BIND( BNODE() AS ?alignment)
+}
+""" ;
+  sh:deactivated false ;
+  sh:order "2"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:CreateAlignmentForTableColumns
+  a sh:SPARQLRule ;
+  rdfs:label "Map an datatype property from an entity table." ;
+  sh:condition rdbs:EntityTable ;
+  sh:condition rdbs:TaxonomyTable ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT{
+  ?alignment a rdbs:Alignment ;
+      rdbs:atype \"DTP\" ;
+      rdbs:topic ?topic ;
+      rdbs:field ?field ;
+      rdbs:datatype ?dt ;
+      rdbs:uri ?puri ;
+      rdbs:generatedBy rdbs:CreateAlignmentForTableColumns ;
+      .
+}
+WHERE {
+  $this rdbs:hasColumn ?column;
+        rdfs:label ?topic.
+  ?column a rdbs:Column ;
+      rdbs:hasDataType ?dt ;
+      rdfs:label ?field.
+  ?puri rdbs:mapsToColumn ?column .
+  BIND( BNODE() AS ?alignment)
+}
+""" ;
+  sh:deactivated false ;
+  sh:order "2"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:CreateAlignmentForTableFKColumns
+  a sh:SPARQLRule ;
+  rdfs:label "Map an object property from an entity table." ;
+  sh:condition rdbs:EntityTable ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT{
+  ?alignment a rdbs:Alignment ;
+      rdbs:topic ?topic ;
+      rdbs:atype \"OTP\" ;
+      rdbs:field ?field ;
+      rdbs:targetClass ?target ;
+      rdbs:uri ?puri ;
+      rdbs:generatedBy rdbs:CreateAlignmentForTableFKColumns ;
+      .
+}
+WHERE {
+  $this      rdbs:hasColumn ?column;
+        rdfs:label ?topic.
+  ?column a rdbs:ForeignKeyColumn;
+      rdfs:label ?field.
+  ?puri rdbs:mapsToColumn ?column ;
+        rdfs:range ?target .
+  BIND( BNODE() AS ?alignment)
+}
+""" ;
+  sh:deactivated false ;
+  sh:order "2"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:CreateAlignmentForTableInverseFKColumns
+  a sh:SPARQLRule ;
+  rdfs:label "Map an object property from a foreign key to an entity table." ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT{
+  ?alignment a rdbs:Alignment ;
+      rdbs:atype \"OTP\" ;
+      rdbs:topic ?topic ;
+      rdbs:field ?field ;
+      rdbs:targetClass ?target ;
+      rdbs:uri ?puri ;
+      rdbs:generatedBy rdbs:CreateAlignmentForTableInverseFKColumns ;
+      .
+}
+WHERE {
+
+  $this        rdbs:topic ?topic ;
+        rdbs:relation ?targetTable ;
+        rdbs:collect [
+          rdbs:as ?field ;
+          rdbs:extendTable ?entity
+        ].
+   ?puri rdfs:range ?target ;
+        rdfs:domain ?origin;
+        .
+  ?origin rdbs:fromTable ?entity.
+  ?target rdbs:fromTable [rdfs:label ?targetTable].
+
+  BIND( BNODE() AS ?alignment)
+}
+""" ;
+  sh:deactivated false ;
+  sh:order "2"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:CreateClassifierValuePlaceholder
+  a sh:SPARQLRule ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+	?this rdbs:hasDistinctValue ?value .
+}
+WHERE {
+	?this a rdbs:ClassifyingColumn ;
+		rdfs:label ?column ;
+		rdbs:belongsToTable ?table .
+	FILTER NOT EXISTS { ?this rdbs:hasDistinctValue ?value}
+	{
+		?table a rdbs:AttributeWithTypeWithIdObjectTable ;
+			rdbs:hasColumn [
+				rdfs:label ?value_label ;
+				a rdbs:ValueColumn ;
+					rdbs:isCopyOf [
+						rdbs:belongsToTable [
+							a rdbs:TypeTable 
+						]
+					]
+			]
+	} UNION {
+		?table a rdbs:ObjectWithTypeTable ;
+			rdfs:label ?table_label .
+		BIND(REPLACE(?table_label, \"-with-types\", \"\") AS ?value_label) .
+	}
+	VALUES (?var) {
+			(\"value_1\")
+			(\"value_2\")
+			(\"value_3\")
+		}
+	BIND(CONCAT(?value_label, \"_\", ?var) AS ?value)
+}""" ;
+  sh:deactivated true ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:CreateSQLQuery
+  a sh:SPARQLRule ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+	?select a rdbs:SQLSelect ;
+		rdbs:hasSelectedColumn ?classifier ;
+		rdbs:hasSQLFrom ?from .
+	?from a rdbs:SQLFrom ;
+		rdbs:hasSelectedTable ?origin_table_label ;
+		rdbs:hasSQLJoin ?first_join ;
+		rdbs:hasSQLJoin ?second_join .
+	?first_join a rdbs:SQLJoin ;
+		rdbs:hasOrder 0 ;
+		rdbs:hasIDTable ?origin_table_label ;
+		rdbs:hasIDColumn ?origin_table_primary_key_label ;
+		rdbs:hasKeyTable ?attribute_table_label ;
+		rdbs:hasKeyColumn ?attribute_table_foreign_key_label . 
+	?second_join a rdbs:SQLJoin ;
+		rdbs:hasOrder 1 ;
+		rdbs:hasIDTable ?attribute_table_label ;
+		rdbs:hasIDColumn ?attribute_table_primary_key_label ;
+		rdbs:hasKeyTable ?attribute_value_table_label ;
+		rdbs:hasKeyColumn ?attribute_value_table_foreign_key_label . 
+}
+WHERE {
+# Match elements
+	?this a rdbs:AttributeWithTypeWithIdObjectTable ;
+		rdfs:label ?origin ;
+		rdbs:hasColumn ?classifying ;
+		rdbs:hasColumn ?from_attribute_table ;
+		rdbs:hasColumn ?from_attribute_value_table .
+# Get information from origin table
+	?classifying a rdbs:ClassifyingColumn ;
+		rdfs:label ?classifier ;
+		rdbs:isCopyOf [
+		rdbs:belongsToTable ?origin_table 
+	] .
+	?origin_table a rdbs:TypeTable ;
+		rdfs:label ?origin_table_label ;
+		rdbs:hasColumn ?origin_table_primary_key .
+	?origin_table_primary_key a rdbs:PrimaryKeyColumn ;
+		rdfs:label ?origin_table_primary_key_label .
+# Get information from attribute table
+	?from_attribute_table rdbs:isCopyOf [
+		rdbs:belongsToTable ?attribute_table
+	] .
+	?attribute_table a rdbs:AttributeTable ;
+		rdfs:label ?attribute_table_label ;
+		rdbs:hasColumn ?attribute_table_primary_key ;
+		rdbs:hasColumn ?attribute_table_foreign_key .
+	?attribute_table_primary_key	a rdbs:PrimaryKeyColumn ;
+		rdfs:label ?attribute_table_primary_key_label .
+	?attribute_table_foreign_key a rdbs:ForeignKeyColumn ;
+		rdfs:label ?attribute_table_foreign_key_label ;
+		rdbs:refersToPrimaryKey ?origin_table_primary_key .
+# Get information from attribute table
+	?from_attribute_value_table rdbs:isCopyOf [
+		rdbs:belongsToTable ?attribute_value_table
+	] .
+	?attribute_value_table a rdbs:AttributeValueTable ;
+		rdfs:label ?attribute_value_table_label ;
+		rdbs:hasColumn ?attribute_value_table_foreign_key .
+	?attribute_value_table_foreign_key a rdbs:ForeignKeyColumn ;
+		rdfs:label ?attribute_value_table_foreign_key_label ;
+		rdbs:refersToPrimaryKey ?attribute_table_primary_key .
+# Create the different subject nodes for each matched Pattern
+	BIND(IRI(CONCAT(STR(rdbs:), ?origin, \"-select\" )) AS ?select) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?origin, \"-select-from-\", ?origin_table_label )) AS ?from) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?origin, \"-select-from-\", ?origin_table_label, \"-join-\", ?attribute_table_label )) AS ?first_join) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?origin, \"-select-from-\", ?origin_table_label, \"-join-\", ?attribute_value_table_label )) AS ?second_join) .
+# Do not create if join already exists
+	FILTER NOT EXISTS { ?select a rdbs:SQLSelect } .
+}""" ;
+  sh:deactivated false ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:DATE
+  a rdbs:DataType ;
+  rdfs:label "DATE" ;
+.
+rdbs:DATETIME
+  a rdbs:DataType ;
+  rdfs:label "DATETIME" ;
+.
+rdbs:DOUBLE
+  a rdbs:DataType ;
+  rdfs:label "DOUBLE" ;
+.
+rdbs:DataType
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Collection of primitive and atomic values."@en ;
+  rdfs:label "Data type"@en ;
+.
+rdbs:DictTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:GraphTable ;
+.
+rdbs:DiscardedColumn
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Instances of this class shall be discarded by the analysis and import process."@en ;
+  rdfs:label "Discarded column"@en ;
+  rdfs:subClassOf rdbs:Column ;
+.
+rdbs:DiscardedTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Instances of this class shall be discarded from the analysis and import."@en ;
+  rdfs:label "Discarded table"@en ;
+  rdfs:subClassOf rdbs:Table ;
+.
+rdbs:EdgeAggregatedProperty
+  a sh:SPARQLRule ;
+  rdfs:label "Aggregated Control Property TMPE creation for Property Graph" ;
+  sh:construct """PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+# The base node to describe topologies of temporary topics
+	?tmp a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin ;
+			rdbs:hasAggregate ?aggregate .
+# The description of the group by element of the topology
+  	?aggregate a rdbs:Aggregate ;
+			rdbs:hasGroupBy ?group_by ;
+			rdbs:hasGroupBy ?index ;
+			rdbs:hasAlias \"sourceId\" ;
+			rdbs:hasCollect ?collect_property ;
+			rdbs:hasCollect ?collect_control .
+# Add the Group Bys
+	?group_by a rdbs:GroupBy ;
+			rdfs:label ?group_by_label ;
+			rdbs:hasOrder 0 .
+	?index a rdbs:GroupBy ;
+			rdfs:label ?index_label ;
+			rdbs:hasOrder 1 .
+# The description of the collect property element of the group by
+	?collect_property a rdbs:Collect ;
+			rdbs:hasValue ?collect_property_value ;
+			rdbs:hasClassifier ?collect_property_classifier .
+# The description of the collect control element of the group by
+	?collect_control a rdbs:Collect ;
+			rdbs:hasValue ?collect_control_value ;
+			rdbs:hasAlias \"controlID\" .
+# The description of the table or topic resulting from the group by
+	?table a rdbs:AggregatedEdgeAttributeTable ;
+# Set the origin table
+			rdbs:isAggregateOf ?this ;
+# Set input
+			rdbs:createdFrom ?tmp ;
+# Set the output
+			rdfs:label ?output ;
+# Set the columns
+			rdbs:hasColumn ?key_column ;
+			rdbs:hasColumn ?group_by_copy ;
+			rdbs:hasColumn ?classifier_value_column .
+# Setup the columns
+	?key_column a rdbs:PrimaryKeyColumn ;
+		rdfs:label \"sourceId\" ;
+		rdbs:isCopyOf ?collect_control_value_column ;
+		rdbs:belongsToTable ?table ;
+		?predicate ?object .
+	?group_by_copy rdbs:isCopyOf ?collect_control_value_column ;
+		rdbs:belongsToTable ?table ;
+		?all_predicate ?all_object .
+	?classifier_value_column a rdbs:Column ;
+		rdfs:label ?classifier_value_column_label ;
+		rdbs:belongsToTable ?table ;
+		rdbs:DataType ?data_type .
+}
+WHERE {
+# Pattern to match in order to create an aggregate topology
+    ?this a rdbs:AttributeWithTypeWithIdObjectTable ;
+		rdbs:hasColumn ?collect_control_value_column ;
+		rdbs:hasColumn ?index_column ;
+		rdbs:hasColumn ?collect_property_classifier_column .
+	?collect_control_value_column rdbs:isCopyOf [
+		a rdbs:ForeignKeyColumn ;
+			rdbs:belongsToTable [
+				a rdbs:AttributeTable ;
+			] ;
+			rdbs:refersToPrimaryKey [
+				rdbs:belongsToTable [
+					a rdbs:EdgeTable
+				]
+			]
+		] .
+	?index_column rdbs:isCopyOf [ 
+		a rdbs:IndexColumn 
+	] .
+	?collect_property_classifier_column rdbs:isCopyOf [
+			a rdbs:ValueColumn ;
+				rdbs:belongsToTable [
+				a rdbs:TypeTable
+			]
+		] .
+# Stop if there is no value in the classifying column
+	FILTER EXISTS {?collect_property_classifier_column rdbs:hasDistinctValue ?v}
+# Pattern to match in order to create the property collect
+	?this rdbs:hasColumn ?collect_property_value_column .
+	?collect_property_value_column rdbs:isCopyOf [
+		a rdbs:ValueColumn ;
+		rdbs:belongsToTable [
+			a rdbs:AttributeValueTable ;
+		]
+	] .
+# Find the labels
+	?this rdfs:label ?origin .
+	?collect_control_value_column rdfs:label ?group_by_label ;
+		?predicate ?object ;
+		?all_predicate ?all_object .
+	FILTER (?predicate != rdf:type ) .
+	FILTER (?predicate != rdbs:belongsToTable ) .
+	FILTER (?predicate != rdfs:label ) .
+	FILTER (?all_predicate != rdbs:belongsToTable ) .
+	?index_column rdfs:label ?index_label .
+	?collect_property_value_column rdfs:label ?collect_property_value ;
+		rdbs:hasDataType ?data_type .
+	?collect_property_classifier_column rdfs:label ?collect_property_classifier ;
+		rdbs:hasDistinctValue ?classifier_value .
+ 	?collect_control_value_column rdfs:label ?collect_control_value .
+# Create the label of the new columns
+	BIND(REPLACE(CONCAT(?collect_property_value, \"_\", ?classifier_value), \" \", \"_\") AS ?classifier_value_column_label) .
+# Create the new name of the output
+	BIND(REPLACE(?origin, '-with-types-with-id-object', '-by-sources') AS ?output)
+# Filter topologies already processed
+	FILTER NOT EXISTS {
+		?old_tmp a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin .
+	}
+# Create the different subject nodes for each matched Pattern
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology\" )) AS ?tmp) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-aggregate-sourdceId\" )) AS ?aggregate) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-aggregate-sourdceId\", \"-group-by-\", ?index_label )) AS ?index) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-aggregate-sourdceId\", \"-group-by-\", ?group_by_label )) AS ?group_by) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-aggregate-sourdceId\", \"-collect-\", ?collect_property_value )) AS ?collect_control) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-aggregate-sourdceId\", \"-collect-\", ?collect_control_value, \"-as-controlID\" )) AS ?collect_property) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output )) AS ?table) .
+# Create the key column
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?group_by_label, \"-and-\", ?index_label, \"-from-\", ?output )) AS ?key_column) .
+# Create the different columns that are copies of the origin and foreign columns
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?group_by_label, \"-from-\", ?output )) AS ?group_by_copy) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"_\", ?classifier_value_column_label )) AS ?classifier_value_column) .
+}""" ;
+  sh:deactivated false ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:EdgeTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:GraphTable ;
+.
+rdbs:EdgesBySource
+  a sh:SPARQLRule ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+# The base node to describe topologies of temporary topics
+	?tmp a rdbs:Topology ;
+		rdbs:hasOutput ?output ;
+		rdbs:hasTopic ?origin ;
+		rdbs:hasJoin ?join .
+	?join rdbs:hasTopic ?join_topic ;
+		rdbs:hasKind rdbs:OuterJoin .
+	?table a rdbs:GraphCBE ;
+# Set label
+		rdfs:label ?output ;
+# Set input
+		rdbs:createdFrom ?tmp ;
+# Set column
+		rdbs:hasColumn ?copied_origin_column ;
+		rdbs:hasColumn ?copied_foreign_column .
+# Set up copies of the origin columns
+	?copied_origin_column rdbs:belongsToTable ?table ;
+		?origin_predicate ?origin_object ;
+		rdbs:isCopyOf ?origin_column .
+# Set up copies of the foreign columns
+	?copied_foreign_column rdbs:belongsToTable ?table ;
+		?foreign_predicate ?foreign_object ;
+		rdbs:isCopyOf ?foreign_column .
+}
+WHERE {
+# Get a random table of aggregated Control properties
+	{
+		SELECT ?this ?id {
+			?this a rdbs:AggregatedEdgeAttributeTable ;
+				rdbs:hasColumn [
+					a rdbs:PrimaryKeyColumn ;
+						rdfs:label ?id
+				]
+		} LIMIT 1
+	}
+# Get all the other tables of aggregated Controp properties
+	?that a rdbs:AggregatedEdgeAttributeTable .
+	FILTER ( ?this != ?that)
+# Get the labels
+	?this rdfs:label ?origin ;
+		rdbs:hasColumn ?origin_column .
+	?that rdfs:label ?join_topic ;
+		rdbs:hasColumn ?foreign_column .
+# Get the predicates and objects of the copied columns
+	?origin_column ?origin_predicate ?origin_object .
+	?foreign_column ?foreign_predicate ?foreign_object .
+#Get the labels of the copied columns
+	?origin_column rdfs:label ?origin_column_label .
+	?foreign_column rdfs:label ?foreign_column_label .
+# Create the new name of the output
+	BIND(CONCAT(\"edges-with-\", ?id) AS ?output)
+# Filter topologies already processed
+	FILTER NOT EXISTS {
+		?old_topology a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin .
+	}
+# Create the different subject nodes for each matched Pattern
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology\" )) AS ?tmp) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-join-\", ?join_topic )) AS ?join) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output )) AS ?table) .
+# Create the different columns that are copies of the origin columns
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?origin_column_label, \"-from-\", ?output )) AS ?copied_origin_column) .
+# Create the different columns that are copies of the foreign columns
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?foreign_column_label, \"-from-\", ?output )) AS ?copied_foreign_column) .
+# Skip the predicates referencing the belonging of the columns
+	FILTER (?origin_predicate != rdbs:belongsToTable )
+	FILTER (?foreign_predicate != rdbs:belongsToTable )
+	FILTER NOT EXISTS { ?foreign_column a rdbs:PrimaryKeyColumn}
+}
+""" ;
+  sh:deactivated false ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:EntityClassification
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Entity classification"@en ;
+  rdfs:subClassOf owl:Thing ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasClassifyingColumn ;
+      sh:class rdbs:Column ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has classifying column" ;
+    ] ;
+.
+rdbs:EntityRelationKarmaAlignmentRulesShape
+  a sh:NodeShape ;
+  rdfs:label "Entity alignment shape generated from CBE Topology" ;
+  rdfs:subClassOf rdbs:KarmaAlignmentRulesShape ;
+  sh:order "2"^^xsd:decimal ;
+  sh:rule rdbs:CreateAlignmentForManyToManyWithoutClassifier ;
+  sh:rule rdbs:CreateAlignmentForTableColumns ;
+  sh:rule rdbs:CreateAlignmentForTableFKColumns ;
+  sh:rule rdbs:CreateAlignmentForTableInverseFKColumns ;
+  sh:targetClass rdbs:EntityTable ;
+  sh:targetClass rdbs:TaxonomyTable ;
+.
+rdbs:EntityRelationProxyOntologyRulesShape
+  a sh:NodeShape ;
+  rdfs:comment "Shape grouping all rules to generate Proxy ontology entities (e.g. concepts and properties) from a main artefact." ;
+  rdfs:label "Entity concept shape" ;
+  rdfs:subClassOf rdbs:ProxyOntologyRulesShape ;
+  sh:order "1"^^xsd:decimal ;
+  sh:rule rdbs:MapColumnToDatatypeProperty ;
+  sh:rule rdbs:MapColumnToDatatypePropertyFromPropertyTable ;
+  sh:rule rdbs:MapEntityClassifierToSubClass ;
+  sh:rule rdbs:MapEntityTableToClass ;
+  sh:rule rdbs:MapForeignKeyColumnFromPropertyTableToObjectProperty ;
+  sh:rule rdbs:MapForeignKeyColumnToObjectProperty ;
+  sh:rule rdbs:MapInverseForeignKeyColumnToObjectProperty ;
+  sh:rule rdbs:MapManyToManyLinkToObjectProperty ;
+  sh:rule rdbs:MapPropertyClassifierToSubProperty ;
+  sh:targetClass rdbs:EntityTable ;
+.
+rdbs:EntityRelationTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Tables i.e. Tags of the Entity Relation Abstraction"@en ;
+  rdfs:subClassOf rdbs:Table ;
+.
+rdbs:EntityRelationTopologyRulesShape
+  a sh:NodeShape ;
+  rdfs:comment "Shape grouping all rules in the EntityRelation Abstraction to generate CBE Topology"@en ;
+  rdfs:label "EntityRelationRulesShape"@en ;
+  rdfs:subClassOf rdbs:TopologyRulesShape ;
+  sh:order "0"^^xsd:decimal ;
+  sh:rule rdbs:ManyToManyRelationship ;
+  sh:rule rdbs:MergeTable ;
+  sh:rule rdbs:OneToManyRelationship ;
+  sh:targetClass rdbs:EntityTable ;
+  sh:targetClass rdbs:PropertyTable ;
+.
+rdbs:EntityTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Table which will generate an entity type in the automated ingestion process."@en ;
+  rdfs:label "Entity table"@en ;
+  rdfs:subClassOf rdbs:EntityRelationTable ;
+.
+rdbs:FLOAT
+  a rdbs:DataType ;
+  rdfs:label "FLOAT" ;
+.
+rdbs:ForeignColumn
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Look up a number of foreign columns, all belonging to a single table, and associate them to a target table."@en ;
+  rdfs:label "Foreign column"@en ;
+  rdfs:subClassOf rdbs:Column ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasForeignColumn ;
+      sh:class rdbs:Column ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:viaForeignKeyColumn ;
+      sh:class rdbs:ForeignKeyColumn ;
+      sh:name "has foreign key column" ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+.
+rdbs:ForeignKeyColumn
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Column of a referencing table whose values must correspond to values of some primary key column in some referenced table."@en ;
+  rdfs:label "Foreign key column"@en ;
+  rdfs:subClassOf rdbs:Column ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:belongsToTable ;
+      sh:class rdbs:Table ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:refersToPrimaryKey ;
+      sh:class rdbs:PrimaryKeyColumn ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+    ] ;
+.
+rdbs:GraphCBE
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:GraphTable ;
+.
+rdbs:GraphKarmaAlignmentRulesShape
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:KarmaAlignmentRulesShape ;
+.
+rdbs:GraphProxyOntologyRulesShape
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:ProxyOntologyRulesShape ;
+.
+rdbs:GraphQueryRulesShape
+  a sh:NodeShape ;
+  rdfs:comment "Shape grouping all rules in the Graph Abstraction to generate Classifier Values Queries"@en ;
+  rdfs:label "GraphQueryRulesShape"@en ;
+  rdfs:subClassOf rdbs:TopologyRulesShape ;
+  sh:order "0"^^xsd:decimal ;
+  sh:rule rdbs:CreateClassifierValuePlaceholder ;
+  sh:rule rdbs:CreateSQLQuery ;
+  sh:targetClass rdbs:AttributeWithTypeWithIdObjectTable ;
+  sh:targetClass rdbs:ClassifyingColumn ;
+.
+rdbs:GraphTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Tables i.e. Tags of the Graph Abstraction"@en ;
+  rdfs:subClassOf rdbs:Table ;
+.
+rdbs:GraphTopologyRulesShape
+  a sh:NodeShape ;
+  rdfs:comment "Shape grouping all rules in the Graph Abstraction to generate CBE Topology"@en ;
+  rdfs:label "GraphTopologyRulesShape"@en ;
+  rdfs:subClassOf rdbs:TopologyRulesShape ;
+  sh:order "0"^^xsd:decimal ;
+  sh:rule rdbs:AttributeWithType ;
+  sh:rule rdbs:AttributeWithTypeWithIDObject ;
+  sh:rule rdbs:AttributeWithTypeWithIDObject_Dictionary_Support ;
+  sh:rule rdbs:EdgeAggregatedProperty ;
+  sh:rule rdbs:EdgesBySource ;
+  sh:rule rdbs:ObjectWithType ;
+  sh:rule rdbs:VerticeAggregatedProperty ;
+  sh:rule rdbs:VerticesByType ;
+  sh:targetClass rdbs:AggregatedEdgeAttributeTable ;
+  sh:targetClass rdbs:AggregatedVerticeAttributeTable ;
+  sh:targetClass rdbs:AttributeTable ;
+  sh:targetClass rdbs:AttributeValueTable ;
+  sh:targetClass rdbs:AttributeWithTypeTable ;
+  sh:targetClass rdbs:AttributeWithTypeWithIdObjectTable ;
+  sh:targetClass rdbs:EdgeTable ;
+  sh:targetClass rdbs:ObjectWithTypeTable ;
+  sh:targetClass rdbs:VerticeTable ;
+.
+rdbs:GroupBy
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TopologyOperation ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdfs:label ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasOrder ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has order" ;
+    ] ;
+.
+rdbs:INT
+  a rdbs:DataType ;
+  rdfs:label "INT" ;
+.
+rdbs:IndexColumn
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:Column ;
+.
+rdbs:InnerJoin
+  a rdbs:JoinKind ;
+  rdfs:label "InnerJoin" ;
+.
+rdbs:Join
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TopologyOperation ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasForeignKey ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has foreign key" ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasKind ;
+      sh:class rdbs:JoinKind ;
+      sh:maxCount 1 ;
+      sh:name "has kind" ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasSelect ;
+      sh:class rdbs:Select ;
+      sh:minCount 1 ;
+      sh:name "has select" ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasTopic ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has topic" ;
+    ] ;
+.
+rdbs:JoinKind
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TopologyOperation ;
+.
+rdbs:KarmaAlignmentRulesShape
+  a sh:NodeShape ;
+  rdfs:label "Karma alignment rules shape" ;
+.
+rdbs:LeftJoin
+  a rdbs:JoinKind ;
+  rdfs:label "LeftJoin" ;
+.
+rdbs:LookupTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Lookup table"@en ;
+  rdfs:subClassOf rdbs:EntityRelationTable ;
+.
+rdbs:ManyToManyRelationship
+  a sh:SPARQLRule ;
+  rdfs:label "Many to many symmetric relationship" ;
+  sh:construct """
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+
+CONSTRUCT {
+    ?topology a rdbs:Topology;
+        rdbs:topic ?origin ;
+        rdbs:relation ?relation ;
+        rdbs:groupby ?groupby ;
+        rdbs:classifier ?classifier ;
+        rdbs:collect [
+          rdbs:value ?collect ;
+          rdbs:as ?relation ;
+          rdbs:classifyingValuesFrom ?ccolumn ;
+          rdbs:extendTable ?entity ;
+          rdbs:withValuesFromTable ?oentity ;
+        ];
+    rdbs:generatedBy rdbs:ManyToManyRelationship ;
+    .
+
+}
+WHERE {
+    $this rdfs:label ?origin .
+   ?oentity a ?oet .
+   FILTER(?oet = rdbs:EntityTable || ?oet = rdbs:TaxonomyTable)
+   ?link a rdbs:RelationshipTable; rdfs:label ?relation ; rdbs:hasColumn ?efk , ?tfk.
+   FILTER(?efk != ?tfk)
+   ?efk a rdbs:ForeignKeyColumn ;  rdbs:refersToPrimaryKey ?epk;  rdfs:label ?groupby.
+   ?tfk a rdbs:ForeignKeyColumn  ;  rdbs:refersToPrimaryKey ?tpk ; rdfs:label ?collect.
+   ?epk rdbs:belongsToTable $this.
+   ?tpk rdbs:belongsToTable ?oentity.
+  FILTER NOT EXISTS {
+   $this rdbs:inhibitRelationTo ?oentity
+  }
+  OPTIONAL
+  {
+    ?pc a rdbs:PropertyClassification;
+           rdbs:hasClassifyingTable $this ;
+           rdbs:hasClassifyingColumn ?ccolumn.
+    ?ccolumn  rdbs:belongsToTable ?link ;
+              rdfs:label ?classifier .
+
+  }
+  BIND(BNODE() AS ?topology)
+  BIND($this AS ?entity)
+}""" ;
+  sh:deactivated true ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:MapColumnToDatatypeProperty
+  a sh:SPARQLRule ;
+  rdfs:label "Map an Column in an Entity Table to an owl:DatatypeProperty" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+   ?puri a owl:DatatypeProperty ;
+      rdfs:label ?cname ;
+      rdfs:domain ?euri ;
+      rdbs:mapsToColumn ?column .
+
+  ?euri sh:property [
+       a sh:PropertyShape ;
+       sh:path ?puri ;
+       sh:maxCount ?max ;
+       sh:minCount ?min ;
+       sh:nodeKind sh:Literal ;
+  ].
+}
+WHERE {
+  $this rdfs:label ?ename ;
+      rdbs:hasColumn ?column.
+    ?column a rdbs:Column ;
+         rdfs:label ?cname;
+         rdbs:isNullable ?nullable
+    .
+    OPTIONAL { $this rdbs:hasEntityLocalName ?lname.}
+    OPTIONAL { ?column rdbs:hasPropertyLocalName ?plname.}
+
+    rdbs:target sh:namespace ?namespace ; sh:prefix ?prefix.
+
+    BIND(rdbs:mintEntityURI(?lname , ?ename , ?namespace) AS ?euri)
+    BIND(rdbs:mintDTPropertyURI(?lname , ?ename ,?plname , ?cname , ?namespace) AS ?puri)
+
+    BIND( IF(?nullable , 0, 1) AS ?min)
+    BIND( 1 AS ?max)
+}""" ;
+  sh:deactivated false ;
+  sh:order "1"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:MapColumnToDatatypePropertyFromPropertyTable
+  a sh:SPARQLRule ;
+  rdfs:label "Map an Column in an Entity Table to an owl:DatatypeProperty" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+   ?puri a owl:DatatypeProperty ;
+      rdfs:label ?cname ;
+      rdfs:domain ?euri ;
+      rdbs:mapsToColumn ?column ;
+      rdbs:generatedBy rdbs:MapColumnToDatatypePropertyFromPropertyTable;
+      .
+
+  ?euri sh:property [
+       a sh:PropertyShape ;
+       sh:path ?puri ;
+       sh:maxCount ?max ;
+       sh:minCount ?min ;
+       sh:nodeKind sh:Literal ;
+       rdbs:generatedBy rdbs:MapColumnToDatatypePropertyFromPropertyTable;
+  ].
+  ?alignment a rdbs:Alignment ;
+        rdbs:atype \"DTP\" ;
+        rdbs:topic ?ename ;
+        rdbs:field ?fieldname ;
+        rdbs:datatype ?dt ;
+        rdbs:uri ?puri ;
+        rdbs:generatedBy rdbs:MapColumnToDatatypePropertyFromPropertyTable ;
+        .
+  ?topology a rdbs:Topology;
+          rdbs:topic ?origin ;
+          rdbs:relation ?relation ;
+          rdbs:groupby ?groupby ;
+          rdbs:collect [
+             rdbs:value ?cname ;
+             rdbs:as ?fieldname ;
+             rdbs:extendTable ?entity ;
+             rdbs:property ?puri ;
+          ]  ;
+          rdbs:generatedBy rdbs:MapColumnToDatatypePropertyFromPropertyTable ;
+          .
+
+}
+WHERE {
+
+  $this a rdbs:EntityTable ;
+         rdfs:label ?ename .
+
+   ?oentity a rdbs:PropertyTable  ;
+         rdbs:hasColumn [
+              a rdbs:ForeignKeyColumn , rdbs:PrimaryKeyColumn ;
+              rdbs:refersToPrimaryKey [
+                 rdbs:belongsToTable $this
+              ];
+              rdfs:label ?groupby
+         ] ;
+      rdbs:hasColumn ?column.
+
+    ?column a rdbs:Column ;
+         rdfs:label ?cname;
+         rdbs:hasDataType ?dt ;
+         rdbs:isNullable ?nullable
+    .
+    OPTIONAL { $this rdbs:hasEntityLocalName ?lname.}
+    OPTIONAL { ?column rdbs:hasPropertyLocalName ?plname.}
+
+    rdbs:target sh:namespace ?namespace ; sh:prefix ?prefix.
+    BIND(rdbs:mintEntityURI(?lname , ?ename , ?namespace) AS ?euri)
+    BIND(rdbs:mintDTPropertyURI(?lname , ?ename ,?plname , ?cname , ?namespace) AS ?puri)
+
+    BIND( IF(?nullable , 0, 1) AS ?min)
+    BIND(BNODE() AS ?alignment)
+    BIND(BNODE() AS ?topology)
+    BIND( IF(BOUND(?plname),?plname , ?cname) AS ?fieldname)
+    BIND( 1 AS ?max)
+}""" ;
+  sh:deactivated false ;
+  sh:order "1"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:MapEntityClassifierToSubClass
+  a sh:SPARQLRule ;
+  rdfs:label "Map an Entity classifier to a set of owl:Class" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+  ?suburi a owl:Class , sh:NodeShape;
+           rdfs:subClassOf ?euri ;
+           rdfs:label ?name.
+}
+WHERE {
+
+    ?pc a rdbs:EntityClassification;
+           rdbs:hasClassifyingColumn ?classifier.
+    ?classifier rdbs:belongsToTable $this ;
+           rdbs:hasDistinctValue ?classifyingValue ;
+           rdbs:hasAssociation [
+            rdbs:hasValue ?classifyingValue ;
+            rdbs:hasAssociatedName ?name
+           ]
+    .
+    $this rdfs:label ?ename.
+    OPTIONAL { $this rdbs:hasEntityLocalName ?lname.}
+    rdbs:target sh:namespace ?namespace ; sh:prefix ?prefix.
+    BIND(rdbs:mintEntityURI(?lname , ?ename , ?namespace) AS ?euri)
+    BIND(rdbs:mintEntityURI(?name , ?classifyingValue , ?namespace) AS ?suburi)
+  }""" ;
+  sh:deactivated false ;
+  sh:order "1"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:MapEntityTableToClass
+  a sh:SPARQLRule ;
+  rdfs:label "Map an Entity Table to an owl:Class" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+  ?euri a owl:Class , sh:NodeShape;
+           rdfs:subClassOf owl:Thing ;
+           rdfs:label ?ename ;
+           rdbs:fromTable ?table.
+}
+WHERE {
+   $this rdfs:label ?ename.
+   OPTIONAL { $this rdbs:hasEntityLocalName ?lname.}
+   rdbs:target sh:namespace ?namespace ; sh:prefix ?prefix.
+   BIND(rdbs:mintEntityURI(?lname , ?ename , ?namespace) AS ?euri)
+   BIND(  $this as ?table )
+}""" ;
+  sh:deactivated false ;
+  sh:order "1"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:MapForeignKeyColumnFromPropertyTableToObjectProperty
+  a sh:SPARQLRule ;
+  rdfs:label "Map an Column in an Property Table to an owl:ObjectProperty" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+   ?puri a owl:ObjectProperty ;
+      rdfs:label ?cname ;
+      rdfs:domain ?euri ;
+      rdfs:range ?turi ;
+      rdbs:mapsToColumn ?column ;
+      rdbs:generatedBy rdbs:MapForeignKeyColumnFromPropertyTableToObjectProperty ;
+      .
+
+  ?euri sh:property [
+       a sh:PropertyShape ;
+       sh:path ?puri ;
+       sh:maxCount ?max ;
+       sh:minCount ?min ;
+       sh:class ?turi ;
+       sh:node ?turi ;
+       rdbs:generatedBy rdbs:MapForeignKeyColumnFromPropertyTableToObjectProperty ;
+      sh:nodeKind sh:IRI ;
+  ].
+}
+WHERE {
+
+  $this a rdbs:EntityTable ;
+         rdfs:label ?origin .
+   ?pentity a rdbs:PropertyTable  ;
+         rdfs:label ?relation ;
+         rdbs:hasColumn ?fpk , ?column;
+         .
+         ?fpk a rdbs:ForeignKeyColumn , rdbs:PrimaryKeyColumn ;
+              rdbs:refersToPrimaryKey [
+                 rdbs:belongsToTable $this
+              ];
+         .
+         FILTER(?fpk != ?column)
+
+         ?column a rdbs:ForeignKeyColumn ;
+             rdfs:label ?cname;
+             rdbs:isNullable ?nullable;
+             rdbs:refersToPrimaryKey [ rdbs:belongsToTable ?oentity];
+         .
+     ?oentity  rdfs:label ?oename ;
+     OPTIONAL { $this rdbs:hasEntityLocalName ?lname.}
+     OPTIONAL { ?oentity rdbs:hasEntityLocalName ?loname.}
+     OPTIONAL { ?column rdbs:hasPropertyLocalName ?plname.}
+
+    rdbs:target sh:namespace ?namespace ; sh:prefix ?prefix.
+
+    BIND(rdbs:mintEntityURI(?lname , ?ename , ?namespace) AS ?euri)
+    BIND(rdbs:mintEntityURI(?loname , ?oename , ?namespace) AS ?turi)
+    BIND(rdbs:mintOBJPropertyURI(?lname , ?ename ,?loname , ?oename , ?plname, ?namespace) AS ?puri)
+
+    BIND( IF(?nullable , 0, 1) AS ?min)
+    BIND( 1 AS ?max)
+}""" ;
+  sh:deactivated false ;
+  sh:order "1"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:MapForeignKeyColumnToObjectProperty
+  a sh:SPARQLRule ;
+  rdfs:label "Map an Column in an Entity Table to an owl:ObjectProperty" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+   ?puri a owl:ObjectProperty ;
+      rdfs:label ?cname ;
+      rdfs:domain ?euri ;
+      rdfs:range ?turi ;
+      rdbs:mapsToColumn ?column ;
+      rdbs:generatedBy rdbs:MapForeignKeyColumnToObjectProperty ;
+.
+
+  ?euri sh:property [
+       a sh:PropertyShape ;
+       sh:path ?puri ;
+       sh:maxCount ?max ;
+       sh:minCount ?min ;
+       sh:class ?turi ;
+       sh:node ?turi ;
+       rdbs:generatedBy rdbs:MapForeignKeyColumnToObjectProperty ;
+      sh:nodeKind sh:IRI ;
+  ].
+}
+WHERE {
+  $this rdfs:label ?ename ;
+      rdbs:hasColumn ?column.
+    ?column a rdbs:ForeignKeyColumn ;
+         rdfs:label ?cname;
+         rdbs:isNullable ?nullable;
+         rdbs:refersToPrimaryKey [ rdbs:belongsToTable ?oentity]
+    .
+  ?oentity  rdfs:label ?oename ;
+     OPTIONAL { $this rdbs:hasEntityLocalName ?lname.}
+     OPTIONAL { ?oentity rdbs:hasEntityLocalName ?loname.}
+     OPTIONAL { ?column rdbs:hasPropertyLocalName ?plname.}
+
+    rdbs:target sh:namespace ?namespace ; sh:prefix ?prefix.
+
+    BIND(rdbs:mintEntityURI(?lname , ?ename , ?namespace) AS ?euri)
+    BIND(rdbs:mintEntityURI(?loname , ?oename , ?namespace) AS ?turi)
+    BIND(rdbs:mintOBJPropertyURI(?lname , ?ename ,?loname , ?oename , ?plname, ?namespace) AS ?puri)
+
+    BIND( IF(?nullable , 0, 1) AS ?min)
+    BIND( 1 AS ?max)
+}""" ;
+  sh:deactivated false ;
+  sh:order "1"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:MapInverseForeignKeyColumnToObjectProperty
+  a sh:SPARQLRule ;
+  rdfs:label "Generate the inverse property to an Entity Table, if this does not exist, to an owl:ObjectProperty" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+   ?puri a owl:ObjectProperty ;
+      rdfs:label ?localTargetEntityClassName ;
+      rdfs:domain ?euri ;
+      rdfs:range ?turi ;
+      rdbs:generatedBy rdbs:MapInverseForeignKeyColumnToObjectProperty ;
+ .
+
+  ?euri sh:property [
+       a sh:PropertyShape ;
+       sh:path ?puri ;
+       sh:maxCount ?max ;
+       sh:minCount ?min ;
+       sh:class ?turi ;
+       sh:node ?turi ;
+       rdbs:generatedBy rdbs:MapInverseForeignKeyColumnToObjectProperty ;
+      sh:nodeKind sh:IRI ;
+  ].
+}
+WHERE {
+  $this a rdbs:EntityTable ; rdfs:label ?ename .
+  ?oentity  a rdbs:EntityTable ; rdfs:label ?oename ;
+        rdbs:hasColumn ?column ;
+  .
+
+  ?column a rdbs:ForeignKeyColumn ;
+         rdfs:label ?cname;
+         rdbs:isNullable ?nullable;
+         rdbs:refersToPrimaryKey [ rdbs:belongsToTable $this]
+  .
+
+ FILTER NOT EXISTS {
+  ?ocolumn a rdbs:ForeignKeyColumn ;
+     rdbs:belongsToTable $this ;
+     rdbs:refersToPrimaryKey [ rdbs:belongsToTable ?oentity]
+  .
+ }
+
+  OPTIONAL { $this rdbs:hasEntityLocalName ?lname.}
+  OPTIONAL { ?oentity rdbs:hasEntityLocalName ?loname.}
+
+  rdbs:target sh:namespace ?namespace ; sh:prefix ?prefix.
+
+  BIND(rdbs:mintEntityURI(?lname , ?ename , ?namespace) AS ?euri)
+  BIND(rdbs:mintEntityURI(?loname , ?oename , ?namespace) AS ?turi)
+  BIND(rdbs:mintOBJPropertyURI(?lname , ?ename ,?loname , ?oename , ?plname, ?namespace) AS ?puri)
+
+  BIND( IF(?nullable , 0, 1) AS ?min)
+  BIND( 1 AS ?max)
+}""" ;
+  sh:deactivated false ;
+  sh:order "1"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:MapManyToManyLinkToObjectProperty
+  a sh:SPARQLRule ;
+  rdfs:label "Map a M:N relationship to an owl:ObjectProperty" ;
+  sh:construct """
+           PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+           PREFIX owl: <http://www.w3.org/2002/07/owl#>
+           PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+           PREFIX sh:<http://www.w3.org/ns/shacl#>
+           CONSTRUCT {
+              ?puri a owl:ObjectProperty ;
+                 rdfs:label ?cname ;
+                 rdfs:domain ?euri ;
+                 rdfs:range ?turi ;
+                 rdbs:generatedBy rdbs:MapManyToManyLinkToObjectProperty ;
+                 .
+             ?euri sh:property [
+                  a sh:PropertyShape ;
+                  sh:path ?puri ;
+                  sh:maxCount ?max ;
+                  sh:minCount ?min ;
+                  sh:class ?turi ;
+                  sh:node ?turi ;
+                  rdbs:generatedBy rdbs:MapManyToManyLinkToObjectProperty ;
+                 sh:nodeKind sh:IRI ;
+             ].
+
+             ?topology a rdbs:Topology;
+                   rdbs:topic ?origin ;
+                   rdbs:relation ?relation ;
+                   rdbs:groupby ?groupby ;
+                   rdbs:classifier ?classifier ;
+                   rdbs:collect [
+                     rdbs:value ?collect ;
+                     rdbs:as ?relation ;
+                     rdbs:classifyingValuesFrom ?ccolumn ;
+                     rdbs:extendTable ?entity ;
+                     rdbs:withValuesFromTable ?oentity ;
+                     rdbs:property ?puri
+                   ];
+               rdbs:generatedBy rdbs:MapManyToManyLinkToObjectProperty ;
+               .
+           } WHERE {
+             SELECT DISTINCT * {
+              $this  a rdbs:EntityTable ; rdfs:label ?origin .
+              ?oentity a ?ttype ; rdfs:label ?oename  .
+              FILTER (?ttype = rdbs:EntityTable || ?ttype = rdbs:TaxonomyTable)
+              ?link a rdbs:RelationshipTable; rdfs:label ?relation ; rdbs:hasColumn ?efk , ?tfk.
+              FILTER(?efk != ?tfk)
+              ?efk a rdbs:ForeignKeyColumn ;  rdbs:refersToPrimaryKey ?epk;  rdfs:label ?groupby.
+              ?tfk a rdbs:ForeignKeyColumn  ;  rdbs:refersToPrimaryKey ?tpk ; rdfs:label ?collect.
+              ?epk rdbs:belongsToTable $this.
+              ?tpk rdbs:belongsToTable ?oentity.
+
+              FILTER NOT EXISTS {
+               $this rdbs:inhibitRelationTo ?oentity
+              }
+              OPTIONAL { $this rdbs:hasEntityLocalName ?lname.}
+              OPTIONAL { ?oentity rdbs:hasEntityLocalName ?loname.}
+              OPTIONAL { ?tfk rdbs:hasPropertyLocalName ?plname .}
+
+
+              OPTIONAL
+              {
+                ?pc a rdbs:PropertyClassification;
+                      rdbs:hasClassifyingTable $this ;
+                      rdbs:hasClassifyingColumn ?ccolumn.
+                ?ccolumn  rdbs:belongsToTable ?link ;
+                         rdfs:label ?classifier .
+              }
+
+              rdbs:target sh:namespace ?namespace ; sh:prefix ?prefix.
+
+              BIND(rdbs:mintEntityURI(?lname , ?origin , ?namespace) AS ?euri)
+              BIND(rdbs:mintEntityURI(?loname , ?oename , ?namespace) AS ?turi)
+              BIND(rdbs:mintOBJPropertyURI(?lname , ?origin ,?loname , ?oename , ?plname ,?namespace) AS ?puri)
+              BIND( 0 AS ?min)
+              BIND( 1 AS ?max)
+              BIND(BNODE() AS ?topology)
+              BIND($this AS ?entity)
+             }
+           }""" ;
+  sh:deactivated false ;
+  sh:order "1"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:MapPropertyClassifierToSubProperty
+  a sh:SPARQLRule ;
+  rdfs:comment "This rule not only creates the subproperties but also the CBE topology and the alignments." ;
+  rdfs:label "Map a Property classifier to a sub property" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+CONSTRUCT {
+  ?alignment a rdbs:Alignment ;
+      rdbs:atype \"OTP\" ;
+      rdbs:topic ?origin ;
+      rdbs:field ?subfield ;
+      rdbs:uri ?spuri ;
+      rdbs:targetClass ?turi ;
+      rdbs:generatedBy  rdbs:MapPropertyClassifierToSubProperty ;
+      .
+
+  ?topology a rdbs:Topology;
+        rdbs:topic ?origin ;
+        rdbs:relation ?relation ;
+        rdbs:groupby ?groupby ;
+        rdbs:classifier ?classifier ;
+        rdbs:collect [
+          rdbs:value ?collect ;
+          rdbs:as ?relation ;
+          rdbs:classifyingValuesFrom ?ccolumn ;
+          rdbs:extendTable ?entity ;
+          rdbs:property ?spuri
+        ] ;
+        rdbs:generatedBy rdbs:MapPropertyClassifierToSubProperty ;
+        .
+
+  ?spuri a owl:ObjectProperty ;
+      rdfs:label ?localSubPropertyName ;
+      rdfs:domain ?euri ;
+      rdfs:range ?turi ;
+     rdfs:subPropertyOf ?puri ;
+     rdbs:generatedBy rdbs:MapPropertyClassifierToSubProperty ;
+   .
+
+  ?euri sh:property [
+       a sh:PropertyShape ;
+       sh:path ?spuri ;
+       sh:maxCount ?max ;
+       sh:minCount ?min ;
+       sh:node ?turi ;
+       sh:nodeKind sh:IRI ;
+       rdbs:generatedBy rdbs:MapPropertyClassifierToSubProperty ;
+       ]
+   .
+}  WHERE {
+    $this  rdfs:label ?origin .
+   ?oentity a ?ttype ; rdfs:label ?oename.
+   FILTER( ?ttype = rdbs:EntityTable || ?ttype = rdbs:TaxonomyTable)
+   ?link a rdbs:RelationshipTable; rdfs:label ?relation ; rdbs:hasColumn ?efk , ?tfk.
+   FILTER(?efk != ?tfk)
+   ?efk a rdbs:ForeignKeyColumn ;  rdbs:refersToPrimaryKey ?epk;  rdfs:label ?groupby.
+   ?tfk a rdbs:ForeignKeyColumn  ;  rdbs:refersToPrimaryKey ?tpk ; rdfs:label ?collect.
+   ?epk rdbs:belongsToTable $this.
+   ?tpk rdbs:belongsToTable ?oentity.
+
+   FILTER NOT EXISTS {
+    $this rdbs:inhibitRelationTo ?oentity
+   }
+   OPTIONAL { $this rdbs:hasEntityLocalName ?lname.}
+   OPTIONAL { ?oentity rdbs:hasEntityLocalName ?loname.}
+   OPTIONAL { ?tfk rdbs:hasPropertyLocalName ?plname. }
+
+   rdbs:target sh:namespace ?namespace ; sh:prefix ?prefix.
+
+   ?pc a rdbs:PropertyClassification;
+           rdbs:hasClassifyingColumn ?classifyingColumn;
+           .
+   ?classifyingColumn rdbs:belongsToTable ?link ;
+      rdfs:label ?ccolumn ;
+      rdbs:hasDistinctValue ?classifyingValue ;
+       rdbs:hasAssociation [
+        rdbs:hasValue ?classifyingValue ;
+        rdbs:hasAssociatedName ?name
+       ]
+      .
+
+
+    BIND( CONCAT(CONCAT(?relation,\"_\"),str(?classifyingValue)) AS ?subfield)
+
+    BIND(rdbs:mintEntityURI(?lname , ?ename , ?namespace) AS ?euri)
+    BIND(rdbs:mintEntityURI(?loname , ?oename , ?namespace) AS ?turi)
+    BIND(rdbs:mintOBJPropertyURI(?lname , ?ename ,?loname , ?oename , ?plname ,?namespace) AS ?puri)
+    BIND(rdbs:mintOBJSubPropertyURI(?lname , ?ename ,?loname , ?oename , ?plname ,?name, ?namespace) AS ?spuri)
+
+    BIND( 0 AS ?min)
+    BIND( 1 AS ?max)
+    BIND(BNODE() AS ?topology)
+    BIND(BNODE() AS ?alignment)
+}""" ;
+  sh:deactivated false ;
+  sh:order "1"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:MapTaxonomyTableToClass
+  a sh:SPARQLRule ;
+  rdfs:label "Map an Taxonomy Table to an owl:Class subclass of skos:Concept" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX skos:<http://www.w3.org/2004/02/skos/core#>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+  ?euri a owl:Class , sh:NodeShape;
+           rdfs:subClassOf skos:Concept ;
+           rdfs:label ?ename ;
+           skos:prefLabel ?ename ;
+           rdbs:fromTable ?table.
+}
+WHERE {
+   $this rdfs:label ?ename.
+   OPTIONAL { $this rdbs:hasEntityLocalName ?lname.}
+   rdbs:target sh:namespace ?namespace ; sh:prefix ?prefix.
+   BIND(rdbs:mintEntityURI(?lname , ?ename , ?namespace) AS ?euri)
+   BIND(  $this as ?table )
+}""" ;
+  sh:deactivated false ;
+  sh:order "1"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:Membership
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:GraphTable ;
+.
+rdbs:MergeTable
+  a sh:SPARQLRule ;
+  rdfs:label "Merge a table into another." ;
+  sh:construct """
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+CONSTRUCT {
+    ?topology a rdbs:Topology;
+        rdbs:topic ?origin ;
+        rdbs:relation ?relation ;
+        rdbs:groupby ?groupby ;
+        rdbs:collect [
+           rdbs:value ?collect ;
+           rdbs:as ?fieldname ;
+           rdbs:extendTable ?entity ;
+           rdbs:property ?puri ;
+        ]  ;
+        rdbs:generatedBy rdbs:MergeTable ;
+        .
+}
+WHERE {
+   $this a rdbs:EntityTable ;
+         rdfs:label ?origin .
+   ?oentity a rdbs:PropertyTable  ;
+         rdfs:label ?relation ;
+         rdbs:hasColumn [
+              a rdbs:ForeignKeyColumn , rdbs:PrimaryKeyColumn ;
+              rdbs:refersToPrimaryKey [
+                 rdbs:belongsToTable $this
+              ];
+              rdfs:label ?groupby
+         ] ;
+         rdbs:hasColumn ?column .
+   ?column a rdbs:Column ;
+                rdfs:label ?collect;
+   .
+   OPTIONAL { ?column rdbs:hasPropertyLocalName ?plname.}
+   BIND( IF(BOUND(?plname),?plname , ?collect) AS ?fieldname)
+   BIND(BNODE() AS ?topology)
+   BIND($this AS ?entity)
+}""" ;
+  sh:deactivated true ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:NonKeyJoinOneHop
+  a sh:SPARQLRule ;
+  rdfs:label "Non-key join to a foreign column which does require one intermediate topic." ;
+  sh:construct """
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+
+CONSTRUCT {
+    ?topology1 a owl:Thing;
+        rdbs:topic ?origin ;
+        rdbs:join ?join ;
+        rdbs:fk ?fk ;
+        rdbs:select [rdbs:value ?select];
+        .
+}
+WHERE {
+  ?a1 a rdbs:ForeignColumn ;
+  rdbs:belongsToTable $this ;
+  rdbs:belongsToTable/rdfs:label ?label_a ;
+  rdbs:viaForeignKeyColumn ?a2 ;
+  rdbs:hasForeignColumn ?b1 .
+  ?b1 a rdbs:ForeignColumn ;
+  rdbs:belongsToTable/rdfs:label ?label_b ;
+  rdbs:viaForeignKeyColumn ?b2 ;
+  rdbs:hasForeignColumn ?c1 .
+  NOT EXISTS { ?c1 a rdbs:ForeignColumn . }
+  ?c1 rdbs:belongsToTable/rdfs:label ?label_c .
+  BIND(BNODE() AS ?topology1)
+  BIND(BNODE() AS ?topology2)
+
+}""" ;
+  sh:deactivated true ;
+  sh:order "1"^^xsd:decimal ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:ObjectWithType
+  a sh:SPARQLRule ;
+  rdfs:label "Node with Type and Control with Type TMPE creation for Property Graph" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+# The base node to describe topologies of temporary topics
+	?tmp a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin ;
+			rdbs:hasJoin ?join .
+# The description of the join element of the topology
+    ?join a rdbs:Join ;
+			rdbs:hasTopic ?foreign_topic ;
+			rdbs:hasForeignKey ?fk  ;
+			rdbs:hasKind rdbs:InnerJoin ;
+			rdbs:Select ?select .
+# The description of the select element of the join
+	?select a rdbs:Select ;
+			rdbs:hasValue ?selected_property ;
+			rdbs:hasAlias ?selected_property_name .
+# The description of the table or topic resulting from the join
+	?table a rdbs:ObjectWithTypeTable ;
+# Set input
+			rdbs:createdFrom ?tmp ;
+# Set output
+			rdfs:label ?output ;
+# Adding the copies of the origin topic columns and the selected foreign topic columns
+			rdbs:hasColumn ?copied_origin_column ;
+			rdbs:hasColumn ?copied_foreign_column .
+# Set up copies of the origin columns
+	?copied_origin_column rdbs:belongsToTable ?table ;
+		?origin_predicate ?origin_object ;
+		rdbs:isCopyOf ?origin_column .
+# Set up copies of the foreign columns
+	?copied_foreign_column a rdbs:ClassifyingColumn ;
+		rdbs:belongsToTable ?table ;
+		?foreign_predicate ?foreign_object ;
+		rdfs:label ?selected_property_name ;
+		rdbs:isCopyOf ?foreign_column .
+}
+WHERE {
+# Pattern to match in order to create join topology
+	VALUES ?target_table {
+		rdbs:VerticeTable
+		rdbs:EdgeTable
+	}
+	?this a ?target_table ;
+		rdbs:hasColumn ?foreign_key_column .
+	?foreign_key_column	a rdbs:ForeignKeyColumn ;
+			rdbs:refersToPrimaryKey [
+				rdbs:belongsToTable ?foreign_table
+				] .
+	?foreign_table a rdbs:TypeTable .
+	?foreign_table rdbs:hasColumn ?foreign_column.
+	?foreign_column a rdbs:ValueColumn .
+# Find the different columns of the origin topic 
+	?this rdfs:label ?origin ;
+		rdbs:hasColumn ?origin_column .
+# Get the different objects for the predicates of our constructed nodes
+	?foreign_key_column rdfs:label ?fk .
+	?foreign_table rdfs:label ?foreign_topic .
+	?foreign_column rdfs:label ?selected_property .
+# Get the predicates and objects of the copied columns
+	?origin_column ?origin_predicate ?origin_object .
+	?foreign_column ?foreign_predicate ?foreign_object .
+#Get the labels of the copied columns
+	?origin_column rdfs:label ?origin_column_label .
+	?foreign_column rdfs:label ?foreign_column_label .
+# Create the new name of the selected property
+ 	BIND(CONCAT(LCASE(?origin), \"Type\") AS ?selected_property_name) .
+# Create the new name of the output
+ 	BIND(CONCAT(LCASE(?origin), \"-with-types\") AS ?output) .
+# Filter topologies already processed
+	FILTER NOT EXISTS {
+		?old_tmp a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin .
+	}
+# Create the different subject nodes for each matched Pattern
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology\" )) AS ?tmp) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-join-with-\", ?foreign_topic )) AS ?join) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-join-with-\", ?foreign_topic, \"-select-\", ?selected_property )) AS ?select) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output )) AS ?table) .
+# Create the different columns that are copies of the origin columns
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?origin_column_label, \"-from-\", ?output )) AS ?copied_origin_column) .
+# Create the different columns that are copies of the foreign columns
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?foreign_column_label, \"-from-\", ?output )) AS ?copied_foreign_column) .
+# Filter the label of the foreign column since it is renamed
+	FILTER (?origin_predicate != rdbs:belongsToTable )
+	FILTER (?foreign_predicate != rdbs:belongsToTable )
+	FILTER (?foreign_predicate != rdfs:label )
+}""" ;
+  sh:deactivated false ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:ObjectWithTypeTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TemporaryTable ;
+.
+rdbs:ObjectWithTypeWithAnnotationsTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TemporaryTable ;
+.
+rdbs:ObjectWithTypeWithMembershipsTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TemporaryTable ;
+.
+rdbs:OneToManyRelationship
+  a sh:SPARQLRule ;
+  rdfs:label "One to many relationship" ;
+  sh:construct """
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+
+CONSTRUCT {
+    ?topology a rdbs:Topology;
+        rdbs:topic ?origin ;
+        rdbs:relation ?relation ;
+        rdbs:groupby ?groupby ;
+        rdbs:classifier ?classifier ;
+        rdbs:collect [
+          rdbs:value ?collect ;
+          rdbs:as ?relation ;
+          rdbs:classifyingValuesFrom ?ccolumn ;
+          rdbs:extendTable ?oentity
+        ] ;
+        rdbs:generatedBy rdbs:OneToManyRelationship ;
+        .
+}
+WHERE {
+  $this rdbs:hasColumn [
+           a rdbs:ForeignKeyColumn ;
+              rdbs:refersToPrimaryKey ?epk;
+              rdfs:label ?groupby
+         ] ,
+         [
+           a rdbs:PrimaryKeyColumn ;
+              rdfs:label ?collect
+         ];
+         rdfs:label ?relation .
+   ?oentity a rdbs:EntityTable  ;
+         rdbs:hasColumn ?epk ;
+         rdfs:label ?origin .
+  FILTER NOT EXISTS {
+    $this rdbs:inhibitRelationTo ?oentity
+   }
+
+  OPTIONAL
+  {
+    ?pc a rdbs:PropertyClassification;
+           rdbs:hasClassifyingTable $this ;
+           rdbs:hasClassifyingColumn ?ccolumn.
+    ?ccolumn   rdbs:belongsToTable ?oentity ;
+                      rdfs:label ?classifier .
+  }
+  BIND(BNODE() AS ?topology)
+  BIND($this AS ?entity)
+}""" ;
+  sh:deactivated false ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:OuterJoin
+  a rdbs:JoinKind ;
+  rdfs:label "OuterJoin" ;
+.
+rdbs:PrimaryKeyColumn
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Column defined from a Primary Key Constraint that identifies a single, non-null value for any instance of the table."@en ;
+  rdfs:label "Primary key column"@en ;
+  rdfs:subClassOf rdbs:Column ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:refersToColumn ;
+      sh:class rdbs:Column ;
+    ] ;
+  sh:property [
+      sh:path rdbs:isNullable ;
+      sh:hasValue false ;
+    ] ;
+.
+rdbs:PropertyClassification
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "All classifying columns must belong to the same table, that table would be one part of the join."@en ;
+  rdfs:label "Property classification"@en ;
+  rdfs:subClassOf owl:Thing ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasClassifyingColumn ;
+      sh:class rdbs:Column ;
+      sh:minCount 1 ;
+      sh:name "has classifying column" ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasClassifyingTable ;
+      sh:class rdbs:Table ;
+      sh:maxCount 2 ;
+      sh:minCount 1 ;
+      sh:name "has classifying table" ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+.
+rdbs:PropertyTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Property table" ;
+  rdfs:subClassOf rdbs:EntityRelationTable ;
+.
+rdbs:ProxyOntologyRulesShape
+  a sh:NodeShape ;
+  rdfs:label "Proxy ontology rules shape" ;
+.
+rdbs:ProxyTaxonomyShape
+  a sh:NodeShape ;
+  rdfs:label "Proxy taxonomy shape" ;
+  sh:order "1"^^xsd:decimal ;
+  sh:rule rdbs:MapColumnToDatatypeProperty ;
+  sh:rule rdbs:MapForeignKeyColumnToObjectProperty ;
+  sh:rule rdbs:MapTaxonomyTableToClass ;
+  sh:targetClass rdbs:TaxonomyTable ;
+.
+rdbs:Query
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf owl:Thing ;
+.
+rdbs:QueryOperation
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf owl:Thing ;
+.
+rdbs:RelationshipTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "A link table will not yield an entity in itself but will relate two other entities instead."@en ;
+  rdfs:label "Link table"@en ;
+  rdfs:subClassOf rdbs:EntityRelationTable ;
+.
+rdbs:SQLFrom
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:QueryOperation ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasSQLJoin ;
+      sh:class rdbs:SQLJoin ;
+      sh:name "has SQLJoin" ;
+      sh:node rdbs:SQLJoin ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasSelectedTable ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has selected table" ;
+    ] ;
+.
+rdbs:SQLJoin
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:QueryOperation ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasIDColumn ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has IDColumn" ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasIDTable ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has IDTable" ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasKeyColumn ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has key column" ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasKeyTable ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has key table" ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasOrder ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has order" ;
+    ] ;
+.
+rdbs:SQLSelect
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:Query ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasSQLFrom ;
+      sh:class rdbs:SQLFrom ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has SQLFrom" ;
+      sh:node rdbs:SQLFrom ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasSelectedColumn ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has selected column" ;
+    ] ;
+.
+rdbs:SQLWithAs
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:QueryOperation ;
+.
+rdbs:STRING
+  a rdbs:DataType ;
+  rdfs:label "STRING" ;
+.
+rdbs:Select
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:TopologyOperation ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasAlias ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:name "has alias" ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasValue ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+    ] ;
+.
+rdbs:Subentity
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Implement the subentity generation in a table to implement the \"evaluation patterns in ChEMBL and RMC\"."@en ;
+  rdfs:label "Subentity"@en ;
+  rdfs:subClassOf owl:Thing ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasParticipatingColumn ;
+      sh:class rdbs:Column ;
+      sh:minCount 1 ;
+      sh:name "has participating column" ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasSubentityType ;
+      sh:class owl:Class ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has subentity type" ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+.
+rdbs:Table
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Logical structure of an RDBMS that is an abstraction of how the data is physically stored."@en ;
+  rdfs:label "Table"@en ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdfs:label ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasColumn ;
+      sh:class rdbs:Column ;
+      sh:minCount 1 ;
+    ] ;
+.
+rdbs:TaxonomyTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Taxonomy table" ;
+  rdfs:subClassOf rdbs:EntityRelationTable ;
+.
+rdbs:TemporaryTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "temporary table" ;
+  rdfs:subClassOf rdbs:GraphTable ;
+.
+rdbs:Topology
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf owl:Thing ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasAggregate ;
+      sh:class rdbs:Aggregate ;
+      sh:name "has aggregate" ;
+      sh:node rdbs:Aggregate ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasJoin ;
+      sh:class rdbs:Join ;
+      sh:name "has join" ;
+      sh:node rdbs:Join ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasOutput ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has output" ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasTopic ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has topic" ;
+    ] ;
+.
+rdbs:TopologyOperation
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf owl:Thing ;
+.
+rdbs:TopologyRulesShape
+  a sh:NodeShape ;
+  rdfs:comment """RulesShape represent shapes that only contains rules as opposed to Constraints Shapes. 
+This the Topology SuperRuleShape of the Abstraction Specific Topology RulesShape
+As a superShape it does not contain rules, it serve the purpose of knowledge organization.
+Note there is no inferencing between nodeShape, neither instance of node shape. Should not be confused with Shacl Class which are target of shape including the implicit Shacl Class.
+Hence this is purely for ontology organization purpose"""@en ;
+.
+rdbs:TypeTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "TypeTable" ;
+  rdfs:subClassOf rdbs:GraphTable ;
+.
+rdbs:ValueColumn
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:subClassOf rdbs:Column ;
+.
+rdbs:VerticeAggregatedProperty
+  a sh:SPARQLRule ;
+  rdfs:label "Aggregated Node Property TMPE creation for Property Graph" ;
+  sh:construct """PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+# The base node to describe topologies of temporary topics
+	?tmp a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin ;
+			rdbs:hasAggregate ?aggregate .
+# The description of the group by element of the topology
+ 	?aggregate a rdbs:Aggregate ;
+			rdbs:hasGroupBy ?group_by ;
+			rdbs:hasCollect ?collect .
+# The description of the group by element of the topology
+	?group_by a rdbs:GroupBy ;
+			rdfs:label ?group_by_label ;
+			rdbs:hasOrder 0 .
+# The description of the collect element of the group by
+	?collect a rdbs:Collect ;
+			rdbs:hasValue ?collect_value ;
+			rdbs:hasClassifier ?collect_classifier .
+# The description of the table or topic resulting from the group by
+	?table a rdbs:AggregatedVerticeAttributeTable;
+# Set the origin table
+			rdbs:isAggregateOf ?this ;
+# Set input
+			rdbs:createdFrom ?tmp ;
+# Set the output
+			rdfs:label ?output ;
+# Set the columns
+			rdbs:hasColumn ?key_column ;
+			rdbs:hasColumn ?classifier_value_column .
+# Setup the columns
+	?key_column a rdbs:PrimaryKeyColumn ;
+		rdfs:label \"Key\" ;
+		rdbs:isCopyOf ?group_by_column ;
+		rdbs:belongsToTable ?table ;
+		?predicate ?object .
+	?classifier_value_column a rdbs:Column ;
+		rdfs:label ?classifier_value_column_label ;
+		rdbs:belongsToTable ?table ;
+		rdbs:DataType ?data_type .
+}
+WHERE {
+# Pattern to match in order to create an aggregate topology
+    ?this a rdbs:AttributeWithTypeWithIdObjectTable ;
+		rdbs:hasColumn ?group_by_column .
+	?group_by_column rdbs:isCopyOf [
+		a rdbs:ForeignKeyColumn ;
+			rdbs:belongsToTable [
+				a rdbs:AttributeTable ;
+			] ;
+			rdbs:refersToPrimaryKey [
+				rdbs:belongsToTable [
+					a rdbs:VerticeTable 
+				]
+			]
+		] .
+# Stop if there is no classifying values in the classifying column
+	FILTER EXISTS {?collect_property_classifier_column rdbs:hasDistinctValue ?v}
+# Pattern to match in order to create a Collect Value
+	?this rdbs:hasColumn ?value_column .
+	?value_column rdbs:isCopyOf [
+		a rdbs:ValueColumn ;
+		rdbs:belongsToTable [
+			a rdbs:AttributeValueTable ;
+		]
+	] .
+# Pattern to match in order to create a classifier
+	?this rdbs:hasColumn ?classifier_column .
+	?classifier_column rdbs:isCopyOf [
+		rdbs:belongsToTable [
+			a rdbs:TypeTable ;
+		]
+	] .
+# Find the labels
+	?this rdfs:label ?origin .
+	?group_by_column rdfs:label ?group_by_label .
+	?value_column rdfs:label ?collect_value ;
+		rdbs:hasDataType ?data_type .
+	?classifier_column rdfs:label ?collect_classifier ;
+		rdbs:hasDistinctValue ?classifier_value .
+# Get the values of the group by column
+	?group_by_column ?predicate ?object .
+	FILTER (?predicate != rdf:type ) .
+	FILTER (?predicate != rdbs:belongsToTable ) .
+	FILTER (?predicate != rdfs:label ) .
+# Create the new name of the output
+ 	BIND(REPLACE(?origin, '-with-types-with-id-object', '-by-nodes') AS ?output) .
+# Create the label of the new columns
+	BIND(REPLACE(CONCAT(?collect_value, \"_\", ?classifier_value), \" \", \"_\") AS ?classifier_value_column_label) .
+# Filter topologies already processed
+	FILTER NOT EXISTS {
+		?old_tmp a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin .
+	}
+# Create the different subject nodes for each matched Pattern
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology\" )) AS ?tmp) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-aggregate-\", ?group_by_label )) AS ?aggregate) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-aggregate-group-by-\", ?group_by_label )) AS ?group_by) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"-topology-aggregate-\", ?group_by_label, \"-collect-\", ?collect_value )) AS ?collect) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?output )) AS ?table) .
+# Create the key column
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?group_by_label, \"-from-\", ?output )) AS ?key_column) .
+# Create the different columns that are copies of the foreign columns
+	BIND(IRI(CONCAT(STR(rdbs:), ?output, \"_\", ?classifier_value_column_label )) AS ?classifier_value_column) .
+}""" ;
+  sh:deactivated false ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:VerticeTable
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Table which will generate an entity type in the automated ingestion process."@en ;
+  rdfs:label "Entity table"@en ;
+  rdfs:subClassOf rdbs:GraphTable ;
+.
+rdbs:VerticesByType
+  a sh:SPARQLRule ;
+  rdfs:label "Nodes Topology creation for Property Graph" ;
+  sh:construct """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+CONSTRUCT {
+# The base node to describe topologies of temporary topics
+	?tmp a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin ;
+			rdbs:hasJoin ?join .
+	?join rdbs:hasTopic ?join_topic ;
+			rdbs:hasKind rdbs:LeftJoin .
+	?table a rdbs:GraphCBE ;
+# Set label
+		rdfs:label ?output ;
+# Set input
+		rdbs:createdFrom ?tmp ;
+# Set columns
+		rdbs:hasColumn ?copied_origin_column ;
+		rdbs:hasColumn ?copied_foreign_column .
+# Set up copies of the origin columns
+	?copied_origin_column rdbs:belongsToTable ?table ;
+		?origin_predicate ?origin_object ;
+		rdbs:isCopyOf ?origin_column .
+# Set up copies of the foreign columns
+	?copied_foreign_column rdbs:belongsToTable ?table ;
+		?foreign_predicate ?foreign_object ;
+		rdbs:isCopyOf ?foreign_column .
+}
+WHERE {
+# Pattern to match in order to create a join topology
+	?this a rdbs:ObjectWithTypeTable ;
+		rdbs:hasColumn ?origin_column ;
+		rdbs:hasColumn [
+			a rdbs:PrimaryKeyColumn ;
+			rdbs:isCopyOf ?this_id
+		] ;
+		rdbs:hasColumn ?classifying_column .
+	?this_id rdfs:label ?id_label ;
+		rdbs:belongsToTable [
+			a rdbs:VerticeTable
+		] .
+	?classifying_column a rdbs:ClassifyingColumn .
+# Stop if there is no classifying values
+	FILTER EXISTS { ?classifying_column rdbs:hasDistinctValue ?value . }
+# Pattern to match in order to be a joined table
+    ?foreign_topic a rdbs:AggregatedVerticeAttributeTable .
+# Missing features to collect in order to fill CONSTRUCT pattern
+	?foreign_topic rdfs:label ?join_topic ;
+		rdbs:hasColumn ?foreign_column .
+	?this rdfs:label ?origin .
+# Get classifier values
+	?classifying_column rdbs:hasDistinctValue ?value ;
+		rdfs:label ?prefix .
+# Get the predicates and objects of the copied columns
+	?origin_column ?origin_predicate ?origin_object .
+	?foreign_column ?foreign_predicate ?foreign_object .
+#Get the labels of the copied columns
+	?origin_column rdfs:label ?origin_column_label .
+	?foreign_column rdfs:label ?foreign_column_label .
+# Create the new name of the output
+	BIND(CONCAT(\"${\", ?prefix,\"}\") AS ?output)
+# Filter topologies already processed
+	FILTER NOT EXISTS {
+		?old_topology a rdbs:Topology ;
+			rdbs:hasOutput ?output ;
+			rdbs:hasTopic ?origin .
+	}
+# Create the different subject nodes for each matched Pattern
+	BIND(IRI(CONCAT(STR(rdbs:), ?prefix, \"-topology\" )) AS ?tmp) .
+	BIND(IRI(CONCAT(STR(rdbs:), ?prefix, \"-topology-join-\", ?join_topic )) AS ?join) .
+	BIND(IRI(CONCAT(STR(rdbs:), REPLACE(?value, \" \", \"_\") )) AS ?table) .
+# Get origin and foreign columns
+# Create the different columns that are copies of the origin columns
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?origin_column_label, \"-from-\", REPLACE(?value, \" \", \"_\"))) AS ?copied_origin_column) .
+# Create the different columns that are copies of the foreign columns
+	BIND(IRI(CONCAT(STR(rdbs:),\"copy-of-\", ?foreign_column_label, \"-from-\", REPLACE(?value, \" \", \"_\") )) AS ?copied_foreign_column) .
+# Skip the predicates referencing the belonging of the columns
+	FILTER (?origin_predicate != rdbs:belongsToTable )
+	FILTER (?foreign_predicate != rdbs:belongsToTable )
+	FILTER NOT EXISTS { ?foreign_column a rdbs:PrimaryKeyColumn}
+}""" ;
+  sh:deactivated false ;
+  sh:prefixes rdfs: ;
+  sh:prefixes owl: ;
+  sh:prefixes rdbs: ;
+.
+rdbs:belongsToTable
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Column ;
+  rdfs:range rdbs:Table ;
+.
+rdbs:createdFrom
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:TemporaryTable ;
+  rdfs:label "created from" ;
+  rdfs:range rdbs:Topology ;
+.
+rdbs:hasAggregate
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Topology ;
+  rdfs:range rdbs:Aggregate ;
+.
+rdbs:hasAlias
+  a owl:DatatypeProperty ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasAssociatedName
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:Association ;
+  rdfs:label "has associated name" ;
+.
+rdbs:hasAssociation
+  a owl:ObjectProperty ;
+  rdfs:label "has association" ;
+  rdfs:range rdbs:Association ;
+.
+rdbs:hasClassifier
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:Collect ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasClassifyingColumn
+  a owl:ObjectProperty ;
+  rdfs:comment "Specify that a column is used to classify the containing table into separate entity types."@en ;
+  rdfs:domain [
+      a owl:Class ;
+      owl:unionOf (
+          rdbs:EntityClassification
+          rdbs:PropertyClassification
+        ) ;
+    ] ;
+  rdfs:label "has classifying column"@en ;
+  rdfs:range rdbs:Column ;
+.
+rdbs:hasClassifyingTable
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:PropertyClassification ;
+  rdfs:label "has classifying table"@en ;
+  rdfs:range rdbs:Table ;
+.
+rdbs:hasCollect
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Aggregate ;
+  rdfs:range rdbs:Collect ;
+.
+rdbs:hasColumn
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Table ;
+  rdfs:label "has column"@en ;
+  rdfs:range rdbs:Column ;
+  owl:inverseOf rdbs:belongsToTable ;
+.
+rdbs:hasDataType
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Column ;
+  rdfs:range rdbs:DataType ;
+  rdfs:range [
+      a owl:Restriction ;
+      owl:onClass rdbs:DataType ;
+      owl:onProperty rdbs:hasDataType ;
+      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+    ] ;
+.
+rdbs:hasDistinctValue
+  a owl:DatatypeProperty ;
+  rdfs:comment "Distinct value for a classifying column in a classification operation. These are collected once a column has been involved into a classification operation."@en ;
+  rdfs:domain rdbs:Column ;
+  rdfs:label "has distinct value"@en ;
+.
+rdbs:hasEntityLocalName
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:EntityTable ;
+  rdfs:label "has entity local name" ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasEntityType
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Table ;
+  rdfs:label "set the type of an entity."@en ;
+  rdfs:range owl:Class ;
+.
+rdbs:hasForeign
+  a owl:DatatypeProperty ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasForeignColumn
+  a owl:ObjectProperty ;
+  rdfs:comment "Reference to a foreign column (i.e. a column belonging to a table not target) to import into a target table/entity."@en ;
+  rdfs:domain rdbs:ForeignColumn ;
+  rdfs:label "has foreign column"@en ;
+  rdfs:range rdbs:Column ;
+.
+rdbs:hasForeignKey
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:Join ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasGroupBy
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Aggregate ;
+.
+rdbs:hasIDColumn
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:SQLJoin ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasIDTable
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:SQLJoin ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasJoin
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Topology ;
+  rdfs:range rdbs:Join ;
+.
+rdbs:hasKeyColumn
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:SQLJoin ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasKeyTable
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:SQLJoin ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasKind
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Join ;
+  rdfs:range rdbs:JoinKind ;
+.
+rdbs:hasOrder
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:QueryOperation ;
+  rdfs:domain rdbs:TopologyOperation ;
+  rdfs:range xsd:integer ;
+.
+rdbs:hasOutput
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:Topology ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasParticipatingColumn
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Subentity ;
+  rdfs:label "has participating column"@en ;
+  rdfs:range rdbs:Column ;
+.
+rdbs:hasProperty
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Column ;
+  rdfs:label "set the property of a column."@en ;
+  rdfs:range [
+      a owl:Class ;
+      owl:unionOf (
+          owl:ObjectProperty
+          owl:DatatypeProperty
+        ) ;
+    ] ;
+.
+rdbs:hasPropertyLocalName
+  a owl:DatatypeProperty ;
+  rdfs:label "has property local name" ;
+.
+rdbs:hasQuery
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:ClassifyingColumn ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasSQLFrom
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:SQLSelect ;
+  rdfs:range rdbs:SQLFrom ;
+.
+rdbs:hasSQLJoin
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:SQLFrom ;
+  rdfs:range rdbs:SQLJoin ;
+.
+rdbs:hasSelect
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Join ;
+  rdfs:range rdbs:Select ;
+.
+rdbs:hasSelectedColumn
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:SQLSelect ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasSelectedTable
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:SQLFrom ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasSourceTable
+  a owl:ObjectProperty ;
+  rdfs:label "has source table"@en ;
+  rdfs:range rdbs:Table ;
+.
+rdbs:hasStep
+  a owl:ObjectProperty ;
+.
+rdbs:hasSubentityType
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Subentity ;
+  rdfs:label "set the type of an entity's subentity."@en ;
+  rdfs:range owl:Class ;
+.
+rdbs:hasSuperType
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Table ;
+  rdfs:label "set the super type of an entity type."@en ;
+  rdfs:range owl:Class ;
+.
+rdbs:hasTargetTable
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:ForeignColumn ;
+  rdfs:label "has target table"@en ;
+  rdfs:range rdbs:Table ;
+.
+rdbs:hasTmpType
+  a xsd:string ;
+  rdfs:domain rdbs:Table ;
+  rdfs:label "has temporary table type" ;
+.
+rdbs:hasTopic
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:Join ;
+  rdfs:domain rdbs:Topology ;
+  rdfs:range xsd:string ;
+.
+rdbs:hasValue
+  a owl:DatatypeProperty ;
+  rdfs:domain rdbs:Association ;
+  rdfs:domain rdbs:Collect ;
+  rdfs:domain rdbs:Select ;
+  rdfs:label "has value" ;
+  rdfs:range xsd:string ;
+.
+rdbs:inhibitRelationTo
+  a rdf:Property ;
+  rdfs:comment "Used to inhibit the materialisation of relationships between the subject and the object table."@en ;
+  rdfs:domain rdbs:Table ;
+  rdfs:label "inhibit relation to"@en ;
+  rdfs:range rdbs:Table ;
+.
+rdbs:isAggregateOf
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Table ;
+  rdfs:range rdbs:Table ;
+.
+rdbs:isCopyOf
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Column ;
+  rdfs:range rdbs:Column ;
+.
+rdbs:isNullable
+  a owl:DatatypeProperty ;
+  rdfs:comment "If \"true\" the column can have null values."@en ;
+  rdfs:domain rdbs:Column ;
+  rdfs:label "is nullable"@en ;
+  rdfs:range xsd:boolean ;
+.
+rdbs:mapsToColumn
+  a owl:ObjectProperty ;
+  rdfs:label "maps to column" ;
+  rdfs:range rdbs:Column ;
+.
+rdbs:mergeToTable
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:Table ;
+  rdfs:label "merge to table" ;
+  rdfs:range rdbs:Table ;
+.
+rdbs:mintDTPropertyURI
+  a sh:SPARQLFunction ;
+  rdfs:comment "Mint a URI for a Data Type property from its $localName and $label" ;
+  sh:parameter [
+      sh:path rdbs:columnNameOp4 ;
+      sh:datatype xsd:string ;
+      sh:description "The column name" ;
+      sh:optional true ;
+      sh:order 3 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:labelOp2 ;
+      sh:datatype xsd:string ;
+      sh:description "The table label" ;
+      sh:optional true ;
+      sh:order 1 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:localNameOp1 ;
+      sh:datatype xsd:string ;
+      sh:description "The entity local name" ;
+      sh:optional true ;
+      sh:order 0 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:namespaceOp5 ;
+      sh:datatype xsd:string ;
+      sh:description "The namespace" ;
+      sh:optional true ;
+      sh:order 4 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:propertyLocalNameOp3 ;
+      sh:datatype xsd:string ;
+      sh:description "The asserted property local name" ;
+      sh:optional true ;
+      sh:order 2 ;
+    ] ;
+  sh:returnType xsd:string ;
+  sh:select """
+    PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+    PREFIX sh:<http://www.w3.org/ns/shacl#>
+    SELECT ?result
+    WHERE {
+      BIND(  IF(  BOUND($localNameOp1) , $localNameOp1, $labelOp2)  AS ?localEntityClassName)
+      BIND(  IF(  BOUND($propertyLocalNameOp3) , $propertyLocalNameOp3,  CONCAT(\"has_\",  CONCAT($columnNameOp4,  CONCAT(\"_for_\",?localEntityClassName))))  AS ?localPropertyName)
+      BIND(  IRI(CONCAT( STR($namespaceOp5), ?localPropertyName))  AS ?result)
+    }
+    """ ;
+.
+rdbs:mintEntityURI
+  a sh:SPARQLFunction ;
+  rdfs:comment "Mint an Entity Type URI from its $localName and $label" ;
+  sh:parameter [
+      sh:path rdbs:labelOp2 ;
+      sh:datatype xsd:string ;
+      sh:description "The table label" ;
+      sh:order 1 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:localNameOp1 ;
+      sh:datatype xsd:string ;
+      sh:description "The table local name" ;
+      sh:optional true ;
+      sh:order 0 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:namespaceOp3 ;
+      sh:datatype xsd:string ;
+      sh:description "The namespace" ;
+      sh:order 2 ;
+    ] ;
+  sh:returnType xsd:string ;
+  sh:select """
+    PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+    PREFIX sh:<http://www.w3.org/ns/shacl#>
+    SELECT ?result
+    WHERE {
+      BIND(  IF(  BOUND($localNameOp1) ,
+             IRI(CONCAT(STR($namespaceOp3),$localNameOp1)),
+             IRI(CONCAT(STR($namespaceOp3),$labelOp2)))  AS ?result)
+    }
+    """ ;
+.
+rdbs:mintOBJPropertyURI
+  a sh:SPARQLFunction ;
+  rdfs:comment "Mint a URI for a Object Type property from its $localName and $label" ;
+  sh:parameter [
+      sh:path rdbs:domainLabelOp2 ;
+      sh:datatype xsd:string ;
+      sh:description "The domain table label" ;
+      sh:optional true ;
+      sh:order 1 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:domainLocalNameOp1 ;
+      sh:datatype xsd:string ;
+      sh:description "The domain entity local name" ;
+      sh:optional true ;
+      sh:order 0 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:namespaceOp6 ;
+      sh:datatype xsd:string ;
+      sh:description "The namespace" ;
+      sh:optional true ;
+      sh:order 5 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:propertyLocalNameOp5 ;
+      sh:datatype xsd:string ;
+      sh:description "The asserted property local name" ;
+      sh:optional true ;
+      sh:order 4 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:rangeLabelOp4 ;
+      sh:datatype xsd:string ;
+      sh:description "The range table label" ;
+      sh:optional true ;
+      sh:order 3 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:rangeLocalNameOp3 ;
+      sh:datatype xsd:string ;
+      sh:description "The range entity local name" ;
+      sh:optional true ;
+      sh:order 2 ;
+    ] ;
+  sh:returnType xsd:string ;
+  sh:select """
+    PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+    PREFIX sh:<http://www.w3.org/ns/shacl#>
+    SELECT ?result
+    WHERE {
+      BIND(  IF(  BOUND($domainLocalNameOp1) , $domainLocalNameOp1, $domainLabelOp2)  AS ?domainEntityClassName)
+      BIND(  IF(  BOUND($rangeLocalNameOp3) , $rangeLocalNameOp3, $rangeLabelOp4)  AS ?targetEntityClassName)
+
+      BIND(  IF(  BOUND($propertyLocalNameOp5) , $propertyLocalNameOp5,  CONCAT(\"has_\",  CONCAT(?targetEntityClassName,  CONCAT(\"_for_\",?domainEntityClassName))))  AS ?localPropertyName)
+      BIND(  IRI(CONCAT( STR($namespaceOp6), ?localPropertyName))  AS ?result)
+    }
+    """ ;
+.
+rdbs:mintOBJSubPropertyURI
+  a sh:SPARQLFunction ;
+  rdfs:comment "Mint a URI for a Object Type sub-property from its $localName and $label" ;
+  sh:parameter [
+      sh:path rdbs:domainLabelOp2 ;
+      sh:datatype xsd:string ;
+      sh:description "The domain table label" ;
+      sh:optional true ;
+      sh:order 1 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:domainLocalNameOp1 ;
+      sh:datatype xsd:string ;
+      sh:description "The domain entity local name" ;
+      sh:optional true ;
+      sh:order 0 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:modifierNameOp6 ;
+      sh:datatype xsd:string ;
+      sh:description "The sub-property local modifier" ;
+      sh:optional true ;
+      sh:order 5 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:namespaceOp7 ;
+      sh:datatype xsd:string ;
+      sh:description "The namespace" ;
+      sh:optional true ;
+      sh:order 6 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:propertyLocalNameOp5 ;
+      sh:datatype xsd:string ;
+      sh:description "The asserted property local name" ;
+      sh:optional true ;
+      sh:order 4 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:rangeLabelOp4 ;
+      sh:datatype xsd:string ;
+      sh:description "The range table label" ;
+      sh:optional true ;
+      sh:order 3 ;
+    ] ;
+  sh:parameter [
+      sh:path rdbs:rangeLocalNameOp3 ;
+      sh:datatype xsd:string ;
+      sh:description "The range entity local name" ;
+      sh:optional true ;
+      sh:order 2 ;
+    ] ;
+  sh:returnType xsd:string ;
+  sh:select """
+    PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
+    PREFIX sh:<http://www.w3.org/ns/shacl#>
+    SELECT ?result
+    WHERE {
+      BIND(  IF(  BOUND($domainLocalNameOp1) , $domainLocalNameOp1, $domainLabelOp2)  AS ?domainEntityClassName)
+      BIND(  IF(  BOUND($rangeLocalNameOp3) , $rangeLocalNameOp3, $rangeLabelOp4)  AS ?targetEntityClassName)
+      BIND(  IF(  BOUND($propertyLocalNameOp5) , $propertyLocalNameOp5,  CONCAT(\"has_\",  CONCAT(?targetEntityClassName,  CONCAT(\"_for_\",?domainEntityClassName))))  AS ?localPropertyName)
+      BIND(  CONCAT( ?localPropertyName , CONCAT( \"_\" , ?modifierNameOp6)) AS ?localSubPropertyName)
+      BIND(  IRI(CONCAT( STR($namespaceOp7), ?localSubPropertyName))  AS ?result)
+    }
+    """ ;
+.
+rdbs:positionInCompositeKey
+  a owl:DatatypeProperty ;
+  rdfs:comment "If a primary key is a composite one, this refers to the order of the column within the primary key."@en ;
+  rdfs:domain rdbs:PrimaryKeyColumn ;
+  rdfs:label "position in composite key"@en ;
+  rdfs:range xsd:integer ;
+.
+rdbs:refersToColumn
+  a rdf:Property ;
+  rdfs:domain rdbs:PrimaryKeyColumn ;
+  rdfs:label "refers to column"@en ;
+  rdfs:range rdbs:Column ;
+.
+rdbs:refersToPrimaryKey
+  a owl:ObjectProperty ;
+  rdfs:domain rdbs:ForeignKeyColumn ;
+  rdfs:label "Refers to primary key in a referenced table"@en ;
+  rdfs:range rdbs:PrimaryKeyColumn ;
+.
+rdbs:viaForeignKeyColumn
+  a owl:ObjectProperty ;
+  rdfs:comment "When specifying a number of foreign columns to add to a target table, the foreign key column reference is used to specify the identity when this is ambiguous (e.g. more than one foreign key pointing to the table containing the foreign columns)."@en ;
+  rdfs:domain rdbs:ForeignColumn ;
+  rdfs:label "via foreign key column"@en ;
+  rdfs:range rdbs:ForeignKeyColumn ;
+.

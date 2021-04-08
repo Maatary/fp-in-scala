@@ -50,7 +50,7 @@ object FpInScalaIOApp extends App {
     case FlatMap(x, f) => x match {
       case Return(a) => run(f (a))
       case Suspend(r) => run(f( r()))
-      //case FlatMap(y, g) => run(y flatMap (a => g(a) flatMap f))
+      case FlatMap(y, g) => run(y flatMap (a => g(a) flatMap f))
     }
   }
 
