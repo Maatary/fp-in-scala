@@ -27,7 +27,7 @@ import org.apache.jena.riot.system.stream.StreamManager
  *
  *
  */
-object JenaInferenceApp {
+object JenaInferenceApp extends App {
 
 
   import cats.effect.IO
@@ -38,7 +38,7 @@ object JenaInferenceApp {
   scribe.Logger.root
         .clearHandlers()
         .clearModifiers()
-        .withHandler(minimumLevel = Some(Level.Error))
+        .withHandler(minimumLevel = Some(Level.Trace))
         .replace()
 
   //JenaSystem.init() Not needed done, in factory of any submodule e.g. ModelFactory
@@ -54,7 +54,7 @@ object JenaInferenceApp {
     _            <- IO { model.read("https://data.elsevier.com/lifescience/schema/rdbs") }
     //cap          <- IO { ReasonerRegistry.getRDFSReasoner().getReasonerCapabilities}
     //cap          <- IO { RDFDataMgr.write(System.out, cap, Lang.TTL) }
-    none         <- IO[Model] {???}
+    //none         <- IO[Model] {???}
     deduction    <- IO {model.getDeductionsModel.setNsPrefixes(model.getNsPrefixMap)}
     _            <- IO {RDFDataMgr.write(System.out, deduction, Lang.TURTLE) }
 
