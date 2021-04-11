@@ -99,7 +99,8 @@ object JenaRWModelApp extends App {
     globalMapper <- IO { StreamManager.get().getLocationMapper }
     _            <- IO { globalMapper.addAltEntry("https://data.elsevier.com/lifescience/schema/rdbs", "elsevier_entellect_schema_rdbs.ttl") }
     _            <- IO { model.read("https://data.elsevier.com/lifescience/schema/rdbs") }
-    _            <- IO {RDFDataMgr.write(System.out, model, Lang.TURTLE) }
+   // _            <- IO {RDFDataMgr.write(System.out, model, Lang.TURTLE) } //not necessary
+    _            <- IO {model.write(System.out, Lang.TURTLE.getName) }
 
   } yield ()
 
