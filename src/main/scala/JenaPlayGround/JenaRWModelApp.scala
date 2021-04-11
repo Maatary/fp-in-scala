@@ -1,5 +1,7 @@
-import org.apache.jena.riot.system.stream.StreamManager
+package JenaPlayGround
 
+import org.apache.jena.riot.{Lang, RDFDataMgr}
+import org.apache.jena.riot.system.stream.StreamManager
 
 /**
  * =[[https://jena.apache.org/documentation/io/rdf-input.html Readying RDF in Apache Jena ]]=
@@ -55,29 +57,27 @@ import org.apache.jena.riot.system.stream.StreamManager
  * Files are named by a string, according to the conventions of their storage system. Typically this is by URI.
  * There are a number of storage system adapters provided:
  *
- *   -- File locator (with own current directory)
- *   -- URL locator (HTTP and FTP)
- *   -- Class loader locator
- *   -- Zip file locator
+ * -- File locator (with own current directory)
+ * -- URL locator (HTTP and FTP)
+ * -- Class loader locator
+ * -- Zip file locator
  *
  * The global stream manager has a file location, a URL locator and a class loader (tried in that order).
  *
  * see [[https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/riot/system/stream/Locator.html Locator]]
  *
- *  ==LocationMapper ==
+ * ==LocationMapper ==
  *
  * A StreamManager can have an associated LocationMapper that transforms names before use. This means local copies of documents can be used transparently to the rest of the application.
  * A StreamManager provides an “open” operation to get an InputStream to the resource.
  * see [[https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/riot/system/stream/LocationMapper.html  LocationMapper]]
  */
-object JenaApp extends App {
+object JenaRWModelApp extends App {
 
 
   import cats.effect.IO
   import cats.effect.unsafe.implicits.global
-  import cats.syntax.all._
   import org.apache.jena.rdf.model.ModelFactory
-  import org.apache.jena.sys.JenaSystem
   import scribe._
 
   scribe.Logger.root
@@ -86,23 +86,28 @@ object JenaApp extends App {
     .withHandler(minimumLevel = Some(Level.Trace))
     .replace()
 
-  //JenaSystem.init()
+  //JenaSystem.init() Not needed, done in Factory of any submodule e.g. ModelFactory
+  //JenaSystem.DEBUG_INIT = true Won't be needed will use Logging unless initialization issue, then useful
 
 
+  //Selectively set to Error the Logging for FileManager Module
+  Logger(classOf[org.apache.jena.util.FileManager].getName).withMinimumLevel(Level.Error).replace()
 
 
   val prog = for {
+    model        <- IO { ModelFactory.createDefaultModel()}
+    globalMapper <- IO { StreamManager.get().getLocationMapper }
+    _            <- IO { globalMapper.addAltEntry("https://data.elsevier.com/lifescience/schema/rdbs", "elsevier_entellect_schema_rdbs.ttl") }
+    _            <- IO { model.read("https://data.elsevier.com/lifescience/schema/rdbs") }
+    _            <- IO {RDFDataMgr.write(System.out, model, Lang.TURTLE) }
 
-    model        <- IO {ModelFactory.createDefaultModel()}
-    globalMapper <- IO {StreamManager.get().getLocationMapper}
-    _            <- IO {globalMapper.addAltEntry("https://data.elsevier.com/lifescience/schema/rdbs", "elsevier_entellect_schema_rdbs.ttl")}
-    _            <- IO {model.read("https://data.elsevier.com/lifescience/schema/rdbs")}
+  } yield ()
 
-  } yield model
+
 
   prog.attempt.unsafeRunSync() match {
     case Left(value) => error("program failed", value)
-    case Right(value) => info("Model processed properly")
+    case Right(_) => info("Model processed properly")
   }
 
 }
