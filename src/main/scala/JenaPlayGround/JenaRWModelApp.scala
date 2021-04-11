@@ -91,7 +91,7 @@ object JenaRWModelApp extends App {
 
 
   //Selectively set to Error the Logging for FileManager Module
-  Logger(classOf[org.apache.jena.util.FileManager].getName).withMinimumLevel(Level.Error).replace()
+  //Logger(classOf[org.apache.jena.util.FileManager].getName).withMinimumLevel(Level.Error).replace()
 
 
   val prog = for {
