@@ -47,10 +47,10 @@ object JenaInferenceApp extends App {
 
 
   val prog = for {
-    model        <- IO { ModelFactory.createRDFSModel(ModelFactory.createDefaultModel()) }
-    _            <- IO { model.setDerivationLogging(false) }
     globalMapper <- IO { StreamManager.get().getLocationMapper }
     _            <- IO { globalMapper.addAltEntry("https://data.elsevier.com/lifescience/schema/rdbs", "elsevier_entellect_schema_rdbs.ttl") }
+    model        <- IO { ModelFactory.createRDFSModel(ModelFactory.createDefaultModel()) }
+    _            <- IO { model.setDerivationLogging(false) }
     _            <- IO { model.read("https://data.elsevier.com/lifescience/schema/rdbs") }
     //cap          <- IO { ReasonerRegistry.getRDFSReasoner().getReasonerCapabilities}
     //cap          <- IO { RDFDataMgr.write(System.out, cap, Lang.TTL) }
