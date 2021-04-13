@@ -1,28 +1,45 @@
 import scala.annotation.tailrec
+
 /**
- *  == Critical Point to Remember ==
+ * == Notes ==
  *
- *  The recursive function sequence left or right building a data structure recursively.
+ * State is just a function S => (A, S)
  *
- *  In nutshell, from a list of function we compose their applications to return a function that returns a list of their result.
+ * The Combinator on State are combinator of function.
  *
- *  What is important to understand here is that, the list that the combinator function returns is specified as a recursive function.
+ * That is, the combinator allows you to combine function application
  *
- *  That is the list of results is a recursive function which upon evaluation yield the actual list of result.
+ * This means building a bigger function that apply the input function in specific way e.g.
  *
- *  Said differently the Sequence Combinator build a recursive function which upon evaluation return a list of result.
+ *    -- Mapping where the mapping function is applied to the result of the state function.
  *
- *  That is, it builds a function that recursively apply the functions of its input list and build the list of the result of their application.
+ *    -- sequencing where the result of the first one is sequence to the second one.
+ *
  */
 
 
 case class State[S, +A](run: S => (A, S)) {
 
+  /**
+   * Combine a mapping function f: A => B with the state function S => (A, S)
+   * to return a new state function S => (f(A), S)
+   */
   def map[B](f: A => B): State[S, B] = State[S, B] { (s: S) =>
     val (a1, s1) = run(s)
     f(a1) -> s1
   }
 
+  /**
+   * Map2 is a bit more complex as it does two things in building a function that combines the two state function and a mapping function.
+   *
+   *  -- It combine two state functions by sequencing their execution,
+   *     which imply threading the returned state of the application of the first state action
+   *     (to the input of the state function into which the all thing is being combined into)
+   *     to/for the application of the second state action
+   *
+   *  -- It then produce the (value, state) pair result where the value is the function f: (A, B) => C
+   *     applied to the 2 values return by each state action, and the state is the one returned by the last state action.
+   */
   def map2[B, C](stB: State[S, B])(f: (A, B) => C): State[S, C] = State[S, C] { (s: S) =>
     val (a, sa) = run(s)
     val (b, sb) = stB.run(sa)
@@ -128,6 +145,21 @@ object State {
    *
    * The idiomatic solution is expressed via foldRight
    *
+   * ==Critical Notes==
+   *
+   *  The recursive function sequence left or right build a data structure recursively.
+   *
+   *  In nutshell, from a list of function we compose their applications to return a function that returns a list of their result.
+   *
+   *  What is important to understand here is that, the list that the combinator function returns is specified as a recursive function.
+   *
+   *  That is the list of results is a recursive function which upon evaluation yield the actual list of result.
+   *
+   *  Said differently the Sequence Combinator build a recursive function which upon evaluation return a list of result.
+   *
+   *  That is, it builds a function that recursively apply the functions of its input list and build the list of the result of their application.
+   *
+   *
    */
   def sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = {
     l.foldRight(unit[S, List[A]](Nil)) { (a, b) => a.map2(b)((a, b) => a :: b) }
@@ -137,6 +169,21 @@ object State {
    * == Critical Notes - Via foldRight Raw ==
    *
    * The idiomatic solution expressed as an explicit/equivalent of foldRight
+   *
+   * ==Critical Notes==
+   *
+   *  The recursive function sequence left or right build a data structure recursively.
+   *
+   *  In nutshell, from a list of function we compose their applications to return a function that returns a list of their result.
+   *
+   *  What is important to understand here is that, the list that the combinator function returns is specified as a recursive function.
+   *
+   *  That is the list of results is a recursive function which upon evaluation yield the actual list of result.
+   *
+   *  Said differently the Sequence Combinator build a recursive function which upon evaluation return a list of result.
+   *
+   *  That is, it builds a function that recursively apply the functions of its input list and build the list of the result of their application.
+
    *
    */
   def _sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = l match {
