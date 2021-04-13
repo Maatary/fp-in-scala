@@ -95,12 +95,12 @@ object JenaRWModelApp extends App {
 
 
   val prog = for {
-    model        <- IO { ModelFactory.createDefaultModel()}
     globalMapper <- IO { StreamManager.get().getLocationMapper }
     _            <- IO { globalMapper.addAltEntry("https://data.elsevier.com/lifescience/schema/rdbs", "elsevier_entellect_schema_rdbs.ttl") }
+    model        <- IO { ModelFactory.createDefaultModel()}
     _            <- IO { model.read("https://data.elsevier.com/lifescience/schema/rdbs") }
    // _            <- IO {RDFDataMgr.write(System.out, model, Lang.TURTLE) } //not necessary
-    _            <- IO {model.write(System.out, Lang.TURTLE.getName) }
+    _            <- IO { model.write(System.out, Lang.TURTLE.getName) }
 
   } yield ()
 
