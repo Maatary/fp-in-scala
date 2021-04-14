@@ -6,6 +6,29 @@ import org.apache.jena.riot.system.stream.StreamManager
 import org.apache.jena.sys.JenaSystem
 
 /**
+ * = OntModel =
+ *
+ * see [[https://jena.apache.org/documentation/ontology/ Jena Ontology API]]
+ *
+ * see [[org.apache.jena.ontology.OntModel OntModel]] and [[org.apache.jena.ontology.impl.OntModelImpl OntModelImpl]]
+ *
+ * == Loading Ontology & The OntDocumentManager ==
+ *
+ * E.g. {{{ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM)}}}
+ *
+ * Behind the scene the OntModel relies on the OntDocumentManager
+ * to handle the location & opening of the file including the imports.
+ *
+ * The OntDocumentManager provides further option to handle Ontology loading configuration.
+ * This is necessary because ontology introduce import mechanics and notion of document on top of Model.
+ *
+ * However Jena is now based on on RDFDataMg StreamManager FileLocator LocationMapper Mechanics to handle
+ * locating and opening file. This cause an issue with OntDocumentManager which was developped based on FileManager
+ * and other mechanics as explained below.
+ *
+ * see [[org.apache.jena.ontology.OntDocumentManager OntDocumentManager]]
+ *
+ * === On the issue of the File Locator (including Location Mapper) mechanic of the OntModel ===
  *
  * Provides services for managing ontology documents, including loading imported
  * documents, and locally caching documents from resolvable URL's to improve
@@ -49,9 +72,29 @@ import org.apache.jena.sys.JenaSystem
  *    If picked up, it will pick the location, but try to read it without the file locator and fail,
  *    hence it would need the above set up
  *
+ *
+ * see [[org.apache.jena.riot.RDFParser#openTypedInputStream(java.lang.String, java.nio.file.Path)]]
+ *
+ * which make use of the streamManager {{{streamManager.mapURI(urlStr)}}}
+ * as opposed to the mechanics of the OntModel inside its read method trough the assumption made about OntDocumentManager
+ * that does the wrong thing.
+ *
+ * see [[org.apache.jena.ontology.impl.OntModelImpl#read(java.lang.String, java.lang.String, java.lang.String)]]
+ *
+ *
+ *
+ *
+ * == Loading Ontology & the Management of the Imports (Include MultiUnion) ==
+ *
+ *
+ *
+ *
+ * == Creating Ontology and Inference Implication ==
+ *
+ *
+ *
+ *
  **/
-
-
 object JenaOntModelApp extends App {
 
 
