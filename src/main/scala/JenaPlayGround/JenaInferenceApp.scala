@@ -96,6 +96,12 @@ import org.apache.jena.riot.system.stream.StreamManager
  *
  * see [[org.apache.jena.rdf.model.ModelFactory]]
  *
+ *  === Note ===
+ *
+ *  - `When Creating an InfModel via createInfModel( Reasoner reasoner, Model schema, Model model )` any subsequent modification to the model only affect the instance data i.e. model here.
+ *  - `When Creating an InfModel via createInfModel( Reasoner reasoner, Model model )` Operation on the InfModel Change it all, cause there is no special reasoner bound to some schema data.
+ *     Behind the scene, rebind is used automatically. In all cases, if the underlying model is changed, i.e. not via the InfModel, rebind must be called manually
+ *
  *
  *  == Accessing inferences ==
  *
@@ -118,7 +124,17 @@ import org.apache.jena.riot.system.stream.StreamManager
  *
  *  - It returns an InfGraph [[org.apache.jena.reasoner.InfGraph]] and example Implementation [[org.apache.jena.reasoner.rulesys.FBRuleInfGraph]]
  *
+ *  == Operations only offered by the InfModel ==
  *
+ *  - Validation e.g. `infModel.validate().isValid()`
+ *  - Extended list statements
+ *  - Direct and indirect relationships
+ *  - Derivations e.g. `InfModel.getDerivation(Statement)` or `InfModel.setDerivationLogging(true)`
+ *  - Accessing Raw or Deduction Model Separately e.g. `InfModel.getDeductionsModel()` or  `InfModel.getRawModel()`
+ *
+ *  see [[https://jena.apache.org/documentation/inference/#operationsOnInferenceModels Operations on inference models]]
+ *
+ *  //TODO Reasoners (3) see [[https://jena.apache.org/documentation/inference/#rdfs]]
  *
  */
 object JenaInferenceApp extends App {
