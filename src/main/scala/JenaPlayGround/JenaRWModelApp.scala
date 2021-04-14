@@ -9,8 +9,15 @@ import org.apache.jena.riot.system.stream.StreamManager
  *
  *
  *
- * Much of the functionality is accessed via the Jena Model API; direct calling of the RIOT subsystem isn’t needed.
+ * Much of the functionality is accessed via the Jena Model API
+ * Package [[https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/rdf/model/package-summary.html org.apache.jena.rdf.model]])
+ * see [[https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/rdf/model/ModelFactory.html ModelFactory]]
+ * e.g. ModelFactory.createDefaultModel().read(model)
+ *
+ * Direct calling of the RIOT subsystem isn’t needed.
+ *
  * A resource name with no URI scheme is assumed to be a local file name.
+ *
  * Applications typically use at most RDFDataMgr to read RDF datasets.
  *
  * Model -use- > RDFDataMgr -use-> [StreamManager, RDFParser]
@@ -71,6 +78,8 @@ import org.apache.jena.riot.system.stream.StreamManager
  * A StreamManager can have an associated LocationMapper that transforms names before use. This means local copies of documents can be used transparently to the rest of the application.
  * A StreamManager provides an “open” operation to get an InputStream to the resource.
  * see [[https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/riot/system/stream/LocationMapper.html  LocationMapper]]
+ *
+ *
  */
 object JenaRWModelApp extends App {
 

@@ -1,29 +1,123 @@
 package JenaPlayGround
 
 import org.apache.jena.rdf.model.Model
+import org.apache.jena.reasoner.{ReasonerFactory, ReasonerRegistry}
 import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.apache.jena.riot.system.stream.StreamManager
 
 
 /**
- * =Reasoner & Ontology=
+ * = Inference Model & Reasoner =
  *
  * see [[https://jena.apache.org/documentation/inference/ Reasoners and rule engines]]
- * see [[https://jena.apache.org/documentation/ontology/#creating-ontology-models Jena Ontology API]]
  *
  *
- * == Internal of creation of Ontology Model ==
+ * == Obtaining a Reasoner - Package [[https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/reasoner/package-summary.html Reasoner]] ==
  *
- * see [[ org.apache.jena.ontology.impl.OntModelImpl#generateGraph(org.apache.jena.ontology.OntModelSpec, org.apache.jena.graph.Graph) ]]
+ * see [[https://jena.apache.org/documentation/inference/#reasonerAPI]]
+ * === The Low Level Approach (Only for customization maybe) ===
  *
- * see [[org.apache.jena.ontology.impl.OntModelImpl#OntModelImpl(org.apache.jena.ontology.OntModelSpec, org.apache.jena.rdf.model.Model, boolean) ]]
+ * For each type of reasoner there is a factory class (which conforms to the interface ReasonerFactory)
+ * an instance of which can be used to create instances of the associated Reasoner.
+ * The factory instances can be located by going directly to a known factory class and using the static theInstance()
+ * method or by retrieval from a global ReasonerRegistry which stores factory instances indexed by URI assigned to the reasoner.
  *
- * From
+ * see [[https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/reasoner/ReasonerFactory.html ReasonerFactory]]
+ * and all its subclasses e.g.
+ * [[https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/reasoner/rulesys/RDFSRuleReasonerFactory.html RDFSRuleReasonerFactory]]
  *
- *     [[org.apache.jena.rdf.model.ModelFactory#createOntologyModel(org.apache.jena.ontology.OntModelSpec)]]
+ *   -- [[org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory#theInstance]] to get the Factory Instance
  *
- * In short OntModel Create a union graph behind the scene, where the supply ontology document is base, and any import if loaded is added as a model to the union.
- * Then an Inference Graph is build out of it. That is, a reasoner is bound to the union model.
+ *   -- [[org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory#create(org.apache.jena.rdf.model.Resource)]] to create the Reasoner from that Factory Instance
+ *
+ *   -- [[org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory#URI]] The unique URI mention above
+ *
+ *  e.g.
+ *  {{{RDFSRuleReasonerFactory.theInstance.create(null)}}}
+ *  {{{ReasonerRegistry.theRegistry().create(RDFSRuleReasonerFactory.URI)}}}
+ *  === The SPI Application Level Approach (The right way) ===
+ *
+ *  `There are convenience methods on the ReasonerRegistry for locating a prebuilt instance of each of the main reasoners
+ *  (getTransitiveReasoner, getRDFSReasoner, getRDFSSimpleReasoner, getOWLReasoner, getOWLMiniReasoner, getOWLMicroReasoner).`
+ *
+ *  see [[org.apache.jena.reasoner.ReasonerRegistry]] [[org.apache.jena.reasoner.rulesys.RDFSRuleReasoner RDFSRuleReasoner]]
+ *
+ *  e.g.
+ *  {{{ReasonerRegistry.getRDFSSimpleReasoner()}}}
+ *
+ *  ===Note: ===
+ *  Once you have a reasoner instance, the same instance can reused multiple times
+ *  by binding it to different datasets, without risk of interference - there is no need to create a new reasoner instance each time
+ *
+ *  === The Model Application Level Approach (working with ModelFactory) ===
+ *
+ *  If working with the Ontology API it is not always necessary to explicitly locate a reasoner.
+ *  The prebuilt instances of OntModelSpec provide easy access to the appropriate reasoners
+ *  to use for different Ontology configurations.
+ *
+ *
+ *  If all that is needed is a plain RDF Model with RDFS inference included then
+ *  the convenience methods ModelFactory should be used:
+ *
+ *  e.g.
+ *  {{{ModelFactory.createRDFSModel(ModelFactory.createDefaultModel())}}}
+ *
+ *
+ *
+ *  === Configuring a reasoner ===
+ *  see [[https://jena.apache.org/documentation/inference/#reasonerAPI Section Configuring a reasoner]]
+ *  see [[https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/vocabulary/ReasonerVocabulary.html ReasonerVocabulary]]
+ *
+ *  == Applying a reasoner to data ==
+ *
+ *  - Once you have an instance of a reasoner it can then be attached to a set of RDF data to create an inference model.
+ *    This can either be done by putting all the RDF data into one Model or by separating into two components - schema and instance data.
+ *
+ *
+ *  - The prime value of this separation is to allow some deductions from one set of data (typically some schema definitions)
+ *    to be efficiently applied to several subsidiary sets of data (typically sets of instance data).
+ *
+ *
+ *  - This is done by partially-applying a reasoner to a set schema data using the method the `Reasoner.bindSchema(model)` method which returns a new, specialized, reasoner.
+ *
+ *
+ *  - `To bind the reasoner to the final data set (usually instance data) and get the InfModel the method `reasoner.bind(model)` is used.
+ *
+ *
+ *  - The Actual inference model with the reasoner attached to it, is created trough the ModelFactory methods `ModelFactory.createInfModel.`
+ *
+ *
+ *  E.g.
+ *
+ *  -- ModelFactory.createInfModel( Reasoner reasoner, Model model ) // Call `reasoner.bind(model.getGraph());return new InfModelImpl( graph );`
+ *
+ *
+ *  -- ModelFactory.createInfModel( Reasoner reasoner, Model schema, Model model ) // `reasoner.bindSchema(schema.getGraph()).bind(model.getGraph()); return new InfModelImpl( graph );`
+ *
+ * see [[org.apache.jena.rdf.model.ModelFactory]]
+ *
+ *
+ *  == Accessing inferences ==
+ *
+ *  - Having created a inference model then any API operations which access RDF statements will be able to access additional statements
+ *    which are entailed from the bound data by means of the reasoner.
+ *
+ *  - Depending on the reasoner these additional virtual statements may all be precomputed the first time the model is touched,
+ *    may be dynamically recomputed each time or may be computed on-demand but cached.
+ *
+ *
+ *
+ *  Some usage examples API can be found here [[https://jena.apache.org/documentation/inference/#reasonerAPI Section Some small examples]]
+ *
+ *  see [[org.apache.jena.rdf.model.InfModel InfModel]]
+ *  see [[org.apache.jena.rdf.model.impl.InfModelImpl InfModelImpl]]
+ *
+ *  == What happens when the Reasoner Bind data ==
+ *
+ *  - see [[org.apache.jena.reasoner.rulesys.RDFSRuleReasoner#bind(org.apache.jena.graph.Graph)]] [[org.apache.jena.reasoner.rulesys.RDFSRuleReasoner RDFSRuleReasoner]]
+ *
+ *  - It returns an InfGraph [[org.apache.jena.reasoner.InfGraph]] and example Implementation [[org.apache.jena.reasoner.rulesys.FBRuleInfGraph]]
+ *
  *
  *
  */
