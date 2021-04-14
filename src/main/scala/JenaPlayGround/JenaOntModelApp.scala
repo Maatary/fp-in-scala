@@ -91,7 +91,7 @@ import org.apache.jena.vocabulary.RDF
  *
  *
  *
- * == Creating Ontology & the Management of the Load of the Imports (Include MultiUnion) ==
+ * == Creating Ontology & the Management of the Load of the Imports (Include MultiUnion) and Relation to Inference ==
  *
  * see [[https://jena.apache.org/documentation/ontology/#compound-ontology-documents-and-imports-processing]]
  *
@@ -173,7 +173,41 @@ import org.apache.jena.vocabulary.RDF
  * The definitions from both the base ontology and all of the imports will be visible to the reasoner.
  * model.rebind() to ensure that the reasoner gets to see the updated axioms
  *
+ * {{{val m: OntModel = ModelFactory.createOntologyModel}}}
  *
+ * This will create an ontology model with the default settings
+ *
+ *  -- OWL-Full language
+ *
+ *  -- in-memory storage
+ *
+ *  -- RDFS inference, which principally produces entailments from the sub-class and sub-property hierarchies.
+ *
+ * To create an ontology model for a particular language, but leaving all of the other values as defaults,
+ * you should pass the URI of the ontology language to the model factory.
+ *
+ * {{{ModelFactory.createOntologyModel(ProfileRegistry.OWL_LANG)}}}
+ *
+ * see [[org.apache.jena.ontology.ProfileRegistry]]
+ *
+ *
+ * In general, to create an OntModel with a particular reasoner or language profile,
+ * you should pass a model specification to the createOntologyModel call.
+ * For example, an OWL model that performs no reasoning at all can be created with:
+ *
+ * {{{val m: OntModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM)}}}
+ *
+ * The complexities of configuring an ontology model are wrapped up in a recipe object called OntModelSpec.
+ * This specification allows complete control over the configuration choices for the ontology model,
+ * including the language profile in use, the reasoner, and the means of handling compound documents.
+ * A number of common recipes are pre-declared as constants in OntModelSpec, and listed below.
+ *
+ * see [[org.apache.jena.ontology.OntModelSpec]]
+ *
+ * Note that the OntModelSpec also specify the OntManager
+ * (But no need to touch it, the default is good, just initialize it before any StreamMngr config see above)
+ *
+ * More details in [[https://jena.apache.org/documentation/ontology/#creating-ontology-models Creating ontology models]]
  *
  **/
 object JenaOntModelApp extends App {
