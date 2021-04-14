@@ -44,8 +44,14 @@ sealed trait IO[A] { self =>
     def run: B = f(self.run)
   }
 
+  // Here we build a function see `def run`
   def flatMap[B](g: A => IO[B]): IO[B] = new IO[B] {
     def run = g(self.run).run
+  }
+
+  //That's not building a function
+  def _flatMap[B](g: A => IO[B]): IO[B] = {
+    g(self.run)
   }
 
   def ++(io: IO[A]): IO[A] = new IO[A] {
@@ -78,7 +84,7 @@ object IO {
  * PlayGround
  */
 
-
+/*
 val e0 = IO.printLine("Hello") ++ IO.printLine("IO Introduction")
 e0.run
 
@@ -98,12 +104,12 @@ val e4 = for {
   snd <- IO.printLine("IO Introduction")
 } yield ()
 
-e4.run
+e4.run*/
 
 import IO._
 import cats.Monad
 
-val prog = for {
+/*val prog = for {
   x <- IO[String] { "hello" }
   y <- IO[String] { "IO Introduction"}
   _ <- IO {println(x + " " + y)}
@@ -125,7 +131,7 @@ list0.sequence
 
 list1.sequence
 
-Some(2).flatMap(_ => Some(3))
+Some(2).flatMap(_ => Some(3))*/
 
 
 
@@ -137,3 +143,19 @@ def factorial(n: Int) = {
   factorialRec(1, n)
 }
 
+val io1 = IO { println("Exc1") }.flatMap{_ => IO { println("Exec2") }}
+
+
+
+io1.run
+
+val io2 = IO { println("Exc10") }._flatMap{_ => IO { println("Exec22") }}
+
+
+
+println("after")
+
+
+
+
+io2.run
