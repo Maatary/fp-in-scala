@@ -52,6 +52,6 @@ def run[A](io: IO[A]): A = io match {
   }
 }
 
-//run(p)
+run(p)
 
-Future.successful(2)
+

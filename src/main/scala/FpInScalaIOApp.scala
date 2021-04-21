@@ -43,7 +43,7 @@ object FpInScalaIOApp extends App {
   // tail-recursive function, the one tricky case is left-nested
   // flatMaps, as in `((a flatMap f) flatMap g)`, which we
   // reassociate to the right as `a flatMap (ar => f(a) flatMap g)`
-  @annotation.tailrec
+  //@annotation.tailrec
   def run[A](io: IO[A]): A = io match {
     case Return(a) => a
     case Suspend(r) => r()

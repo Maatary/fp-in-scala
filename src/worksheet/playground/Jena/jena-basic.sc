@@ -6,13 +6,13 @@ import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.sys.JenaSystem
 import scribe._
 
-scribe.Logger.root
+/*scribe.Logger.root
   .clearHandlers()
   .clearModifiers()
   .withHandler(minimumLevel = Some(Level.Error))
-  .replace()
+  .replace()*/
 
-JenaSystem.init()
+/*JenaSystem.init()
 
 
 
@@ -25,7 +25,7 @@ prog.attempt.unsafeRunSync() match {
   case Right(value) => info("model red")
 }
 
-ls! pwd
+ls! pwd*/
 
 
 getClass.getResource("elsevier_entellect_schema_rdbs.ttl").getPath

@@ -78,6 +78,11 @@ object IO {
   def printLine(msg: String): IO[Unit] = new IO[Unit] {def run: Unit = println(msg)}
 
   def buildMsg(msg:String) = new IO[String] {def run = msg}
+
+  def forever[A,B](a: IO[A]): IO[B] = {
+    lazy val t: IO[B] = forever(a)
+    a flatMap (_ => t)
+  }
 }
 
 /**
@@ -135,7 +140,7 @@ Some(2).flatMap(_ => Some(3))*/
 
 
 
-def factorial(n: Int) = {
+/*def factorial(n: Int) = {
   def factorialRec(acc: Int, n: Int): Int =  n match {
     case 0 => acc
     case _ => factorialRec(acc * n, n - 1)
@@ -158,4 +163,6 @@ println("after")
 
 
 
-io2.run
+io2.run*/
+
+IO.forever(IO{"println"}).run
