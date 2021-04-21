@@ -15,6 +15,48 @@ import scala.annotation.tailrec
  *
  *    -- sequencing where the result of the first one is sequence to the second one.
  *
+ * == -Critical On The meaning Of Sequence- ==
+ *
+ *    -- In the case of sequence, your bigger function is the recursive function.
+ *
+ *    -- You do not build a bigger function that sequence like in your code of map2 all the function application
+ *
+ *    -- It is actually the recursive function call that does it
+ *
+ *    -- The recursive function is the bigger function which apply all the function in your list recursively
+ *
+ *    -- Step back and remember that a recursive function describe a series of call of which we do not know the number in advance
+ *
+ *    -- The succession of call to make is described by the recursion, of which the number is determined by the execution itself (based on the terminal point of the recursion)
+ *
+ *    -- So that full unraveled blue print of a bigger function composed into that you are looking for is actually described by a recursive (structure) which is a function here
+ *
+ *    -- By applying we mean build chuck of bigger function out of 2 functions i.e. use map 2
+ *
+ *    -- The bigger function is never fully unravel into its smaller chucnk but when you apply the bigger function
+ *
+ *    -- It is actually either fully unravel on the stack when using fold right, or directly applied by chunk if using foldLeft
+ *
+ *    -- So via foldLeft, the full unraveling never happen, you recursively apply each chunk according to the bigger picture i.e. the Bigger function
+ *
+ *    -- In the end, it all comes down to understanding that `the Bigger function is a recursive function`
+ *
+ *    -- Think of it as setting the bigger function as executing a chain of map2 sequentially, it is just never fully unravel as explained above expect artificially on the stack when using foldRight
+ *
+ *    -- The stack `artificially unravel the all thing for use`
+ *
+ *  === -Take Away On The Meaning Of Sequence- ===
+ *
+ *    -- You do not have that all sequence of function made up / laid out before the execution. !!!
+ *
+ *    -- The all Sequence is describe by the Recursive Structure  !!!!
+ *
+ *    -- It is only fully laid out artificially on the Stack via FoldRight but as execution i.e. actual function call
+ *
+ *    -- In other words, the sequence is unravelled as you execute it !!!
+ *
+ *    -- It is the function calls that are fully unravelled in the stack, not the function definition. That blue print sequence will never exist !!!!
+ *
  */
 
 
@@ -159,10 +201,10 @@ object State {
    *
    *  That is, it builds a function that recursively apply the functions of its input list and build the list of the result of their application.
    *
-   *
+   *  -- The execution of each function is happening in the order of the sequence, while the combination of results is in reversed order !!!
    */
   def sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = {
-    l.foldRight(unit[S, List[A]](Nil)) { (a, b) => a.map2(b)((a, b) => a :: b) }
+    l.foldRight(unit[S, List[A]](Nil)) { (a, b) => a.map2(b)((a, b) => a :: b) } // this is a function building, you need to understand that well
   }
 
   /**
@@ -183,12 +225,13 @@ object State {
    *  Said differently the Sequence Combinator build a recursive function which upon evaluation return a list of result.
    *
    *  That is, it builds a function that recursively apply the functions of its input list and build the list of the result of their application.
-
+   *
+   *  -- The execution of each function is happening in the order of the sequence, while the combination of results is in reversed order !!!
    *
    */
   def _sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = l match {
     case Nil => unit(Nil)
-    case s :: xs => s.map2(sequence(xs))((a, b) => a :: b)
+    case s :: xs => s.map2(sequence(xs))((a, b) => a :: b) // this is a function building, you need to understand that well
   }
 
 
@@ -215,6 +258,8 @@ object State {
    *
    * {{{l.foldLeft.map}}} (it is just further composing the function)
    *
+   * -- The execution of each function and the combination of their results is happening in the order of the sequence !!!
+   *
    *
    * == Book Notes: ==
    *
@@ -227,13 +272,14 @@ object State {
    *
    */
   def __sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = {
-    l.foldLeft(unit[S, List[A]](Nil)) { (b, a) => b.map2(a)((b, a) => a :: b) } map (_.reverse)
+    l.foldLeft(unit[S, List[A]](Nil)) { (b, a) => b.map2(a)((b, a) => a :: b) } map (_.reverse) // this is a function building, you need to understand that well
   }
 
 
   /**
    * == Critical Notes - Via foldLeft Raw ==
    *
+   * -- The execution of each function and the combination of their results is happening in the order of the sequence !!!
    *
    */
   def ___sequence[S, A](states: List[State[S, A]]): State[S, List[A]] = {
@@ -264,7 +310,7 @@ object State {
     def go(s: S, actions: List[State[S,A]], acc: List[A]): (List[A],S) =
       actions match {
         case Nil => (acc.reverse,s)
-        case h :: t => h.run(s) match { case (a,s2) => go(s2, t, a :: acc) }
+        case h :: t => h.run(s) match { case (a,s2) => go(s2, t, a :: acc) } // this is a function building, you need to understand that well
       }
     State((s: S) => go(s,sas,List()))
   }
