@@ -5,8 +5,8 @@ import org.apache.jena.rdf.model.{ModelFactory, ResourceFactory}
 import org.apache.jena.riot.Lang
 import org.apache.jena.riot.system.stream.StreamManager
 import org.apache.jena.util.ResourceUtils
-import org.apache.jena.vocabulary.{OWL, RDF}
-
+import org.apache.jena.vocabulary.{OWL, RDF, RDFS}
+import cats.syntax.all._
 import scala.jdk.CollectionConverters._
 
 
@@ -24,18 +24,15 @@ val prog = for {
   _            <- IO { println(resList.map(_.toString)) }
 
 } yield ()*/
-
-ResourceFactory.createResource().getNameSpace
+//ModelFactory.createDefaultModel().listStatements()
+//ResourceFactory.createResource("urn:isbn").getLocalName
+//ResourceFactory.createLangLiteral("hello", "en")
 //prog.unsafeRunSync()
 
+(for {
+  model <- IO {ModelFactory.createDefaultModel()}
+  //_     <- IO {model.createResource("http://example.com/Person").addProperty(RDF.`type`, RDFS.Class)}
+  _     <- List(IO{model.createResource("urn:maat").addProperty(RDF.`type`, RDFS.Class)}, IO {model.createResource("urn:daniel").addProperty(RDF.`type`, RDFS.Class)}).sequence
+  _     <- IO{model.write(System.out, Lang.TTL.getName)}
+} yield ()).unsafeRunSync()
 
-val e = IO {println("hello")}
-
-e.unsafeRunSync()
-
-e.unsafeRunSync()
-
-
-val f = println("hello")
-
-f

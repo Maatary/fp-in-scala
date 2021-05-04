@@ -10,10 +10,12 @@ libraryDependencies ++= Seq (
   "org.apache.jena" % "apache-jena-libs" % "4.0.0" pomOnly(),
   "com.beachape" %% "enumeratum" % "1.6.0",
   "com.lihaoyi" %% "ammonite-ops" % "2.3.8",
-  "com.outr" %% "scribe-slf4j" % "3.4.0"
+  "com.outr" %% "scribe-slf4j" % "3.4.0",
+  "co.fs2" %% "fs2-core" % "3.0.2",
+  "co.fs2" %% "fs2-io" % "3.0.2"
 
 
-)
+  )
 
 scalacOptions := Seq(
   "-feature",
