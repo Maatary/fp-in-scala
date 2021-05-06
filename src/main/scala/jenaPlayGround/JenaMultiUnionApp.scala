@@ -1,4 +1,4 @@
-package JenaPlayGround
+package jenaPlayGround
 
 import org.apache.jena.graph.compose.{Difference, MultiUnion}
 import org.apache.jena.ontology.{OntDocumentManager, OntModelSpec}

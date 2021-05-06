@@ -1,4 +1,4 @@
-package JenaPlayGround
+package jenaPlayGround
 
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.reasoner.{ReasonerFactory, ReasonerRegistry}

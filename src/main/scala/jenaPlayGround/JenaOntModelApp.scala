@@ -1,4 +1,4 @@
-package JenaPlayGround
+package jenaPlayGround
 
 import org.apache.jena.ontology.{OntDocumentManager, OntModelSpec}
 import org.apache.jena.rdf.model.ResourceFactory

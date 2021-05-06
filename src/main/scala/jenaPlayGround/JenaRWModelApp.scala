@@ -1,4 +1,4 @@
-package JenaPlayGround
+package jenaPlayGround
 
 import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.apache.jena.riot.system.stream.StreamManager
