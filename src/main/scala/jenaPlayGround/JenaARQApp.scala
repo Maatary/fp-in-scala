@@ -69,6 +69,29 @@ object JenaARQApp extends App {
 
   import dataTypes.TablesQParamsDataTypes._
 
+
+
+
+
+
+  val prog = for {
+    model        <- IO { ModelFactory.createDefaultModel() }
+    _            <- IO { model.read("elsevier_entellect_enriched_dbschema_resnet_basic_with_tag.ttl") }
+    lv           <- execVerticeAttributeTablesQuery(model)
+    le           <- execEdgeAttributeTablesQuery(model)
+    _            <- IO { println(lv) }
+    _            <- IO { println(le) }
+
+
+  } yield ()
+
+  prog.attempt.unsafeRunSync() match {
+    case Left(value) => error("program failed", value)
+    case Right(_) => info("Model processed properly")
+  }
+
+
+
   case class VerticeAttributeTypeQueryParameter( typedAttributeValueTable: String,
                                                  tavTattributeIdColumn: String,
                                                  typedAttributeValueColumn: String,
@@ -80,27 +103,20 @@ object JenaARQApp extends App {
                                                  attributeTypeColumn: String
                                                )
 
+  case class EdgeAttributeTypeQueryParameter(    typedAttributeValueTable: String,
+                                                 tavTattributeIdColumn: String,
+                                                 typedAttributeValueColumn: String,
+                                                 attributeTable: String,
+                                                 aTattributeIdColumn: String,
+                                                 aTattributeTypeIdColumn: String,
+                                                 attributeTypeTable: String,
+                                                 atTattributeTypeIdColumn: String,
+                                                 attributeTypeColumn: String
+                                               )
 
+  def execVerticeAttributeTablesQuery(model: Model): IO[List[VerticeAttributeTypeQueryParameter]] = {
 
-
-  val prog = for {
-    model        <- IO { ModelFactory.createDefaultModel() }
-    _            <- IO { model.read("elsevier_entellect_enriched_dbschema_resnet_basic_with_tag.ttl") }
-    l            <- execVerticeAttributeTableQuery(model)
-    _            <- IO { println(l) }
-
-
-  } yield ()
-
-  prog.attempt.unsafeRunSync() match {
-    case Left(value) => error("program failed", value)
-    case Right(_) => info("Model processed properly")
-  }
-
-
-  def execVerticeAttributeTableQuery(model: Model): IO[List[VerticeAttributeTypeQueryParameter]] = {
-
-    import EdgeAttributeTablesQuery._
+    import VerticeAttributeTablesQuery._
     for {
 
       qexec        <- IO { QueryExecutionFactory.create(qString.qs, model ) }
@@ -122,9 +138,37 @@ object JenaARQApp extends App {
           )
 
       }
-
       _            <- IO { qexec.close() }
 
+    } yield l
+
+  }
+
+  def execEdgeAttributeTablesQuery(model: Model): IO[List[EdgeAttributeTypeQueryParameter]] = {
+
+    import EdgeAttributeTablesQuery._
+    for {
+
+      qexec        <- IO { QueryExecutionFactory.create(qString.qs, model ) }
+
+      solSet       <- IO { qexec.execSelect() }
+
+      l = solSet.asScala.toList.map{ sol =>
+
+        EdgeAttributeTypeQueryParameter(
+          sol.getLiteral(qp.typedAttributeValueTableLabel).getString,
+          sol.getLiteral(qp.tavTattributeIdColumnLabel).getString,
+          sol.getLiteral(qp.typedAttributeValueColumnLabel).getString,
+          sol.getLiteral(qp.attributeTableLabel).getString,
+          sol.getLiteral(qp.aTattributeIdColumnLabel).getString,
+          sol.getLiteral(qp.aTattributeTypeIdColumnLabel).getString,
+          sol.getLiteral(qp.attributeTypeTableLabel).getString,
+          sol.getLiteral(qp.atTattributeTypeIdColumnLabel).getString,
+          sol.getLiteral(qp.attributeTypeColumnLabel).getString
+          )
+
+      }
+      _            <- IO { qexec.close() }
 
     } yield l
 
