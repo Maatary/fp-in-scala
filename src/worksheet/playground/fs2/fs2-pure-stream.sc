@@ -1,14 +1,29 @@
-import fs2.{Chunk, Stream}
-import fs2.io.net.Network
-import cats.effect.MonadCancelThrow
-import cats.effect.std.Console
+import cats.effect.unsafe.implicits.global
+import cats.effect.{ExitCode, IO}
+import fs2.Stream
 import cats.syntax.all._
-import com.comcast.ip4s._
 
-def client[F[_]: MonadCancelThrow: Console: Network]: F[Unit] =
-  implicitly[Network[F]].client(SocketAddress(host"localhost", port"5555")).use { socket =>
-    socket.write(Chunk.array("Hello, world!".getBytes)) >>
-      socket.read(8192).flatMap { response =>
-        Console[F].println(s"Response: $response")
-      }
-  }
+import java.util.EmptyStackException
+
+
+
+//import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
+
+//val s1 = Stream(1,2,3,4,5,8,7,8)
+
+//s1.take(6).toList
+
+//Stream(List(1,2,3,4,5):_*).take(1).toList
+
+
+/*val test = for {
+  fiber <- IO.raiseError(new RuntimeException("boom"))
+  _     <- IO.sleep(1.seconds)
+} yield ExitCode.Success
+
+test.unsafeRunSync()*/
+implicit def ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+
+Future{throw new EmptyStackException }

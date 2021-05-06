@@ -1,0 +1,3202 @@
+# baseURI: https://data.elsevier.com/lifescience/data/rdbsenrichchema/resnet
+# imports: https://data.elsevier.com/lifescience/schema/rdbs
+
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdbs: <https://data.elsevier.com/lifescience/schema/rdbs/> .
+@prefix rdbsrn: <https://data.elsevier.com/lifescience/data/rdbsenrichchema/resnet/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://data.elsevier.com/lifescience/data/rdbsenrichchema/resnet>
+  a owl:Ontology ;
+  owl:imports <https://data.elsevier.com/lifescience/schema/rdbs> ;
+  sh:declare [
+      sh:namespace "https://data.elsevier.com/lifescience/data/rdbsenrichchema/resnet/"^^xsd:anyURI ;
+      sh:prefix "base" ;
+    ] ;
+  sh:declare [
+      sh:namespace "https://data.elsevier.com/lifescience/schema/resnet/"^^xsd:anyURI ;
+      sh:prefix "schema" ;
+    ] ;
+.
+rdbsrn:AnnotationProps
+  a rdbs:Table ;
+  rdfs:label "AnnotationProps" ;
+  rdbs:hasColumn rdbsrn:AnnotationProps_ID ;
+  rdbs:hasColumn rdbsrn:AnnotationProps_idObject ;
+  rdbs:hasColumn rdbsrn:AnnotationProps_idPropertyType ;
+  rdbs:hasColumn rdbsrn:AnnotationProps_nType ;
+.
+rdbsrn:AnnotationProps_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:AnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:AnnotationProps_idObject
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:AnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Annotations_ID ;
+.
+rdbsrn:AnnotationProps_idPropertyType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:AnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:AnnotationProps_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:AnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Annotations
+  a rdbs:AnnotationTable ;
+  a rdbs:Table ;
+  rdfs:label "Annotations" ;
+  rdbs:hasColumn rdbsrn:Annotations_ID ;
+  rdbs:hasColumn rdbsrn:Annotations_URN ;
+  rdbs:hasColumn rdbsrn:Annotations_dateCreated ;
+  rdbs:hasColumn rdbsrn:Annotations_dateModified ;
+  rdbs:hasColumn rdbsrn:Annotations_idGroupNode ;
+  rdbs:hasColumn rdbsrn:Annotations_idNode ;
+  rdbs:hasColumn rdbsrn:Annotations_idObjectType ;
+  rdbs:hasColumn rdbsrn:Annotations_idOntology ;
+  rdbs:hasColumn rdbsrn:Annotations_idOwner ;
+  rdbs:hasColumn rdbsrn:Annotations_idRelationship ;
+.
+rdbsrn:Annotations_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Annotations_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Annotations_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Annotations_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Annotations_idGroupNode
+  a rdbs:AnnotationTargetVerticeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idGroupNode" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:Annotations_idNode
+  a rdbs:AnnotationSourceVerticeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:Annotations_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Annotations_idOntology
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:OntologyIdColumn ;
+  rdfs:label "idOntology" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:Annotations_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Annotations_idRelationship
+  a rdbs:AnnotationRelationIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idRelationship" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:ChipMaps
+  a rdbs:Table ;
+  rdfs:label "ChipMaps" ;
+  rdbs:hasColumn rdbsrn:ChipMaps_URN ;
+  rdbs:hasColumn rdbsrn:ChipMaps_idChip ;
+  rdbs:hasColumn rdbsrn:ChipMaps_sMicroarrayID ;
+.
+rdbsrn:ChipMaps_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:ChipMaps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ChipMaps_idChip
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idChip" ;
+  rdbs:belongsToTable rdbsrn:ChipMaps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Chips_ID ;
+.
+rdbsrn:ChipMaps_sMicroarrayID
+  a rdbs:Column ;
+  rdfs:label "sMicroarrayID" ;
+  rdbs:belongsToTable rdbsrn:ChipMaps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Chips
+  a rdbs:Table ;
+  rdfs:label "Chips" ;
+  rdbs:hasColumn rdbsrn:Chips_ID ;
+  rdbs:hasColumn rdbsrn:Chips_dateCreated ;
+  rdbs:hasColumn rdbsrn:Chips_idManufacturer ;
+  rdbs:hasColumn rdbsrn:Chips_idObjectType ;
+  rdbs:hasColumn rdbsrn:Chips_idOrganism ;
+  rdbs:hasColumn rdbsrn:Chips_idOwner ;
+  rdbs:hasColumn rdbsrn:Chips_sDescription ;
+  rdbs:hasColumn rdbsrn:Chips_sName ;
+.
+rdbsrn:Chips_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Chips_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Chips_idManufacturer
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idManufacturer" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:Chips_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Chips_idOrganism
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOrganism" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:Chips_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Chips_sDescription
+  a rdbs:Column ;
+  rdfs:label "sDescription" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Chips_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Clipboard
+  a rdbs:Table ;
+  rdfs:label "Clipboard" ;
+  rdbs:hasColumn rdbsrn:Clipboard_cut ;
+  rdbs:hasColumn rdbsrn:Clipboard_flags ;
+  rdbs:hasColumn rdbsrn:Clipboard_idObject ;
+  rdbs:hasColumn rdbsrn:Clipboard_idObjectClass ;
+  rdbs:hasColumn rdbsrn:Clipboard_idSession ;
+.
+rdbsrn:Clipboard_cut
+  a rdbs:Column ;
+  rdfs:label "cut" ;
+  rdbs:belongsToTable rdbsrn:Clipboard ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Clipboard_flags
+  a rdbs:Column ;
+  rdfs:label "flags" ;
+  rdbs:belongsToTable rdbsrn:Clipboard ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Clipboard_idObject
+  a rdbs:Column ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:Clipboard ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Clipboard_idObjectClass
+  a rdbs:Column ;
+  rdfs:label "idObjectClass" ;
+  rdbs:belongsToTable rdbsrn:Clipboard ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Clipboard_idSession
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idSession" ;
+  rdbs:belongsToTable rdbsrn:Clipboard ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Sessions_ID ;
+.
+rdbsrn:ControlAttachments
+  a rdbs:Table ;
+  rdfs:label "ControlAttachments" ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_Data ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_ID ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_dateModified ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_idControl ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_idOwner ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_idRelatedNode ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_nDatatype ;
+.
+rdbsrn:ControlAttachments_Data
+  a rdbs:Column ;
+  rdfs:label "Data" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:ControlAttachments_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ControlAttachments_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ControlAttachments_idControl
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idControl" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Controls_ID ;
+.
+rdbsrn:ControlAttachments_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:ControlAttachments_idRelatedNode
+  a rdbs:Column ;
+  rdfs:label "idRelatedNode" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ControlAttachments_nDatatype
+  a rdbs:Column ;
+  rdfs:label "nDatatype" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ControlProps
+  a rdbs:EdgeAttributeTable ;
+  a rdbs:Table ;
+  rdfs:label "ControlProps" ;
+  rdbs:hasColumn rdbsrn:ControlProps_ID ;
+  rdbs:hasColumn rdbsrn:ControlProps_idObject ;
+  rdbs:hasColumn rdbsrn:ControlProps_idPropertyType ;
+  rdbs:hasColumn rdbsrn:ControlProps_nType ;
+.
+rdbsrn:ControlProps_ID
+  a rdbs:AttributeIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:ControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ControlProps_idObject
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:ObjectIdColumn ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:ControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Controls_ID ;
+.
+rdbsrn:ControlProps_idPropertyType
+  a rdbs:AttributeTypeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:ControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:ControlProps_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:ControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Controls
+  a rdbs:EdgeTable ;
+  a rdbs:Table ;
+  rdfs:label "Controls" ;
+  rdbs:hasColumn rdbsrn:Controls_ID ;
+  rdbs:hasColumn rdbsrn:Controls_URN ;
+  rdbs:hasColumn rdbsrn:Controls_bitSource ;
+  rdbs:hasColumn rdbsrn:Controls_dateCreated ;
+  rdbs:hasColumn rdbsrn:Controls_dateModified ;
+  rdbs:hasColumn rdbsrn:Controls_flags ;
+  rdbs:hasColumn rdbsrn:Controls_idEffect ;
+  rdbs:hasColumn rdbsrn:Controls_idMechanism ;
+  rdbs:hasColumn rdbsrn:Controls_idObjectType ;
+  rdbs:hasColumn rdbsrn:Controls_idOwner ;
+  rdbs:hasColumn rdbsrn:Controls_idPrototype ;
+.
+rdbsrn:Controls_ID
+  a rdbs:ObjectIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Controls_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Controls_bitSource
+  a rdbs:Column ;
+  rdfs:label "bitSource" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Controls_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Controls_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Controls_flags
+  a rdbs:Column ;
+  rdfs:label "flags" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Controls_idEffect
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idEffect" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:Controls_idMechanism
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idMechanism" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:Controls_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:ObjectTypeIdColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Controls_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Controls_idPrototype
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPrototype" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Controls_ID ;
+.
+rdbsrn:Dict
+  a rdbs:DictionaryTable ;
+  a rdbs:Table ;
+  rdfs:label "Dict" ;
+  rdbs:hasColumn rdbsrn:Dict_ID ;
+  rdbs:hasColumn rdbsrn:Dict_URN ;
+  rdbs:hasColumn rdbsrn:Dict_idParentFolder ;
+  rdbs:hasColumn rdbsrn:Dict_sPropertyValue ;
+  rdbs:hasColumn rdbsrn:Dict_sTypeName ;
+.
+rdbsrn:DictAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "DictAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:DictAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:DictAnnotationProps_idPropertyValue ;
+  rdbs:hasColumn rdbsrn:DictAnnotationProps_nIndex ;
+.
+rdbsrn:DictAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:DictAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:AnnotationProps_ID ;
+.
+rdbsrn:DictAnnotationProps_idPropertyValue
+  a rdbs:Column ;
+  rdfs:label "idPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:DictAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:DictAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:DictAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:DictControlProps
+  a rdbs:EdgeTypedAttributeValueTable ;
+  a rdbs:Table ;
+  rdfs:label "DictControlProps" ;
+  rdbs:hasColumn rdbsrn:DictControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:DictControlProps_idPropertyValue ;
+  rdbs:hasColumn rdbsrn:DictControlProps_nIndex ;
+.
+rdbsrn:DictControlProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:DictControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ControlProps_ID ;
+.
+rdbsrn:DictControlProps_idPropertyValue
+  a rdbs:DictionaryIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "idPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:DictControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:DictControlProps_nIndex
+  a rdbs:IndexValueColumn ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:DictControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:DictHierarchy
+  a rdbs:Table ;
+  rdfs:label "DictHierarchy" ;
+  rdbs:hasColumn rdbsrn:DictHierarchy_ID ;
+  rdbs:hasColumn rdbsrn:DictHierarchy_idParentFolder ;
+  rdbs:hasColumn rdbsrn:DictHierarchy_idPropertyType ;
+  rdbs:hasColumn rdbsrn:DictHierarchy_sFolderName ;
+.
+rdbsrn:DictHierarchy_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:DictHierarchy ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:DictHierarchy_idParentFolder
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idParentFolder" ;
+  rdbs:belongsToTable rdbsrn:DictHierarchy ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:DictHierarchy_ID ;
+.
+rdbsrn:DictHierarchy_idPropertyType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:DictHierarchy ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:DictHierarchy_sFolderName
+  a rdbs:Column ;
+  rdfs:label "sFolderName" ;
+  rdbs:belongsToTable rdbsrn:DictHierarchy ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:DictNodeProps
+  a rdbs:Table ;
+  a rdbs:VerticeTypedAttributeValueTable ;
+  rdfs:label "DictNodeProps" ;
+  rdbs:hasColumn rdbsrn:DictNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:DictNodeProps_idPropertyValue ;
+.
+rdbsrn:DictNodeProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:DictNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:NodeProps_ID ;
+.
+rdbsrn:DictNodeProps_idPropertyValue
+  a rdbs:DictionaryIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "idPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:DictNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:Dict_ID
+  a rdbs:DictionaryIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Dict ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Dict_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:Dict ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Dict_idParentFolder
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idParentFolder" ;
+  rdbs:belongsToTable rdbsrn:Dict ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:DictHierarchy_ID ;
+.
+rdbsrn:Dict_sPropertyValue
+  a rdbs:DictionaryValueColumn ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:Dict ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Dict_sTypeName
+  a rdbs:Column ;
+  rdfs:label "sTypeName" ;
+  rdbs:belongsToTable rdbsrn:Dict ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:ExpAttachments
+  a rdbs:Table ;
+  rdfs:label "ExpAttachments" ;
+  rdbs:hasColumn rdbsrn:ExpAttachments_Data ;
+  rdbs:hasColumn rdbsrn:ExpAttachments_ID ;
+  rdbs:hasColumn rdbsrn:ExpAttachments_dateModified ;
+  rdbs:hasColumn rdbsrn:ExpAttachments_idExperiment ;
+  rdbs:hasColumn rdbsrn:ExpAttachments_idOwner ;
+  rdbs:hasColumn rdbsrn:ExpAttachments_nDatatype ;
+.
+rdbsrn:ExpAttachments_Data
+  a rdbs:Column ;
+  rdfs:label "Data" ;
+  rdbs:belongsToTable rdbsrn:ExpAttachments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:ExpAttachments_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:ExpAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ExpAttachments_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:ExpAttachments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ExpAttachments_idExperiment
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idExperiment" ;
+  rdbs:belongsToTable rdbsrn:ExpAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Experiments_ID ;
+.
+rdbsrn:ExpAttachments_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:ExpAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:ExpAttachments_nDatatype
+  a rdbs:Column ;
+  rdfs:label "nDatatype" ;
+  rdbs:belongsToTable rdbsrn:ExpAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments
+  a rdbs:Table ;
+  rdfs:label "Experiments" ;
+  rdbs:hasColumn rdbsrn:Experiments_ID ;
+  rdbs:hasColumn rdbsrn:Experiments_data ;
+  rdbs:hasColumn rdbsrn:Experiments_dateCreated ;
+  rdbs:hasColumn rdbsrn:Experiments_idObjectType ;
+  rdbs:hasColumn rdbsrn:Experiments_idOwner ;
+  rdbs:hasColumn rdbsrn:Experiments_nRows ;
+  rdbs:hasColumn rdbsrn:Experiments_nRowsMapped ;
+  rdbs:hasColumn rdbsrn:Experiments_nSamples ;
+  rdbs:hasColumn rdbsrn:Experiments_nType ;
+  rdbs:hasColumn rdbsrn:Experiments_sDescription ;
+  rdbs:hasColumn rdbsrn:Experiments_sName ;
+  rdbs:hasColumn rdbsrn:Experiments_statistics ;
+.
+rdbsrn:Experiments_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments_data
+  a rdbs:Column ;
+  rdfs:label "data" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Experiments_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Experiments_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Experiments_nRows
+  a rdbs:Column ;
+  rdfs:label "nRows" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments_nRowsMapped
+  a rdbs:Column ;
+  rdfs:label "nRowsMapped" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments_nSamples
+  a rdbs:Column ;
+  rdfs:label "nSamples" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments_sDescription
+  a rdbs:Column ;
+  rdfs:label "sDescription" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Experiments_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Experiments_statistics
+  a rdbs:Column ;
+  rdfs:label "statistics" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:FolderObjects
+  a rdbs:Table ;
+  rdfs:label "FolderObjects" ;
+  rdbs:hasColumn rdbsrn:FolderObjects_flags ;
+  rdbs:hasColumn rdbsrn:FolderObjects_idFolder ;
+  rdbs:hasColumn rdbsrn:FolderObjects_idObject ;
+  rdbs:hasColumn rdbsrn:FolderObjects_idObjectClass ;
+.
+rdbsrn:FolderObjects_flags
+  a rdbs:Column ;
+  rdfs:label "flags" ;
+  rdbs:belongsToTable rdbsrn:FolderObjects ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:FolderObjects_idFolder
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idFolder" ;
+  rdbs:belongsToTable rdbsrn:FolderObjects ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Folders_ID ;
+.
+rdbsrn:FolderObjects_idObject
+  a rdbs:Column ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:FolderObjects ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:FolderObjects_idObjectClass
+  a rdbs:Column ;
+  rdfs:label "idObjectClass" ;
+  rdbs:belongsToTable rdbsrn:FolderObjects ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Folders
+  a rdbs:Table ;
+  rdfs:label "Folders" ;
+  rdbs:hasColumn rdbsrn:Folders_ID ;
+  rdbs:hasColumn rdbsrn:Folders_flags ;
+  rdbs:hasColumn rdbsrn:Folders_idContentObjectType ;
+  rdbs:hasColumn rdbsrn:Folders_idGroup ;
+  rdbs:hasColumn rdbsrn:Folders_idOwner ;
+  rdbs:hasColumn rdbsrn:Folders_idParent ;
+  rdbs:hasColumn rdbsrn:Folders_nOrder ;
+  rdbs:hasColumn rdbsrn:Folders_nType ;
+  rdbs:hasColumn rdbsrn:Folders_sDescription ;
+  rdbs:hasColumn rdbsrn:Folders_sName ;
+.
+rdbsrn:Folders_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Folders_flags
+  a rdbs:Column ;
+  rdfs:label "flags" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Folders_idContentObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idContentObjectType" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Folders_idGroup
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idGroup" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Groups_ID ;
+.
+rdbsrn:Folders_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Folders_idParent
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idParent" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Folders_ID ;
+.
+rdbsrn:Folders_nOrder
+  a rdbs:Column ;
+  rdfs:label "nOrder" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Folders_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Folders_sDescription
+  a rdbs:Column ;
+  rdfs:label "sDescription" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Folders_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:GroupMembers
+  a rdbs:Table ;
+  rdfs:label "GroupMembers" ;
+  rdbs:hasColumn rdbsrn:GroupMembers_idGroup ;
+  rdbs:hasColumn rdbsrn:GroupMembers_idUser ;
+.
+rdbsrn:GroupMembers_idGroup
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idGroup" ;
+  rdbs:belongsToTable rdbsrn:GroupMembers ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Groups_ID ;
+.
+rdbsrn:GroupMembers_idUser
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idUser" ;
+  rdbs:belongsToTable rdbsrn:GroupMembers ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:GroupRoles
+  a rdbs:Table ;
+  rdfs:label "GroupRoles" ;
+  rdbs:hasColumn rdbsrn:GroupRoles_RoleName ;
+  rdbs:hasColumn rdbsrn:GroupRoles_idGroup ;
+.
+rdbsrn:GroupRoles_RoleName
+  a rdbs:Column ;
+  rdfs:label "RoleName" ;
+  rdbs:belongsToTable rdbsrn:GroupRoles ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:GroupRoles_idGroup
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idGroup" ;
+  rdbs:belongsToTable rdbsrn:GroupRoles ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Groups_ID ;
+.
+rdbsrn:Groups
+  a rdbs:Table ;
+  rdfs:label "Groups" ;
+  rdbs:hasColumn rdbsrn:Groups_Description ;
+  rdbs:hasColumn rdbsrn:Groups_ID ;
+  rdbs:hasColumn rdbsrn:Groups_Name ;
+.
+rdbsrn:Groups_Description
+  a rdbs:Column ;
+  rdfs:label "Description" ;
+  rdbs:belongsToTable rdbsrn:Groups ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Groups_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Groups ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Groups_Name
+  a rdbs:Column ;
+  rdfs:label "Name" ;
+  rdbs:belongsToTable rdbsrn:Groups ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:IntAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "IntAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:IntAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:IntAnnotationProps_lPropertyValue ;
+  rdbs:hasColumn rdbsrn:IntAnnotationProps_nIndex ;
+.
+rdbsrn:IntAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:IntAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:AnnotationProps_ID ;
+.
+rdbsrn:IntAnnotationProps_lPropertyValue
+  a rdbs:Column ;
+  rdfs:label "lPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:IntAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:IntAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:IntAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:IntControlProps
+  a rdbs:EdgeTypedAttributeValueTable ;
+  a rdbs:Table ;
+  rdfs:label "IntControlProps" ;
+  rdbs:hasColumn rdbsrn:IntControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:IntControlProps_lPropertyValue ;
+  rdbs:hasColumn rdbsrn:IntControlProps_nIndex ;
+.
+rdbsrn:IntControlProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:IntControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ControlProps_ID ;
+.
+rdbsrn:IntControlProps_lPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "lPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:IntControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:IntControlProps_nIndex
+  a rdbs:IndexValueColumn ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:IntControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:IntNodeProps
+  a rdbs:Table ;
+  a rdbs:VerticeTypedAttributeValueTable ;
+  rdfs:label "IntNodeProps" ;
+  rdbs:hasColumn rdbsrn:IntNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:IntNodeProps_lPropertyValue ;
+.
+rdbsrn:IntNodeProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:IntNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:NodeProps_ID ;
+.
+rdbsrn:IntNodeProps_lPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "lPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:IntNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Links
+  a rdbs:Table ;
+  rdfs:label "Links" ;
+  rdbs:hasColumn rdbsrn:Links_ID ;
+  rdbs:hasColumn rdbsrn:Links_effect ;
+  rdbs:hasColumn rdbsrn:Links_idControl ;
+  rdbs:hasColumn rdbsrn:Links_idNode ;
+  rdbs:hasColumn rdbsrn:Links_nLinkType ;
+.
+rdbsrn:Links_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Links ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Links_effect
+  a rdbs:Column ;
+  rdfs:label "effect" ;
+  rdbs:belongsToTable rdbsrn:Links ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Links_idControl
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idControl" ;
+  rdbs:belongsToTable rdbsrn:Links ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Controls_ID ;
+.
+rdbsrn:Links_idNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:Links ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:Links_nLinkType
+  a rdbs:Column ;
+  rdfs:label "nLinkType" ;
+  rdbs:belongsToTable rdbsrn:Links ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Membership
+  a rdbs:MembershipTable ;
+  a rdbs:Table ;
+  rdfs:label "Membership" ;
+  rdbs:hasColumn rdbsrn:Membership_idComplexNode ;
+  rdbs:hasColumn rdbsrn:Membership_idControl ;
+  rdbs:hasColumn rdbsrn:Membership_idNode ;
+.
+rdbsrn:Membership_idComplexNode
+  a rdbs:ContainerVerticeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idComplexNode" ;
+  rdbs:belongsToTable rdbsrn:Membership ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:Membership_idControl
+  a rdbs:ContaineeEdgeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idControl" ;
+  rdbs:belongsToTable rdbsrn:Membership ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Controls_ID ;
+.
+rdbsrn:Membership_idNode
+  a rdbs:ContaineeVerticeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:Membership ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:MemoAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "MemoAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:MemoAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:MemoAnnotationProps_nIndex ;
+  rdbs:hasColumn rdbsrn:MemoAnnotationProps_sLongPropertyValue ;
+.
+rdbsrn:MemoAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:MemoAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:AnnotationProps_ID ;
+.
+rdbsrn:MemoAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:MemoAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:MemoAnnotationProps_sLongPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sLongPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:MemoAnnotationProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:MemoControlProps
+  a rdbs:EdgeTypedAttributeValueTable ;
+  a rdbs:Table ;
+  rdfs:label "MemoControlProps" ;
+  rdbs:hasColumn rdbsrn:MemoControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:MemoControlProps_nIndex ;
+  rdbs:hasColumn rdbsrn:MemoControlProps_sLongPropertyValue ;
+.
+rdbsrn:MemoControlProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:MemoControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ControlProps_ID ;
+.
+rdbsrn:MemoControlProps_nIndex
+  a rdbs:IndexValueColumn ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:MemoControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:MemoControlProps_sLongPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "sLongPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:MemoControlProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:MemoNodeProps
+  a rdbs:Table ;
+  a rdbs:VerticeTypedAttributeValueTable ;
+  rdfs:label "MemoNodeProps" ;
+  rdbs:hasColumn rdbsrn:MemoNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:MemoNodeProps_sLongPropertyValue ;
+.
+rdbsrn:MemoNodeProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:MemoNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:NodeProps_ID ;
+.
+rdbsrn:MemoNodeProps_sLongPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "sLongPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:MemoNodeProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:NodeProps
+  a rdbs:Table ;
+  a rdbs:VerticeAttributeTable ;
+  rdfs:label "NodeProps" ;
+  rdbs:hasColumn rdbsrn:NodeProps_ID ;
+  rdbs:hasColumn rdbsrn:NodeProps_idObject ;
+  rdbs:hasColumn rdbsrn:NodeProps_idPropertyType ;
+  rdbs:hasColumn rdbsrn:NodeProps_nType ;
+.
+rdbsrn:NodeProps_ID
+  a rdbs:AttributeIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:NodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:NodeProps_idObject
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:ObjectIdColumn ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:NodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:NodeProps_idPropertyType
+  a rdbs:AttributeTypeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:NodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:NodeProps_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:NodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Nodes
+  a rdbs:Table ;
+  a rdbs:VerticeTable ;
+  rdfs:label "Nodes" ;
+  rdbs:hasColumn rdbsrn:Nodes_ID ;
+  rdbs:hasColumn rdbsrn:Nodes_URN ;
+  rdbs:hasColumn rdbsrn:Nodes_dateCreated ;
+  rdbs:hasColumn rdbsrn:Nodes_dateModified ;
+  rdbs:hasColumn rdbsrn:Nodes_flags ;
+  rdbs:hasColumn rdbsrn:Nodes_idObjectClass ;
+  rdbs:hasColumn rdbsrn:Nodes_idObjectType ;
+  rdbs:hasColumn rdbsrn:Nodes_idOwner ;
+  rdbs:hasColumn rdbsrn:Nodes_idPrototype ;
+  rdbs:hasColumn rdbsrn:Nodes_sName ;
+.
+rdbsrn:Nodes_ID
+  a rdbs:ObjectIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Nodes_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Nodes_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Nodes_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Nodes_flags
+  a rdbs:Column ;
+  rdfs:label "flags" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Nodes_idObjectClass
+  a rdbs:Column ;
+  rdfs:label "idObjectClass" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Nodes_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:ObjectTypeIdColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Nodes_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Nodes_idPrototype
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPrototype" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:Nodes_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:NumAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "NumAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:NumAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:NumAnnotationProps_nIndex ;
+  rdbs:hasColumn rdbsrn:NumAnnotationProps_rPropertyValue ;
+.
+rdbsrn:NumAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:NumAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:AnnotationProps_ID ;
+.
+rdbsrn:NumAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:NumAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:NumAnnotationProps_rPropertyValue
+  a rdbs:Column ;
+  rdfs:label "rPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:NumAnnotationProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:NumControlProps
+  a rdbs:EdgeTypedAttributeValueTable ;
+  a rdbs:Table ;
+  rdfs:label "NumControlProps" ;
+  rdbs:hasColumn rdbsrn:NumControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:NumControlProps_nIndex ;
+  rdbs:hasColumn rdbsrn:NumControlProps_rPropertyValue ;
+.
+rdbsrn:NumControlProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:NumControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ControlProps_ID ;
+.
+rdbsrn:NumControlProps_nIndex
+  a rdbs:IndexValueColumn ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:NumControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:NumControlProps_rPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "rPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:NumControlProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:NumNodeProps
+  a rdbs:Table ;
+  a rdbs:VerticeTypedAttributeValueTable ;
+  rdfs:label "NumNodeProps" ;
+  rdbs:hasColumn rdbsrn:NumNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:NumNodeProps_rPropertyValue ;
+.
+rdbsrn:NumNodeProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:NumNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:NodeProps_ID ;
+.
+rdbsrn:NumNodeProps_rPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "rPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:NumNodeProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:ObjectPermissions
+  a rdbs:Table ;
+  rdfs:label "ObjectPermissions" ;
+  rdbs:hasColumn rdbsrn:ObjectPermissions_idGroup ;
+  rdbs:hasColumn rdbsrn:ObjectPermissions_idObject ;
+  rdbs:hasColumn rdbsrn:ObjectPermissions_idUser ;
+  rdbs:hasColumn rdbsrn:ObjectPermissions_level ;
+.
+rdbsrn:ObjectPermissions_idGroup
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idGroup" ;
+  rdbs:belongsToTable rdbsrn:ObjectPermissions ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Groups_ID ;
+.
+rdbsrn:ObjectPermissions_idObject
+  a rdbs:Column ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:ObjectPermissions ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ObjectPermissions_idUser
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idUser" ;
+  rdbs:belongsToTable rdbsrn:ObjectPermissions ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:ObjectPermissions_level
+  a rdbs:Column ;
+  rdfs:label "level" ;
+  rdbs:belongsToTable rdbsrn:ObjectPermissions ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:ObjectTypes
+  a rdbs:ObjectTypeTable ;
+  a rdbs:Table ;
+  rdfs:label "ObjectTypes" ;
+  rdbs:hasColumn rdbsrn:ObjectTypes_ID ;
+  rdbs:hasColumn rdbsrn:ObjectTypes_idObjectClass ;
+  rdbs:hasColumn rdbsrn:ObjectTypes_sDisplayName ;
+  rdbs:hasColumn rdbsrn:ObjectTypes_sObjectTypeName ;
+  rdbs:hasColumn rdbsrn:ObjectTypes_sSynonyms ;
+.
+rdbsrn:ObjectTypes_ID
+  a rdbs:ObjectTypeIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:ObjectTypes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ObjectTypes_idObjectClass
+  a rdbs:Column ;
+  rdfs:label "idObjectClass" ;
+  rdbs:belongsToTable rdbsrn:ObjectTypes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ObjectTypes_sDisplayName
+  a rdbs:Column ;
+  rdfs:label "sDisplayName" ;
+  rdbs:belongsToTable rdbsrn:ObjectTypes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:ObjectTypes_sObjectTypeName
+  a rdbs:ObjectTypeColumn ;
+  rdfs:label "sObjectTypeName" ;
+  rdbs:belongsToTable rdbsrn:ObjectTypes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ObjectTypes_sSynonyms
+  a rdbs:Column ;
+  rdfs:label "sSynonyms" ;
+  rdbs:belongsToTable rdbsrn:ObjectTypes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:PropAssoc
+  a rdbs:Table ;
+  rdfs:label "PropAssoc" ;
+  rdbs:hasColumn rdbsrn:PropAssoc_idObjectType ;
+  rdbs:hasColumn rdbsrn:PropAssoc_idPropertyType ;
+  rdbs:hasColumn rdbsrn:PropAssoc_sAliasName ;
+.
+rdbsrn:PropAssoc_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:PropAssoc ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:PropAssoc_idPropertyType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:PropAssoc ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:PropAssoc_sAliasName
+  a rdbs:Column ;
+  rdfs:label "sAliasName" ;
+  rdbs:belongsToTable rdbsrn:PropAssoc ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:PropTypes
+  a rdbs:AttributeTypeTable ;
+  a rdbs:Table ;
+  rdfs:label "PropTypes" ;
+  rdbs:hasColumn rdbsrn:PropTypes_ID ;
+  rdbs:hasColumn rdbsrn:PropTypes_nImplType ;
+  rdbs:hasColumn rdbsrn:PropTypes_nOptions ;
+  rdbs:hasColumn rdbsrn:PropTypes_nType ;
+  rdbs:hasColumn rdbsrn:PropTypes_sDisplayName ;
+  rdbs:hasColumn rdbsrn:PropTypes_sPropertyName ;
+.
+rdbsrn:PropTypes_ID
+  a rdbs:AttributeTypeIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:PropTypes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:PropTypes_nImplType
+  a rdbs:Column ;
+  rdfs:label "nImplType" ;
+  rdbs:belongsToTable rdbsrn:PropTypes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:PropTypes_nOptions
+  a rdbs:Column ;
+  rdfs:label "nOptions" ;
+  rdbs:belongsToTable rdbsrn:PropTypes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:PropTypes_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:PropTypes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:PropTypes_sDisplayName
+  a rdbs:Column ;
+  rdfs:label "sDisplayName" ;
+  rdbs:belongsToTable rdbsrn:PropTypes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:PropTypes_sPropertyName
+  a rdbs:AttributeTypeColumn ;
+  rdfs:label "sPropertyName" ;
+  rdbs:belongsToTable rdbsrn:PropTypes ;
+  rdbs:hasDataType rdbs:STRING ;
+.
+rdbsrn:QARs
+  a rdbs:Table ;
+  rdfs:label "QARs" ;
+  rdbs:hasColumn rdbsrn:QARs_DefaultLimit ;
+  rdbs:hasColumn rdbsrn:QARs_Description ;
+  rdbs:hasColumn rdbsrn:QARs_Discriminator ;
+  rdbs:hasColumn rdbsrn:QARs_GracePeriod ;
+  rdbs:hasColumn rdbsrn:QARs_Hint ;
+  rdbs:hasColumn rdbsrn:QARs_ID ;
+  rdbs:hasColumn rdbsrn:QARs_Name ;
+.
+rdbsrn:QARs_DefaultLimit
+  a rdbs:Column ;
+  rdfs:label "DefaultLimit" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:QARs_Description
+  a rdbs:Column ;
+  rdfs:label "Description" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:QARs_Discriminator
+  a rdbs:Column ;
+  rdfs:label "Discriminator" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:QARs_GracePeriod
+  a rdbs:Column ;
+  rdfs:label "GracePeriod" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:QARs_Hint
+  a rdbs:Column ;
+  rdfs:label "Hint" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:QARs_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:QARs_Name
+  a rdbs:Column ;
+  rdfs:label "Name" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Quotas
+  a rdbs:Table ;
+  rdfs:label "Quotas" ;
+  rdbs:hasColumn rdbsrn:Quotas_Exceeded ;
+  rdbs:hasColumn rdbsrn:Quotas_Expenditure ;
+  rdbs:hasColumn rdbsrn:Quotas_GracePeriod ;
+  rdbs:hasColumn rdbsrn:Quotas_Limit ;
+  rdbs:hasColumn rdbsrn:Quotas_QarID ;
+  rdbs:hasColumn rdbsrn:Quotas_UserID ;
+.
+rdbsrn:Quotas_Exceeded
+  a rdbs:Column ;
+  rdfs:label "Exceeded" ;
+  rdbs:belongsToTable rdbsrn:Quotas ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Quotas_Expenditure
+  a rdbs:Column ;
+  rdfs:label "Expenditure" ;
+  rdbs:belongsToTable rdbsrn:Quotas ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Quotas_GracePeriod
+  a rdbs:Column ;
+  rdfs:label "GracePeriod" ;
+  rdbs:belongsToTable rdbsrn:Quotas ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Quotas_Limit
+  a rdbs:Column ;
+  rdfs:label "Limit" ;
+  rdbs:belongsToTable rdbsrn:Quotas ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Quotas_QarID
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "QarID" ;
+  rdbs:belongsToTable rdbsrn:Quotas ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:QARs_ID ;
+.
+rdbsrn:Quotas_UserID
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "UserID" ;
+  rdbs:belongsToTable rdbsrn:Quotas ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:RawControls
+  a rdbs:Table ;
+  rdfs:label "RawControls" ;
+  rdbs:hasColumn rdbsrn:RawControls_Control ;
+  rdbs:hasColumn rdbsrn:RawControls_ID ;
+  rdbs:hasColumn rdbsrn:RawControls_NodeURNs ;
+  rdbs:hasColumn rdbsrn:RawControls_URN ;
+.
+rdbsrn:RawControls_Control
+  a rdbs:Column ;
+  rdfs:label "Control" ;
+  rdbs:belongsToTable rdbsrn:RawControls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:RawControls_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:RawControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:RawControls_NodeURNs
+  a rdbs:Column ;
+  rdfs:label "NodeURNs" ;
+  rdbs:belongsToTable rdbsrn:RawControls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:RawControls_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:RawControls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:RawData
+  a rdbs:Table ;
+  rdfs:label "RawData" ;
+  rdbs:hasColumn rdbsrn:RawData_Data ;
+  rdbs:hasColumn rdbsrn:RawData_ID ;
+  rdbs:hasColumn rdbsrn:RawData_dateModified ;
+  rdbs:hasColumn rdbsrn:RawData_idNode ;
+  rdbs:hasColumn rdbsrn:RawData_idOwner ;
+  rdbs:hasColumn rdbsrn:RawData_idRelatedNode ;
+  rdbs:hasColumn rdbsrn:RawData_nDatatype ;
+.
+rdbsrn:RawData_Data
+  a rdbs:Column ;
+  rdfs:label "Data" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:RawData_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:RawData_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:RawData_idNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:RawData_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:RawData_idRelatedNode
+  a rdbs:Column ;
+  rdfs:label "idRelatedNode" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:RawData_nDatatype
+  a rdbs:Column ;
+  rdfs:label "nDatatype" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ResultId
+  a rdbs:Table ;
+  rdfs:label "ResultId" ;
+  rdbs:hasColumn rdbsrn:ResultId_ID ;
+.
+rdbsrn:ResultId_ID
+  a rdbs:Column ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:ResultId ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Results
+  a rdbs:Table ;
+  rdfs:label "Results" ;
+  rdbs:hasColumn rdbsrn:Results_ID ;
+  rdbs:hasColumn rdbsrn:Results_dateCreated ;
+  rdbs:hasColumn rdbsrn:Results_idObjectType ;
+  rdbs:hasColumn rdbsrn:Results_idOwner ;
+  rdbs:hasColumn rdbsrn:Results_idResult ;
+  rdbs:hasColumn rdbsrn:Results_idSession ;
+  rdbs:hasColumn rdbsrn:Results_result ;
+  rdbs:hasColumn rdbsrn:Results_sDescription ;
+  rdbs:hasColumn rdbsrn:Results_sName ;
+.
+rdbsrn:Results_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Results_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Results_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Results_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Results_idResult
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idResult" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Results_ID ;
+.
+rdbsrn:Results_idSession
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idSession" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Sessions_ID ;
+.
+rdbsrn:Results_result
+  a rdbs:Column ;
+  rdfs:label "result" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Results_sDescription
+  a rdbs:Column ;
+  rdfs:label "sDescription" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Results_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:SchemaMD
+  a rdbs:Table ;
+  rdfs:label "SchemaMD" ;
+  rdbs:hasColumn rdbsrn:SchemaMD_Key ;
+  rdbs:hasColumn rdbsrn:SchemaMD_Value ;
+.
+rdbsrn:SchemaMD_Key
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "Key" ;
+  rdbs:belongsToTable rdbsrn:SchemaMD ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:SchemaMD_Value
+  a rdbs:Column ;
+  rdfs:label "Value" ;
+  rdbs:belongsToTable rdbsrn:SchemaMD ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Sessions
+  a rdbs:Table ;
+  rdfs:label "Sessions" ;
+  rdbs:hasColumn rdbsrn:Sessions_ID ;
+  rdbs:hasColumn rdbsrn:Sessions_NID ;
+  rdbs:hasColumn rdbsrn:Sessions_idUser ;
+  rdbs:hasColumn rdbsrn:Sessions_tLastRequest ;
+  rdbs:hasColumn rdbsrn:Sessions_tLogin ;
+.
+rdbsrn:Sessions_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Sessions ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Sessions_NID
+  a rdbs:Column ;
+  rdfs:label "NID" ;
+  rdbs:belongsToTable rdbsrn:Sessions ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Sessions_idUser
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idUser" ;
+  rdbs:belongsToTable rdbsrn:Sessions ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Sessions_tLastRequest
+  a rdbs:Column ;
+  rdfs:label "tLastRequest" ;
+  rdbs:belongsToTable rdbsrn:Sessions ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Sessions_tLogin
+  a rdbs:Column ;
+  rdfs:label "tLogin" ;
+  rdbs:belongsToTable rdbsrn:Sessions ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:StrAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "StrAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:StrAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:StrAnnotationProps_nIndex ;
+  rdbs:hasColumn rdbsrn:StrAnnotationProps_sPropertyValue ;
+.
+rdbsrn:StrAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:StrAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:AnnotationProps_ID ;
+.
+rdbsrn:StrAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:StrAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:StrAnnotationProps_sPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:StrAnnotationProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:StrControlProps
+  a rdbs:EdgeTypedAttributeValueTable ;
+  a rdbs:Table ;
+  rdfs:label "StrControlProps" ;
+  rdbs:hasColumn rdbsrn:StrControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:StrControlProps_nIndex ;
+  rdbs:hasColumn rdbsrn:StrControlProps_sPropertyValue ;
+.
+rdbsrn:StrControlProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:StrControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ControlProps_ID ;
+.
+rdbsrn:StrControlProps_nIndex
+  a rdbs:IndexValueColumn ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:StrControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:StrControlProps_sPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:StrControlProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:StrNodeProps
+  a rdbs:Table ;
+  a rdbs:VerticeTypedAttributeValueTable ;
+  rdfs:label "StrNodeProps" ;
+  rdbs:hasColumn rdbsrn:StrNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:StrNodeProps_sPropertyValue ;
+.
+rdbsrn:StrNodeProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:StrNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:NodeProps_ID ;
+.
+rdbsrn:StrNodeProps_sPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:StrNodeProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TempRawData
+  a rdbs:Table ;
+  rdfs:label "TempRawData" ;
+  rdbs:hasColumn rdbsrn:TempRawData_Data ;
+  rdbs:hasColumn rdbsrn:TempRawData_ID ;
+  rdbs:hasColumn rdbsrn:TempRawData_dateModified ;
+  rdbs:hasColumn rdbsrn:TempRawData_idNode ;
+  rdbs:hasColumn rdbsrn:TempRawData_idOwner ;
+  rdbs:hasColumn rdbsrn:TempRawData_idRelatedNode ;
+  rdbs:hasColumn rdbsrn:TempRawData_nDatatype ;
+.
+rdbsrn:TempRawData_Data
+  a rdbs:Column ;
+  rdfs:label "Data" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TempRawData_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TempRawData_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TempRawData_idNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TempRawData_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:TempRawData_idRelatedNode
+  a rdbs:Column ;
+  rdfs:label "idRelatedNode" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TempRawData_nDatatype
+  a rdbs:Column ;
+  rdfs:label "nDatatype" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotationProps_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotationProps_idObject ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotationProps_idPropertyType ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotationProps_nType ;
+.
+rdbsrn:TemporaryAnnotationProps_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryAnnotationProps_idObject
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryAnnotations_ID ;
+.
+rdbsrn:TemporaryAnnotationProps_idPropertyType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:TemporaryAnnotationProps_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryAnnotations
+  a rdbs:Table ;
+  rdfs:label "TemporaryAnnotations" ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_URN ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_idGroupNode ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_idNode ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_idObjectType ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_idOntology ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_idRelationship ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_idTemporaryNode ;
+.
+rdbsrn:TemporaryAnnotations_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryAnnotations_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryAnnotations_idGroupNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idGroupNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TemporaryAnnotations_idNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:TemporaryAnnotations_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:TemporaryAnnotations_idOntology
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOntology" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:TemporaryAnnotations_idRelationship
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idRelationship" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:TemporaryAnnotations_idTemporaryNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idTemporaryNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TemporaryControlProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryControlProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryControlProps_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryControlProps_idObject ;
+  rdbs:hasColumn rdbsrn:TemporaryControlProps_idPropertyType ;
+  rdbs:hasColumn rdbsrn:TemporaryControlProps_nType ;
+.
+rdbsrn:TemporaryControlProps_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryControlProps_idObject
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControls_ID ;
+.
+rdbsrn:TemporaryControlProps_idPropertyType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:TemporaryControlProps_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryControls
+  a rdbs:Table ;
+  rdfs:label "TemporaryControls" ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_URN ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_idControl ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_idEffect ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_idMechanism ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_idObjectType ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_idResult ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_idSession ;
+.
+rdbsrn:TemporaryControls_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryControls_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryControls_idControl
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idControl" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Controls_ID ;
+.
+rdbsrn:TemporaryControls_idEffect
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idEffect" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:TemporaryControls_idMechanism
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idMechanism" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:TemporaryControls_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:TemporaryControls_idResult
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idResult" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Results_ID ;
+.
+rdbsrn:TemporaryControls_idSession
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idSession" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Sessions_ID ;
+.
+rdbsrn:TemporaryDictAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryDictAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryDictAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryDictAnnotationProps_idPropertyValue ;
+  rdbs:hasColumn rdbsrn:TemporaryDictAnnotationProps_nIndex ;
+.
+rdbsrn:TemporaryDictAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryAnnotationProps_ID ;
+.
+rdbsrn:TemporaryDictAnnotationProps_idPropertyValue
+  a rdbs:Column ;
+  rdfs:label "idPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryDictAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryDictControlProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryDictControlProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryDictControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryDictControlProps_idPropertyValue ;
+  rdbs:hasColumn rdbsrn:TemporaryDictControlProps_nIndex ;
+.
+rdbsrn:TemporaryDictControlProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControlProps_ID ;
+.
+rdbsrn:TemporaryDictControlProps_idPropertyValue
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:TemporaryDictControlProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryDictNodeProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryDictNodeProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryDictNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryDictNodeProps_idPropertyValue ;
+.
+rdbsrn:TemporaryDictNodeProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodeProps_ID ;
+.
+rdbsrn:TemporaryDictNodeProps_idPropertyValue
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:TemporaryIntAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryIntAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryIntAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryIntAnnotationProps_lPropertyValue ;
+  rdbs:hasColumn rdbsrn:TemporaryIntAnnotationProps_nIndex ;
+.
+rdbsrn:TemporaryIntAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryAnnotationProps_ID ;
+.
+rdbsrn:TemporaryIntAnnotationProps_lPropertyValue
+  a rdbs:Column ;
+  rdfs:label "lPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryIntAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryIntControlProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryIntControlProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryIntControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryIntControlProps_lPropertyValue ;
+  rdbs:hasColumn rdbsrn:TemporaryIntControlProps_nIndex ;
+.
+rdbsrn:TemporaryIntControlProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControlProps_ID ;
+.
+rdbsrn:TemporaryIntControlProps_lPropertyValue
+  a rdbs:Column ;
+  rdfs:label "lPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryIntControlProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryIntNodeProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryIntNodeProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryIntNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryIntNodeProps_lPropertyValue ;
+.
+rdbsrn:TemporaryIntNodeProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodeProps_ID ;
+.
+rdbsrn:TemporaryIntNodeProps_lPropertyValue
+  a rdbs:Column ;
+  rdfs:label "lPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryLinks
+  a rdbs:Table ;
+  rdfs:label "TemporaryLinks" ;
+  rdbs:hasColumn rdbsrn:TemporaryLinks_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryLinks_effect ;
+  rdbs:hasColumn rdbsrn:TemporaryLinks_idControl ;
+  rdbs:hasColumn rdbsrn:TemporaryLinks_idNode ;
+  rdbs:hasColumn rdbsrn:TemporaryLinks_nLinkType ;
+.
+rdbsrn:TemporaryLinks_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryLinks ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryLinks_effect
+  a rdbs:Column ;
+  rdfs:label "effect" ;
+  rdbs:belongsToTable rdbsrn:TemporaryLinks ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryLinks_idControl
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idControl" ;
+  rdbs:belongsToTable rdbsrn:TemporaryLinks ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControls_ID ;
+.
+rdbsrn:TemporaryLinks_idNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryLinks ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TemporaryLinks_nLinkType
+  a rdbs:Column ;
+  rdfs:label "nLinkType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryLinks ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryMembership
+  a rdbs:Table ;
+  rdfs:label "TemporaryMembership" ;
+  rdbs:hasColumn rdbsrn:TemporaryMembership_idTemporaryComplexNode ;
+  rdbs:hasColumn rdbsrn:TemporaryMembership_idTemporaryControl ;
+  rdbs:hasColumn rdbsrn:TemporaryMembership_idTemporaryNode ;
+.
+rdbsrn:TemporaryMembership_idTemporaryComplexNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idTemporaryComplexNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMembership ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TemporaryMembership_idTemporaryControl
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idTemporaryControl" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMembership ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControls_ID ;
+.
+rdbsrn:TemporaryMembership_idTemporaryNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idTemporaryNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMembership ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TemporaryMemoAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryMemoAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoAnnotationProps_nIndex ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoAnnotationProps_sLongPropertyValue ;
+.
+rdbsrn:TemporaryMemoAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryAnnotationProps_ID ;
+.
+rdbsrn:TemporaryMemoAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryMemoAnnotationProps_sLongPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sLongPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoAnnotationProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryMemoControlProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryMemoControlProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoControlProps_nIndex ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoControlProps_sLongPropertyValue ;
+.
+rdbsrn:TemporaryMemoControlProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControlProps_ID ;
+.
+rdbsrn:TemporaryMemoControlProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryMemoControlProps_sLongPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sLongPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoControlProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryMemoNodeProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryMemoNodeProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoNodeProps_sLongPropertyValue ;
+.
+rdbsrn:TemporaryMemoNodeProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodeProps_ID ;
+.
+rdbsrn:TemporaryMemoNodeProps_sLongPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sLongPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoNodeProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNodeProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryNodeProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryNodeProps_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryNodeProps_idObject ;
+  rdbs:hasColumn rdbsrn:TemporaryNodeProps_idPropertyType ;
+  rdbs:hasColumn rdbsrn:TemporaryNodeProps_nType ;
+.
+rdbsrn:TemporaryNodeProps_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryNodeProps_idObject
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TemporaryNodeProps_idPropertyType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:TemporaryNodeProps_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryNodes
+  a rdbs:Table ;
+  rdfs:label "TemporaryNodes" ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_URN ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_idNode ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_idObjectClass ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_idObjectType ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_idResult ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_idSession ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_sName ;
+.
+rdbsrn:TemporaryNodes_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryNodes_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNodes_idNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:TemporaryNodes_idObjectClass
+  a rdbs:Column ;
+  rdfs:label "idObjectClass" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryNodes_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:TemporaryNodes_idResult
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idResult" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Results_ID ;
+.
+rdbsrn:TemporaryNodes_idSession
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idSession" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Sessions_ID ;
+.
+rdbsrn:TemporaryNodes_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNumAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryNumAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryNumAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryNumAnnotationProps_nIndex ;
+  rdbs:hasColumn rdbsrn:TemporaryNumAnnotationProps_rPropertyValue ;
+.
+rdbsrn:TemporaryNumAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryAnnotationProps_ID ;
+.
+rdbsrn:TemporaryNumAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNumAnnotationProps_rPropertyValue
+  a rdbs:Column ;
+  rdfs:label "rPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumAnnotationProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNumControlProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryNumControlProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryNumControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryNumControlProps_nIndex ;
+  rdbs:hasColumn rdbsrn:TemporaryNumControlProps_rPropertyValue ;
+.
+rdbsrn:TemporaryNumControlProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControlProps_ID ;
+.
+rdbsrn:TemporaryNumControlProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNumControlProps_rPropertyValue
+  a rdbs:Column ;
+  rdfs:label "rPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumControlProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNumNodeProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryNumNodeProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryNumNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryNumNodeProps_rPropertyValue ;
+.
+rdbsrn:TemporaryNumNodeProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodeProps_ID ;
+.
+rdbsrn:TemporaryNumNodeProps_rPropertyValue
+  a rdbs:Column ;
+  rdfs:label "rPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumNodeProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryObjects
+  a rdbs:Table ;
+  rdfs:label "TemporaryObjects" ;
+  rdbs:hasColumn rdbsrn:TemporaryObjects_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryObjects_data ;
+  rdbs:hasColumn rdbsrn:TemporaryObjects_idSession ;
+.
+rdbsrn:TemporaryObjects_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryObjects ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryObjects_data
+  a rdbs:Column ;
+  rdfs:label "data" ;
+  rdbs:belongsToTable rdbsrn:TemporaryObjects ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryObjects_idSession
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idSession" ;
+  rdbs:belongsToTable rdbsrn:TemporaryObjects ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Sessions_ID ;
+.
+rdbsrn:TemporaryStrAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryStrAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryStrAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryStrAnnotationProps_nIndex ;
+  rdbs:hasColumn rdbsrn:TemporaryStrAnnotationProps_sPropertyValue ;
+.
+rdbsrn:TemporaryStrAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryAnnotationProps_ID ;
+.
+rdbsrn:TemporaryStrAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryStrAnnotationProps_sPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrAnnotationProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryStrControlProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryStrControlProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryStrControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryStrControlProps_nIndex ;
+  rdbs:hasColumn rdbsrn:TemporaryStrControlProps_sPropertyValue ;
+.
+rdbsrn:TemporaryStrControlProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControlProps_ID ;
+.
+rdbsrn:TemporaryStrControlProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryStrControlProps_sPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrControlProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryStrNodeProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryStrNodeProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryStrNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryStrNodeProps_sPropertyValue ;
+.
+rdbsrn:TemporaryStrNodeProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodeProps_ID ;
+.
+rdbsrn:TemporaryStrNodeProps_sPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrNodeProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Users
+  a rdbs:Table ;
+  rdfs:label "Users" ;
+  rdbs:hasColumn rdbsrn:Users_EMail ;
+  rdbs:hasColumn rdbsrn:Users_FullName ;
+  rdbs:hasColumn rdbsrn:Users_ID ;
+  rdbs:hasColumn rdbsrn:Users_Name ;
+  rdbs:hasColumn rdbsrn:Users_Password ;
+  rdbs:hasColumn rdbsrn:Users_expire ;
+  rdbs:hasColumn rdbsrn:Users_flags ;
+.
+rdbsrn:UsersPreferences
+  a rdbs:Table ;
+  rdfs:label "UsersPreferences" ;
+  rdbs:hasColumn rdbsrn:UsersPreferences_ID ;
+  rdbs:hasColumn rdbsrn:UsersPreferences_Preference ;
+  rdbs:hasColumn rdbsrn:UsersPreferences_UserID ;
+  rdbs:hasColumn rdbsrn:UsersPreferences_Value ;
+.
+rdbsrn:UsersPreferences_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:UsersPreferences ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:UsersPreferences_Preference
+  a rdbs:Column ;
+  rdfs:label "Preference" ;
+  rdbs:belongsToTable rdbsrn:UsersPreferences ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:UsersPreferences_UserID
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "UserID" ;
+  rdbs:belongsToTable rdbsrn:UsersPreferences ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:UsersPreferences_Value
+  a rdbs:Column ;
+  rdfs:label "Value" ;
+  rdbs:belongsToTable rdbsrn:UsersPreferences ;
+  rdbs:hasDataType rdbs:CLOB ;
+  rdbs:isNullable true ;
+.
+rdbsrn:UsersRoles
+  a rdbs:Table ;
+  rdfs:label "UsersRoles" ;
+  rdbs:hasColumn rdbsrn:UsersRoles_RoleName ;
+  rdbs:hasColumn rdbsrn:UsersRoles_idUser ;
+.
+rdbsrn:UsersRoles_RoleName
+  a rdbs:Column ;
+  rdfs:label "RoleName" ;
+  rdbs:belongsToTable rdbsrn:UsersRoles ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:UsersRoles_idUser
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idUser" ;
+  rdbs:belongsToTable rdbsrn:UsersRoles ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Users_EMail
+  a rdbs:Column ;
+  rdfs:label "EMail" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Users_FullName
+  a rdbs:Column ;
+  rdfs:label "FullName" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Users_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Users_Name
+  a rdbs:Column ;
+  rdfs:label "Name" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Users_Password
+  a rdbs:Column ;
+  rdfs:label "Password" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Users_expire
+  a rdbs:Column ;
+  rdfs:label "expire" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Users_flags
+  a rdbs:Column ;
+  rdfs:label "flags" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:VaSamples
+  a rdbs:Table ;
+  rdfs:label "VaSamples" ;
+  rdbs:hasColumn rdbsrn:VaSamples_ID ;
+  rdbs:hasColumn rdbsrn:VaSamples_data ;
+  rdbs:hasColumn rdbsrn:VaSamples_dateCreated ;
+  rdbs:hasColumn rdbsrn:VaSamples_idObjectType ;
+  rdbs:hasColumn rdbsrn:VaSamples_idOwner ;
+  rdbs:hasColumn rdbsrn:VaSamples_ngsId ;
+  rdbs:hasColumn rdbsrn:VaSamples_sDescription ;
+  rdbs:hasColumn rdbsrn:VaSamples_sName ;
+.
+rdbsrn:VaSamples_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:VaSamples_data
+  a rdbs:Column ;
+  rdfs:label "data" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:VaSamples_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:VaSamples_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:VaSamples_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:VaSamples_ngsId
+  a rdbs:Column ;
+  rdfs:label "ngsId" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:VaSamples_sDescription
+  a rdbs:Column ;
+  rdfs:label "sDescription" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:VaSamples_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.

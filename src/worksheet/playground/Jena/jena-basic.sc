@@ -28,4 +28,11 @@ prog.attempt.unsafeRunSync() match {
 ls! pwd*/
 
 
-getClass.getResource("elsevier_entellect_schema_rdbs.ttl").getPath
+//getClass.getResource("elsevier_entellect_schema_rdbs.ttl").getPath
+
+ class Weekday( val name: String,
+                               val abbreviation: String,
+                               val isWorkDay: Boolean)
+
+class Weeky extends Weekday("Monday", "Mo.", true)
+
