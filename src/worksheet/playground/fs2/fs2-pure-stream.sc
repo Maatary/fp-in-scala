@@ -11,9 +11,11 @@ import java.util.EmptyStackException
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 
-//val s1 = Stream(1,2,3,4,5,8,7,8)
+val s1 = Stream(1,2,3,4,5,8,7,8)
 
-//s1.take(6).toList
+s1.take(6)
+
+Stream(1,2,3).map(_ + 1).toList
 
 //Stream(List(1,2,3,4,5):_*).take(1).toList
 
@@ -24,6 +26,12 @@ import scala.concurrent.duration.DurationInt
 } yield ExitCode.Success
 
 test.unsafeRunSync()*/
+/*
 implicit def ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
 
-Future{throw new EmptyStackException }
+Future{throw new EmptyStackException }*/
+
+val eff = Stream.eval(IO { println("BEING RUN!!"); 1 + 1 })
+
+
+
