@@ -202,6 +202,25 @@ object State {
    *
    *  This goes on until we reach back the first function in the list.
    *
+   *  === On the List of Results Order ===
+   *
+   *  We build a list of results, thanks to the mapping function we pass to map2 which combine the results of its 2 inputs function
+   *  into a list of 2 results.
+   *
+   *  In other words, each composed function (bigger function), return the list of results of the two function being combined.
+   *
+   *  However the way it works, is that one function return a list of result and the other a result, then an append happens.
+   *
+   *  As a fold right it start at the end of the list, with a function returning the empty list as result.
+   *
+   *  Then we combine up back to the first function, 2 function at the time.
+   *
+   *  When we reach back the first function, it will be combined with a function that return the list of result of all the other function in the list.
+   *
+   *  Given that it is a foldRight, the order of the result is the same as the order of the application of each function (see append)
+   *
+   *
+   *
    *  == Specificity of his Implementation ==
    *
    *  -- '''This implementation rely on scala List foldRight, which use a buffer and mutation.'''
@@ -217,13 +236,15 @@ object State {
    *
    *  An Attempted illustration
    *
-   *  combine (a, b) = c
-   *  combine (d, c) = e
-   *  When we call e, we stack it and then call d and c, then we stack c which call a and b
+   *  `combine (a, b) = c`
+   *
+   *  `combine (d, c) = e`
+   *
+   *  `When we call e, we stack it and then call d and c, then we stack c which call a and b`
    *
    */
   def sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = {
-    l.foldRight(unit[S, List[A]](Nil)) { (a, b) => a.map2(b)((a, b) => a :: b) } // compose into a bigger function recursively 2 function at the time.
+    l.foldRight(unit[S, List[A]](Nil)) { (a, b) => a.map2(b)((a, b) => a :: b) }
   }
 
 
@@ -244,6 +265,26 @@ object State {
    *
    *  This goes on until we reach back the first function in the list.
    *
+   *
+   *  === On the List of Results Order ===
+   *
+   *  We build a list of results, thanks to the mapping function we pass to map2 which combine the results of its 2 inputs function
+   *  into a list of 2 results.
+   *
+   *  In other words, each composed function (bigger function), return the list of results of the two function being combined.
+   *
+   *  However the way it works, is that one function return a list of result and the other a result, then an append happens.
+   *
+   *  As a fold right it start at the end of the list, with a function returning the empty list as result.
+   *
+   *  Then we combine up back to the first function, 2 function at the time.
+   *
+   *  When we reach back the first function, it will be combined with a function that return the list of result of all the other function in the list.
+   *
+   *  Given that it is a foldRight, the order of the result is the same as the order of the application of each function (see append)
+   *
+   *
+   *
    *  == Specificity of his Implementation ==
    *
    *  -- '''As the Raw version this implementation is explicitly non-tail recursive'''
@@ -261,14 +302,16 @@ object State {
    *
    *  An Attempted illustration
    *
-   *  combine (a, b) = c
-   *  combine (d, c) = e
-   *  When we call e, we stack it and then call d and c, then we stack c which call a and b
+   *  `combine (a, b) = c`
+   *
+   *  `combine (d, c) = e`
+   *
+   *  `When we call e, we stack it and then call d and c, then we stack c which call a and b`
    *
    */
   def _sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = l match {
     case Nil => unit(Nil)
-    case s :: xs => s.map2(_sequence(xs))((a, b) => a :: b) // this is recursively composed function
+    case s :: xs => s.map2(_sequence(xs))((a, b) => a :: b)
   }
 
 
@@ -309,7 +352,7 @@ object State {
    *
    */
   def __sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = {
-    l.foldLeft(unit[S, List[A]](Nil)) { (b, a) => b.map2(a)((b, a) => a :: b) } map (_.reverse) // this is a function building, you need to understand that well
+    l.foldLeft(unit[S, List[A]](Nil)) { (b, a) => b.map2(a)((b, a) => a :: b) } map (_.reverse)
   }
 
 
@@ -347,10 +390,11 @@ object State {
     def go(s: S, actions: List[State[S,A]], acc: List[A]): (List[A],S) =
       actions match {
         case Nil => (acc.reverse,s)
-        case h :: t => h.run(s) match { case (a,s2) => go(s2, t, a :: acc) } // this is a function building, you need to understand that well
+        case h :: t => h.run(s) match { case (a,s2) => go(s2, t, a :: acc) }
       }
     State((s: S) => go(s,sas,List()))
   }
+
 
 
   def modify[S](f: S => S): State[S, Unit] = for {
