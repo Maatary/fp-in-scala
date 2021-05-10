@@ -3,59 +3,40 @@ import scala.annotation.tailrec
 /**
  * == Notes ==
  *
- * State is just a function S => (A, S)
+ * State is just a function S => (A, S).
  *
- * The Combinator on State are combinator of function.
+ * The Combinator on State are combinator of functions.
  *
- * That is, the combinator allows you to combine function application
+ * That is, the combinator allows you to combine function application.
  *
- * This means building a bigger function that apply the input function in specific way e.g.
+ * In other words, they allow you to compose functions into bigger function.
  *
- *    -- Mapping where the mapping function is applied to the result of the state function.
+ * This means building a bigger function that apply the input functions in specific way e.g.
  *
- *    -- sequencing where the result of the first one is sequence to the second one.
+ *    -- mapping: where the mapping function is applied to the result of the state action function.
  *
- * == -Critical On The meaning Of Sequence- ==
+ *    -- sequencing: where the result of the first one is sequenced as input the second one.
  *
- *    -- In the case of sequence, your bigger function is the recursive function.
+ * == Critical: On The meaning Of Sequence ==
  *
- *    -- You do not build a bigger function that sequence like in your code of map2 all the function application
+ *    -- Building a bigger function means composing a function out of smaller functions.
  *
- *    -- It is actually the recursive function call that does it
+ *    -- Generally speaking, Composing 2 functions means creating a functions that applies the two inputs functions.
  *
- *    -- The recursive function is the bigger function which apply all the function in your list recursively
+ *    -- The way it is applied (order or inputs) depend of the nature of the composition.
  *
- *    -- Step back and remember that a recursive function describe a series of call of which we do not know the number in advance
+ *    -- Composing two state actions function means creating a function that sequence their application.
  *
- *    -- The succession of call to make is described by the recursion, of which the number is determined by the execution itself (based on the terminal point of the recursion)
+ *    -- By sequencing we mean the output of the first function is used as input to the second (see [[map2]] ).
  *
- *    -- So that full unraveled blue print of a bigger function composed into that you are looking for is actually described by a recursive (structure) which is a function here
+ *    -- For state action building a bigger function is sequencing the application of multiple smaller functions.
  *
- *    -- By applying we mean build chuck of bigger function out of 2 functions i.e. use map 2
+ *    -- The key is to understand that we compose the bigger function recursively two functions at a time.
  *
- *    -- The bigger function is never fully unravel into its smaller chucnk but when you apply the bigger function
+ *    -- This is illustrated in the various '''sequence functions'''  below
  *
- *    -- It is actually either fully unravel on the stack when using fold right, or directly applied by chunk if using foldLeft
+ *    -- Where one of the function is the composition of the previous step (expect for the terminal case function).
  *
- *    -- So via foldLeft, the full unraveling never happen, you recursively apply each chunk according to the bigger picture i.e. the Bigger function
- *
- *    -- In the end, it all comes down to understanding that `the Bigger function is a recursive function`
- *
- *    -- Think of it as setting the bigger function as executing a chain of map2 sequentially, it is just never fully unravel as explained above expect artificially on the stack when using foldRight
- *
- *    -- The stack `artificially unravel the all thing for use`
- *
- *  === -Take Away On The Meaning Of Sequence- ===
- *
- *    -- You do not have that all sequence of function made up / laid out before the execution. !!!
- *
- *    -- The all Sequence is describe by the Recursive Structure  !!!!
- *
- *    -- It is only fully laid out artificially on the Stack via FoldRight but as execution i.e. actual function call
- *
- *    -- In other words, the sequence is unravelled as you execute it !!!
- *
- *    -- It is the function calls that are fully unravelled in the stack, not the function definition. That blue print sequence will never exist !!!!
  *
  */
 
@@ -63,8 +44,8 @@ import scala.annotation.tailrec
 case class State[S, +A](run: S => (A, S)) {
 
   /**
-   * Combine a mapping function f: A => B with the state function S => (A, S)
-   * to return a new state function S => (f(A), S)
+   * Map Compose a mapping function f: A => B with the state action function S => (A, S)
+   * into a new state action function S => (f(A), S)
    */
   def map[B](f: A => B): State[S, B] = State[S, B] { (s: S) =>
     val (a1, s1) = run(s)
@@ -72,15 +53,37 @@ case class State[S, +A](run: S => (A, S)) {
   }
 
   /**
-   * Map2 is a bit more complex as it does two things in building a function that combines the two state function and a mapping function.
+   * '''Map2 Compose 2 state action functions and a mapping function into one state action function''' in which:
    *
-   *  -- It combine two state functions by sequencing their execution,
-   *     which imply threading the returned state of the application of the first state action
-   *     (to the input of the state function into which the all thing is being combined into)
-   *     to/for the application of the second state action
+   *  -- it sequences the first state action with the second state action
    *
-   *  -- It then produce the (value, state) pair result where the value is the function f: (A, B) => C
-   *     applied to the 2 values return by each state action, and the state is the one returned by the last state action.
+   *  -- '' i.e. the state returned by the first is passed to the second''
+   *
+   *  -- It returns a pair where:
+   *
+   *  -- the value is the result of applying the mapping function to both values
+   *  returned by the state action function
+   *
+   *  -- the state is the state returned by the second state action function.
+   *
+   *
+   *  === Observation ===
+   *
+   *  -- The mapping function can be anything:
+   *
+   *  -- it could return the 2 values as pair, or one of the value or unit for the matter.
+   *
+   *  -- So if we are only interested in the value returned by the second state action,
+   *     then map2 is turned into a pure sequencing function.
+   *
+   *  -- the mapping function makes map2 flexible.
+   *
+   *  === Critical point to Remember ===
+   *
+   *  -- '''Map2 compose a bigger function out of two smaller functions by sequencing their application'''.
+   *
+   *
+   *
    */
   def map2[B, C](stB: State[S, B])(f: (A, B) => C): State[S, C] = State[S, C] { (s: S) =>
     val (a, sa) = run(s)
@@ -91,29 +94,16 @@ case class State[S, +A](run: S => (A, S)) {
   /**
    *  == Critical Reminder ==
    *
-   * It is critical to remember that we're combining 2 fips into a function that reuse/apply those 2 fips.
+   * FlatMap compose '''(i) a state action function State[S, A] ''' with
+   * ''' (ii) a combining/sequencing/glue function A -> [S, B] ''' that returns
+   * another '''state action function [S, B]'''
+   * upon being passed the result '''A''' of the first state action function.
+   *
+   *
+   * The result of it is a bigger function that sequence the two state action function.
+   *
    *
    * g(a).run(sa) is important
-   *
-   * g(a) is State[S, B], but your function already define the input parameter (s: S) which is required to run "this",
-   * i.e. the first state.
-   *
-   * Hence to recover State[S, B], you need to apply sa, as in g(a).run(sa) which yield a (B, S)
-   * hence S => (B, S)
-   *
-   * Beyond the technical follow the type explanation above, reminding ourself what we are doing further help with this:
-   *
-   * `It is critical to remember that we're combining 2 fips into a function that reuse/apply those 2 fips.`
-   *
-   *   -- `That is, we are creating a function that sequence the application of the two input function`
-   *
-   * or
-   *
-   *   -- `That is, we are creating a state action that sequence the application of the two input state action`
-   *
-   * This falls in the pattern of composing function. add a new parameter, and apply the internal function to recover
-   * the function you want at this. you get a function that will apply the function you compose,
-   * by specifying how those internals will be applied to the outer new parameter. (to be re-written)
    *
    */
   def flatMap[B](g: A => State[S, B]): State[S, B] = State[S, B] { (s: S) =>
@@ -189,22 +179,21 @@ object State {
    *
    * ==Critical Notes==
    *
-   *  The recursive function sequence left or right build a data structure recursively.
+   *  foldRight return a composed function.
    *
-   *  In nutshell, from a list of function we compose their applications to return a function that returns a list of their result.
+   *  It recursively composed the function in the list, 2 function at the time via map2
    *
-   *  What is important to understand here is that, the list that the combinator function returns is specified as a recursive function.
+   *  More specifically, it reach the end of the list, where it reach S => (List(), S)
    *
-   *  That is the list of results is a recursive function which upon evaluation yield the actual list of result.
+   *  It then composed that function with the preceding in the stack in a bigger function
    *
-   *  Said differently the Sequence Combinator build a recursive function which upon evaluation return a list of result.
+   *  That bigger function in turn is composed into a bigger function with the preceding in the stack
    *
-   *  That is, it builds a function that recursively apply the functions of its input list and build the list of the result of their application.
+   *  This goes on until we reach back the first function in the list.
    *
-   *  -- The execution of each function is happening in the order of the sequence, while the combination of results is in reversed order !!!
    */
   def sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = {
-    l.foldRight(unit[S, List[A]](Nil)) { (a, b) => a.map2(b)((a, b) => a :: b) } // this is a function building, you need to understand that well
+    l.foldRight(unit[S, List[A]](Nil)) { (a, b) => a.map2(b)((a, b) => a :: b) } // this is recursively composed function.
   }
 
   /**
@@ -231,7 +220,7 @@ object State {
    */
   def _sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = l match {
     case Nil => unit(Nil)
-    case s :: xs => s.map2(sequence(xs))((a, b) => a :: b) // this is a function building, you need to understand that well
+    case s :: xs => s.map2(_sequence(xs))((a, b) => a :: b) // this is recursively composed function
   }
 
 
@@ -315,6 +304,7 @@ object State {
     State((s: S) => go(s,sas,List()))
   }
 
+
   def modify[S](f: S => S): State[S, Unit] = for {
     s <- get // Gets the current state and assigns it to `s`.
     _ <- set(f(s)) // Sets the new state to `f` applied to `s`.
@@ -348,10 +338,12 @@ case class SimpleRNG(seed: Long) extends RNG {
 
 val nextIntState = State[RNG, Int](s => s.nextInt)
 
-val listNextInt = List.fill(10)(nextIntState)
+//val listNextInt = List.fill(1000000)(nextIntState)
 
+val seq = _sequence(List.fill(100000)(nextIntState))
 
-
+//seq.run(SimpleRNG(42))
+/*
 {println("Sequence via foldRight")} pipe { _ => sequence(listNextInt).run(SimpleRNG(42))}
 
 {println("Sequence via foldRight Raw")} pipe { _ => sequence(listNextInt).run(SimpleRNG(42))}
@@ -360,7 +352,7 @@ val listNextInt = List.fill(10)(nextIntState)
 
 {println("Sequence via foldLeft Raw")} pipe { _ => ___sequence(listNextInt).run(SimpleRNG(42))}
 
-{println("Sequence via foldLeft Raw")} pipe { _ => sequenceBook(listNextInt).run(SimpleRNG(42))}
+{println("Sequence via foldLeft Raw")} pipe { _ => sequenceBook(listNextInt).run(SimpleRNG(42))}*/
 
 
 /*sealed trait Input
@@ -397,7 +389,7 @@ def simulateMachine(l: List[Input]): State[Machine, (Int, Int)] = {
 }
 */
 
-sealed trait Input
+/*sealed trait Input
 case object Coin extends Input
 case object Turn extends Input
 
@@ -424,5 +416,6 @@ object Candy {
   } yield (s.coins, s.candies)
 
   //simulateMachine(Nil).run(machine)
-}
+}*/
 
+//List(1,2,3).foldRight(0)(_ + _)
