@@ -190,11 +190,11 @@ object State {
    *
    *  The idiomatic solution is expressed via foldRight
    *
-   *  foldRight return a composed function.
+   *  '''foldRight''' return a '''composed function'''.
    *
-   *  It recursively compose the function in the list, 2 function at the time via map2
+   *  It recursively compose the functions in the list, 2 functions at the time via map2 (or flatMap)
    *
-   *  More specifically, it reach the end of the list, where it reach S => (List(), S)
+   *  More specifically, it descends to the end of the list, where it reach S => (List(), S)
    *
    *  It then composed that function with the preceding in the stack in a bigger function
    *
@@ -210,7 +210,7 @@ object State {
    *
    *  == Critical Observation ==
    *
-   *  We are stacking function calls.
+   *  In composing function as such, we are setting ourself for stacking function calls when calling the composed function.
    *
    *  Hence when calling the bigger function, every function is stacked (starting with the bigger function) up to the terminal one.
    *  This cause stack overflow, if the composition is large.
@@ -226,15 +226,44 @@ object State {
     l.foldRight(unit[S, List[A]](Nil)) { (a, b) => a.map2(b)((a, b) => a :: b) } // compose into a bigger function recursively 2 function at the time.
   }
 
+
   /**
-   * == Critical Notes - Via foldRight Raw ==
+   *  == Notes - Sequence Via foldRight Raw ==
    *
-   * The idiomatic solution expressed as an explicit/equivalent of foldRight
+   *  The idiomatic solution is expressed via foldRight
    *
-   * ==Critical Notes==
+   *  '''foldRight''' return a '''composed function'''.
    *
-   *  The recursive function sequence left or right build a data structure recursively.
+   *  It recursively compose the functions in the list, 2 functions at the time via map2 (or flatMap)
    *
+   *  More specifically, it descends to the end of the list, where it reach S => (List(), S)
+   *
+   *  It then composed that function with the preceding in the stack in a bigger function
+   *
+   *  That bigger function in turn is composed into a bigger function with the preceding in the stack
+   *
+   *  This goes on until we reach back the first function in the list.
+   *
+   *  == Specificity of his Implementation ==
+   *
+   *  -- '''As the Raw version this implementation is explicitly non-tail recursive'''
+   *
+   *  -- '''It does stackoverflow while composing the bigger function'''
+   *
+   *  -- '''If the list of functions is large, the composition itself will stackoverflow before building the bigger function'''
+   *
+   *  == Critical Observation (Same as above) ==
+   *
+   *  In composing function as such, we are setting ourself for stacking function calls when calling the composed function.
+   *
+   *  Hence when calling the bigger function, every function is stacked (starting with the bigger function) up to the terminal one.
+   *  This cause stack overflow if the composition is large.
+   *
+   *  An Attempted illustration
+   *
+   *  combine (a, b) = c
+   *  combine (d, c) = e
+   *  When we call e, we stack it and then call d and c, then we stack c which call a and b
    *
    */
   def _sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = l match {
