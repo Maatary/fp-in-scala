@@ -30,7 +30,7 @@ q.stream.map(e => e._1 + 1 -> e._2).transact(transactor).compile.toList.unsafeRu
 q.stream.transact(transactor) //Stream[IO, (Int, String)]
 
 
-q.stream.transact(transactor).map(e => e._1 + 1 -> e._2).compile.toList.unsafeRunSync()
+toDoobieStreamOps(q.stream).transact(transactor).map(e => e._1 + 1 -> e._2).compile.toList.unsafeRunSync()
 
 //val program1 = 42.pure[ConnectionIO]
 //program1.transact(transactor).unsafeRunSync()
