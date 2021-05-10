@@ -92,7 +92,18 @@ object JenaARQApp extends App {
 
 
 
-  case class VerticeAttributeTypeQueryParameter( typedAttributeValueTable: String,
+  case class VerticeAttributeSchemaQueryParameter(  typedAttributeValueTable: String,
+                                                    tavTattributeIdColumn: String,
+                                                    typedAttributeValueColumn: String,
+                                                    attributeTable: String,
+                                                    aTattributeIdColumn: String,
+                                                    aTattributeTypeIdColumn: String,
+                                                    attributeTypeTable: String,
+                                                    atTattributeTypeIdColumn: String,
+                                                    attributeTypeColumn: String
+                                                 )
+
+  case class EdgeAttributeSchemaQueryParameter(  typedAttributeValueTable: String,
                                                  tavTattributeIdColumn: String,
                                                  typedAttributeValueColumn: String,
                                                  attributeTable: String,
@@ -101,20 +112,9 @@ object JenaARQApp extends App {
                                                  attributeTypeTable: String,
                                                  atTattributeTypeIdColumn: String,
                                                  attributeTypeColumn: String
-                                               )
+                                              )
 
-  case class EdgeAttributeTypeQueryParameter(    typedAttributeValueTable: String,
-                                                 tavTattributeIdColumn: String,
-                                                 typedAttributeValueColumn: String,
-                                                 attributeTable: String,
-                                                 aTattributeIdColumn: String,
-                                                 aTattributeTypeIdColumn: String,
-                                                 attributeTypeTable: String,
-                                                 atTattributeTypeIdColumn: String,
-                                                 attributeTypeColumn: String
-                                               )
-
-  def execVerticeAttributeTablesQuery(model: Model): IO[List[VerticeAttributeTypeQueryParameter]] = {
+  def execVerticeAttributeTablesQuery(model: Model): IO[List[VerticeAttributeSchemaQueryParameter]] = {
 
     import VerticeAttributeTablesQuery._
     for {
@@ -125,7 +125,7 @@ object JenaARQApp extends App {
 
       l = solSet.asScala.toList.map{ sol =>
 
-        VerticeAttributeTypeQueryParameter(
+        VerticeAttributeSchemaQueryParameter(
           sol.getLiteral(qp.typedAttributeValueTableLabel).getString,
           sol.getLiteral(qp.tavTattributeIdColumnLabel).getString,
           sol.getLiteral(qp.typedAttributeValueColumnLabel).getString,
@@ -144,7 +144,7 @@ object JenaARQApp extends App {
 
   }
 
-  def execEdgeAttributeTablesQuery(model: Model): IO[List[EdgeAttributeTypeQueryParameter]] = {
+  def execEdgeAttributeTablesQuery(model: Model): IO[List[EdgeAttributeSchemaQueryParameter]] = {
 
     import EdgeAttributeTablesQuery._
     for {
@@ -155,7 +155,7 @@ object JenaARQApp extends App {
 
       l = solSet.asScala.toList.map{ sol =>
 
-        EdgeAttributeTypeQueryParameter(
+        EdgeAttributeSchemaQueryParameter(
           sol.getLiteral(qp.typedAttributeValueTableLabel).getString,
           sol.getLiteral(qp.tavTattributeIdColumnLabel).getString,
           sol.getLiteral(qp.typedAttributeValueColumnLabel).getString,
