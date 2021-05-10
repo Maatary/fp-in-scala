@@ -102,8 +102,20 @@ case class State[S, +A](run: S => (A, S)) {
    *
    * The result of it is a bigger function that sequence the two state action function.
    *
+   * == Important observations ==
    *
-   * g(a).run(sa) is important
+   *  -- flapMap as opposed to map2 '''enforce an order of execution''' between
+   *     the two state action function trough the '''glue function'''.
+   *
+   *  -- The second state action function State[S, B] '''is only available when the
+   *     glue function g is applied as per g(a) '''
+   *
+   *  -- At that point the second state action is ran '''g(a).run(sa)'''
+   *
+   *  -- '''The second state action function can close over the input of the glue function'''
+   *
+   *  -- '''This is how flatMap can implement map2 or map, it more powerful see [[_map]] and [[_map2]]'''
+   *
    *
    */
   def flatMap[B](g: A => State[S, B]): State[S, B] = State[S, B] { (s: S) =>
@@ -120,18 +132,14 @@ case class State[S, +A](run: S => (A, S)) {
    *  hence no need to create the combined function yourself,
    *  that is what flatMap does !!!
    *
-   *  It combines State[S, A] with the function resulting from unit(f(a)) i.e. constant State[S, B]
-   *
-   *  unit(f(a)) is inferred to be State[S, B] because of the signature of flatMap
-   *
-   *  In particular what is inferred is `"S"`.
-   *
-   *  Without specifying it, it could have been inferred to be nothing (the default for invariant and covariant type)
+   *  It combines State[S, A] with the glue function that returns unit(f(a)) i.e. constant State[S, B]
    *
    */
   def _map[B](f: A => B): State[S, B] = {
-    flatMap(a => unit(f(a)))
+    flatMap { a => unit ( f(a)) } // unit type inferred because of currying of flatMap
   }
+
+
 
   /**
    * == Remember ==
@@ -139,7 +147,9 @@ case class State[S, +A](run: S => (A, S)) {
    *  flatMap is more powerful than [[map]] and [[map2]].
    *
    *  Both can be implemented in term of [[flatMap]]
+   *
    */
+
   def _map2[B, C](stB: State[S, B])(f: (A, B) => C): State[S, C] = {
     flatMap { a => stB.map { b => f(a, b) } }
   }
@@ -152,7 +162,7 @@ case class State[S, +A](run: S => (A, S)) {
     for {
       a <- this // thread the result of the first function
       b <- unit(f(a)) // make explicit the input of the map function of the result of the second function
-    } yield b // map over the result of the second function
+    } yield b // map over the result of the second function desugared to unit(f(a)).map(b => b)
   }
 
   /**
@@ -168,20 +178,21 @@ case class State[S, +A](run: S => (A, S)) {
 }
 
 object State {
-  //def unit[S, A](a: A): State[S, A] = State((s: S) => (a, s))
+
+  /**
+   * Lift '''a''' into a state action '''s -> (a, s)''', that return '''a''' as value and maintain the input state '''s'''
+   */
   def unit[S, A](a: A): State[S, A] = State { s => (a, s) }
 
 
   /**
-   * == Critical Notes - Via foldRight ==
+   *  == Notes - Sequence Via foldRight ==
    *
-   * The idiomatic solution is expressed via foldRight
-   *
-   * ==Critical Notes==
+   *  The idiomatic solution is expressed via foldRight
    *
    *  foldRight return a composed function.
    *
-   *  It recursively composed the function in the list, 2 function at the time via map2
+   *  It recursively compose the function in the list, 2 function at the time via map2
    *
    *  More specifically, it reach the end of the list, where it reach S => (List(), S)
    *
@@ -191,9 +202,28 @@ object State {
    *
    *  This goes on until we reach back the first function in the list.
    *
+   *  == Specificity of his Implementation ==
+   *
+   *  -- '''This implementation rely on scala List foldRight, which use a buffer and mutation.'''
+   *
+   *  -- '''It does not stackoverflow while composing the bigger function'''
+   *
+   *  == Critical Observation ==
+   *
+   *  We are stacking function calls.
+   *
+   *  Hence when calling the bigger function, every function is stacked (starting with the bigger function) up to the terminal one.
+   *  This cause stack overflow, if the composition is large.
+   *
+   *  An Attempted illustration
+   *
+   *  combine (a, b) = c
+   *  combine (d, c) = e
+   *  When we call e, we stack it and then call d and c, then we stack c which call a and b
+   *
    */
   def sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = {
-    l.foldRight(unit[S, List[A]](Nil)) { (a, b) => a.map2(b)((a, b) => a :: b) } // this is recursively composed function.
+    l.foldRight(unit[S, List[A]](Nil)) { (a, b) => a.map2(b)((a, b) => a :: b) } // compose into a bigger function recursively 2 function at the time.
   }
 
   /**
@@ -205,17 +235,6 @@ object State {
    *
    *  The recursive function sequence left or right build a data structure recursively.
    *
-   *  In nutshell, from a list of function we compose their applications to return a function that returns a list of their result.
-   *
-   *  What is important to understand here is that, the list that the combinator function returns is specified as a recursive function.
-   *
-   *  That is the list of results is a recursive function which upon evaluation yield the actual list of result.
-   *
-   *  Said differently the Sequence Combinator build a recursive function which upon evaluation return a list of result.
-   *
-   *  That is, it builds a function that recursively apply the functions of its input list and build the list of the result of their application.
-   *
-   *  -- The execution of each function is happening in the order of the sequence, while the combination of results is in reversed order !!!
    *
    */
   def _sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = l match {
@@ -319,6 +338,7 @@ object State {
 }
 
 import State._
+
 
 
 import scala.util.chaining.scalaUtilChainingOps
