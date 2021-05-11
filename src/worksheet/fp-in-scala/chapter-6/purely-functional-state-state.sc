@@ -188,7 +188,6 @@ object State {
   /**
    *  == Notes - Sequence Via foldRight ==
    *
-   *  The idiomatic solution is expressed via foldRight
    *
    *  '''foldRight''' return a '''composed function'''.
    *
@@ -204,20 +203,44 @@ object State {
    *
    *  === On the List of Results Order ===
    *
-   *  We build a list of results, thanks to the mapping function we pass to map2 which combine the results of its 2 inputs function
-   *  into a list of 2 results.
+   *  Our composition returns '''a list of results''', thanks to the mapping function we pass to map2
+   *  which combine the results of the application of its 2 inputs function into a list of 2 results.
    *
-   *  In other words, each composed function (bigger function), return the list of results of the two function being combined.
+   *  In other words, each composed function (bigger function), returns the list of results of the two functions being combined.
    *
-   *  However the way it works, is that one function return a list of result and the other a result, then an append happens.
+   *  As explained above the composition of 2 functions at the time happens recursively.
    *
-   *  As a fold right it start at the end of the list, with a function returning the empty list as result.
+   *  The first combination is between the last function in the list and the terminal case function '''(of foldRight)'''.
+   *
+   *  '''The terminal case function''' is the first function to return a list and that list is empty i.e. '''unit(Nil)'''.
+   *
+   *  When composed with the last function that like every other returns just a result,
+   *
+   *  the map function of map2, combine the two results into a list, trough an append operation.
    *
    *  Then we combine up back to the first function, 2 function at the time.
    *
-   *  When we reach back the first function, it will be combined with a function that return the list of result of all the other function in the list.
+   *  When we reach back the first function, it will be composed with a function that return the list of result of all the other function in the list.
    *
-   *  Given that it is a foldRight, the order of the result is the same as the order of the application of each function (see append)
+   *  The order of the result is the same as the order of the application of each function (see below)
+   *
+   *    ==== On composition and ordering ====
+   *
+   *  '''2 things happens at the same time while coming back up:'''
+   *
+   *  -- '''The composition of 2 functions i.e. arranging their execution order via map2 ( or flatmap + map with closure )'''
+   *
+   *  -- '''The building of the result as a list of result which follow the execution order thanks to the Append operation'''
+   *
+   *   ==== On execution, ordering and stacking - An illustration attempt ====
+   *
+   *  -- ComposedFunctionA = call {FunctionA, composedFunctionB } return A::ListResultComposedFunctionB
+   *
+   *  -- composedFunctionB = call {functionB, composedFunctionC } return B::ListResultComposedFunctionC
+   *
+   *  -- .....
+   *
+   *  --ComposedFunctionLast = call {functionLast, unit(Nil)} return last::List()
    *
    *
    *
@@ -251,7 +274,6 @@ object State {
   /**
    *  == Notes - Sequence Via foldRight Raw ==
    *
-   *  The idiomatic solution is expressed via foldRight
    *
    *  '''foldRight''' return a '''composed function'''.
    *
@@ -268,14 +290,20 @@ object State {
    *
    *  === On the List of Results Order ===
    *
-   *  We build a list of results, thanks to the mapping function we pass to map2 which combine the results of its 2 inputs function
-   *  into a list of 2 results.
+   *  Our composition returns '''a list of results''', thanks to the mapping function we pass to map2
+   *  which combine the results of the application of its 2 inputs function into a list of 2 results.
    *
-   *  In other words, each composed function (bigger function), return the list of results of the two function being combined.
+   *  In other words, each composed function (bigger function), returns the list of results of the two functions being combined.
    *
-   *  However the way it works, is that one function return a list of result and the other a result, then an append happens.
+   *  As explained above the composition of 2 functions at the time happens recursively.
    *
-   *  As a fold right it start at the end of the list, with a function returning the empty list as result.
+   *  The first combination is between the last function in the list and the terminal case function (of foldRight).
+   *
+   *  The terminal case function is the first function to return a list and that is list empty i.e. '''unit(Nil)'''.
+   *
+   *  When composed with the last function that like every other returns just a result,
+   *
+   *  the map function of map2, combine the two result into a list, trough an append operation.
    *
    *  Then we combine up back to the first function, 2 function at the time.
    *
