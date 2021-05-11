@@ -183,6 +183,10 @@ object State {
    * Lift '''a''' into a state action '''s -> (a, s)''', that return '''a''' as value and maintain the input state '''s'''
    *
    * It allows among other to build neutral state action function, in operation like '''foldLeft''' and '''foldRight'''
+   *
+   * -- In '''foldLeft''' unit pass along the input state to the composed computation
+   *
+   * -- In '''foldRight''' unit pass along the returned state of the composed computation
    */
   def unit[S, A](a: A): State[S, A] = State { s => (a, s) }
 
@@ -388,7 +392,9 @@ object State {
    *
    * This gives a bigger function which is them composed with the next function in the list.
    *
-   * This goes on, 2 function at the time, until we reach the end of the List.
+   * This goes on, 2 functions at the time, until we reach the end of the List.
+   *
+   *
    *
    *
    *
