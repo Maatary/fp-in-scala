@@ -553,9 +553,15 @@ case class SimpleRNG(seed: Long) extends RNG {
 
 val nextIntState = State[RNG, Int](s => s.nextInt)
 
-//val listNextInt = List.fill(1000000)(nextIntState)
+//val listNextInt = List.fill(100000)(nextIntState)
 
-val seq = _sequence(List.fill(100000)(nextIntState))
+/** foldRight composition, will stack overflow while composing the function see [[_sequence]] */
+//val seqRight = _sequence(listNextInt)
+
+/** Will not stack overflow on composition (we accumulate the composition) **/
+//val SeqRightScala = sequence(listNextInt) //which use mutation and buffer so as a foldLeft
+/** Stack overflow at execution in any case because the composition stack calls see [[sequence]] and [[_sequence]].*/
+//SeqRightScala.run(SimpleRNG(42))
 
 //seq.run(SimpleRNG(42))
 /*
@@ -570,19 +576,6 @@ val seq = _sequence(List.fill(100000)(nextIntState))
 {println("Sequence via foldLeft Raw")} pipe { _ => sequenceBook(listNextInt).run(SimpleRNG(42))}*/
 
 
-/*sealed trait Input
-case object Coin extends Input
-case object Turn extends Input
-
-case class Machine(locked: Boolean, candies: Int, coins: Int)
-
-def insertCoin: State[Machine, Unit] = State {
-  case s@Machine(true, candies, coins) if candies > 0 => () -> s.copy(coins = coins)
-  case s@Machine(_, _, _) => () -> s
-}
-
-def turn: State[Machine, Int] = ???*/
-
 
 /**
  * The rules of the machine are as follows:
@@ -595,14 +588,7 @@ def turn: State[Machine, Int] = ???*/
  *
  *  -- A machine that’s out of candy ignores all inputs.
  */
-/*
-def simulateMachine(l: List[Input]): State[Machine, (Int, Int)] = {
 
-  l.map{case Coin => insertCoin case Turn => turn}
-
-  ???
-}
-*/
 
 /*sealed trait Input
 case object Coin extends Input
@@ -633,4 +619,31 @@ object Candy {
   //simulateMachine(Nil).run(machine)
 }*/
 
-//List(1,2,3).foldRight(0)(_ + _)
+
+//TODO revisit that one day
+//modify[Machine] _  compose Candy.update
+
+sealed trait Input
+case object Coin extends Input
+case object Turn extends Input
+
+case class Machine(locked: Boolean, candies: Int, coins: Int)
+
+object Candy {
+  def update = (i: Input) => (s: Machine) =>
+    (i, s) match {
+      case (_, Machine(_, 0, _)) => s
+      case (Coin, Machine(false, _, _)) => s
+      case (Turn, Machine(true, _, _)) => s
+      case (Coin, Machine(true, candy, coin)) =>
+        Machine(false, candy, coin + 1)
+      case (Turn, Machine(false, candy, coin)) =>
+        Machine(true, candy - 1, coin)
+    }
+
+  //modify[Machine] _  = eta expansion of modify[Machine] so we get
+  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = for {
+    _ <- sequence(inputs map (modify[Machine] _ compose update))
+    s <- get
+  } yield (s.coins, s.candies)
+}
