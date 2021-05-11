@@ -181,6 +181,8 @@ object State {
 
   /**
    * Lift '''a''' into a state action '''s -> (a, s)''', that return '''a''' as value and maintain the input state '''s'''
+   *
+   * It allows among other to build neutral state action function, in operation like '''foldLeft''' and '''foldRight'''
    */
   def unit[S, A](a: A): State[S, A] = State { s => (a, s) }
 
@@ -213,6 +215,9 @@ object State {
    *  The first combination is between the last function in the list and the terminal case function '''(of foldRight)'''.
    *
    *  '''The terminal case function''' is the first function to return a list and that list is empty i.e. '''unit(Nil)'''.
+   *
+   *  `Note that Unit(Nil) pass along its input state, ensuring last returned state of the overall composed computation is returned,`
+   *  `moreover it provides en Empty List to start combining result in a List of result while coming back up.`
    *
    *  When composed with the last function that like every other returns just a result,
    *
@@ -301,6 +306,9 @@ object State {
    *
    *  '''The terminal case function''' is the first function to return a list and that list is empty i.e. '''unit(Nil)'''.
    *
+   *  `Note that Unit(Nil) pass along its input state, ensuring last returned state of the overall composed computation is returned,`
+   *  `moreover it provides en Empty List to start combining result in a List of result while coming back up.`
+   *
    *  When composed with the last function that like every other returns just a result,
    *
    *  the map function of map2, combine the two results into a list, trough an append operation.
@@ -363,6 +371,30 @@ object State {
 
   /**
    * == Critical Notes - Via foldLeft ==
+   *
+   * see [[sequence]] and [[_sequence]] which implement the '''foldRight''' approach
+   * for an overall understanding of how the composition works.
+   * Here we simply highlight the contrast of implementing trough '''foldLeft'''
+   *
+   *
+   * As apposed to the composing order in foldRight approach, here the composition of function
+   * 2 function at the time is happening from left to right. the bigger function is on the left.
+   *
+   * That is, we build a bigger function from left to right.
+   *
+   * We start with '''Unit(Nill)''' which is composed with the first function on the list.
+   *
+   * `Unit(Nil) will simply pass along the input state, and provide en Empty List to start combining result in a List of result. `
+   *
+   * This gives a bigger function which is them composed with the next function in the list.
+   *
+   * This goes on, 2 function at the time, until we reach the end of the List.
+   *
+   *
+   *
+   *  -- Composition Order, Result Order
+   *
+   *  -- statefullness
    *
    * Need to `reverse` because it is a `foldLeft`, which build the list by reversing the order !!!
    *
