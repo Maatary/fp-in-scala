@@ -38,6 +38,14 @@ import scala.annotation.tailrec
  *    -- Where one of the function is the composition of the previous step (expect for the terminal case function).
  *
  *
+ *  == Critical: On The StateFull Nature Of State Action Function Composition ==
+ *
+ *    -- The fact that '''map2''' and '''flatMap with closure''' for state action function '''thread the output of the first function as input to the next''' implies '''Statefulness'''
+ *
+ *    -- This StateFull Nature of the combinator functions means that the order of execution matter
+ *
+ *    -- This in turn has implication on function like '''foldLeft''' and ordering see [[__sequence]] which is implemented trough a '''foldLeft'''
+ *
  */
 
 
@@ -390,39 +398,74 @@ object State {
    *
    * `Unit(Nil) will simply pass along the input state, and provide en Empty List to start combining result in a List of result. `
    *
-   * This gives a bigger function which is them composed with the next function in the list.
+   * This gives a bigger function which is the composed with the next function in the list.
    *
    * This goes on, 2 functions at the time, until we reach the end of the List.
    *
+   * === On the List of Results Order ===
    *
    *
+   * As in '''foldRight''' the execution order of the composition goes from left to right.
+   * `However the stacking at execution is triggered by the left operand of the bigger function`.
+   * The opposite of what happens when composing with the '''foldRight'''.
+   *
+   * `The output list of results of the final composed function is set up in the reverse order of the execution of the functions`
+   *
+   * That is, as we descend the list, each composed function returns as result a list of results, made of the results of the two functions being composed.
+   * More specifically, each of the function visited has his result appended to the result of the incoming composed function.
+   * Unit(Nil) represents the first composed function. It passes along the input state and return an empty List.
    *
    *
-   *  -- Composition Order, Result Order
+   *    ==== On composition and ordering ====
    *
-   *  -- statefullness
+   *  '''2 things happens at the same time while descending:'''
    *
-   * Need to `reverse` because it is a `foldLeft`, which build the list by reversing the order !!!
+   *  -- '''The composition of 2 functions i.e. arranging their execution order via map2 ( or flatmap + map with closure )'''
    *
-   * Note however that I originally reverse before composing. {{{l.reverse.foldLeft}}}
+   *  -- '''The building of the result as a list of results which is in the reverse of the function execution order,
+   *        because of the Append operation happening while descending starting with the initial Unit(Nil)'''
    *
-   * We can not do that because we sequence the computation in the reverse order !!!!
+   *
+   *   ==== On execution, ordering and stacking - An illustration attempt ====
+   *
+   *  -- `ComposedFunctionFinal = call {composedFunctionFinal-1, FunctionLast } return  ResultFunctionLast::ListResultComposedFunctionFinal-1`
+   *
+   *  -- `composedFunctionFinal-1 = call {composedFunctionFinal-2, FunctionFinal-1 } return ResultFunctionFinal-1::ListResultComposedFunctionFinal-2`
+   *
+   *  -- `.....`
+   *
+   *  -- `ComposedFunctionInit = call {unit(Nil), FunctionFirst} return FunctionFirst::List()`
+   *
+   *
+   *  -- So ultimately when running the fully composed function the first function to be executed is Unit(Nil), then the first in the List and so on.
+   *
+   *  == Critical Observation On the Implementation Accounting For The Statefulness Nature of State Action Function Composition ==
+   *
+   * Given the above explanation, the result list need to be '''reversed''' to put it in the same order as the function execution order.
+   *
+   * Note that the reversing must happen when we are done.
+   *
+   * The idiomatic foldLeft ordering trick {{{l.reverse.foldLeft}}} can't be used because we are dealing with stateful computations i.e. the order matter.
+   *
+   * '''Indeed, when we compose 2 functions with `map2`` or `flatMap with closure` the input of the second function is the output of the first !!!!'''
+   *
+   *
+   *  === Additional Observation ===
    *
    * If we were threading the same input to each function application, that would work,
    * but here the result of a function application is part of the input of the function that follows it.
    *
    * `It is a stateful computation !!!`
    *
-   * Another way to put it is: it is particularly wrong in a scenario where a `statefull application/computation`
+   * Another way to put it, is: it is particularly wrong in a scenario where a `stateful application/computation`
    * happen while doing the folding (see [[intsLeft]] in purely-functional-state-rng)
    *
-   * The proper way with a foldLeft in those scenario is to reverse after.
+   * The proper way with a foldLeft in those scenario is to reverse '''after'''.
    *
    * Here we fold into a state action, hence we must map over it to reverse its list
    *
    * {{{l.foldLeft.map}}} (it is just further composing the function)
    *
-   * -- The execution of each function and the combination of their results is happening in the order of the sequence !!!
    *
    *
    * == Book Notes: ==
@@ -443,8 +486,6 @@ object State {
   /**
    * == Critical Notes - Via foldLeft Raw ==
    *
-   * -- The execution of each function and the combination of their results is happening in the order of the sequence !!!
-   *
    */
   def ___sequence[S, A](states: List[State[S, A]]): State[S, List[A]] = {
 
@@ -454,9 +495,6 @@ object State {
       case Nil => acc map (_.reverse)
       case s::xs => ___sequenceRec(acc.map2(s)((b, a) => a :: b), xs)
 
-      // Interesting the threading order of map2 changed my result order in the right way
-      // But this was luck because the functions are the same nextInt
-      //case s::xs => ___sequenceRec(s.map2(acc)(_::_), xs)
     }
     ___sequenceRec(unit(Nil), states)
   }
