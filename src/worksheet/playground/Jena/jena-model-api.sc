@@ -31,8 +31,19 @@ val prog = for {
 
 (for {
   model <- IO {ModelFactory.createDefaultModel()}
+
   //_     <- IO {model.createResource("http://example.com/Person").addProperty(RDF.`type`, RDFS.Class)}
-  _     <- List(IO{model.createResource("urn:maat").addProperty(RDF.`type`, RDFS.Class)}, IO {model.createResource("urn:daniel").addProperty(RDF.`type`, RDFS.Class)}).sequence
+
+
+  _     <- List("urn:maat", "urn:daniel").foldLeft[IO[Unit]](IO.unit) { case (io, urn) =>
+                                                                        io.flatMap{ _ => IO { model.createResource(urn).addProperty(RDF.`type`, RDFS.Class)} }
+                                                                      }
+
+
+  //_     <- List(IO{model.createResource("urn:maat").addProperty(RDF.`type`, RDFS.Class)}, IO {model.createResource("urn:daniel").addProperty(RDF.`type`, RDFS.Class)}).sequence
+
+
   _     <- IO{model.write(System.out, Lang.TTL.getName)}
+
 } yield ()).unsafeRunSync()
 
