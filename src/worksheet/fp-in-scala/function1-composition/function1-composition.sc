@@ -15,7 +15,7 @@ val g: Int => Int = (i: Int) => i + 1
  *
  *  `If a function (g) composes another function (f)`
  *
- *  `Then that function (g) comes after that function it composes (f)`
+ *  `Then that function (g) comes after that function (f) it composes`
  *
  */
 val gcomposef = g compose f
