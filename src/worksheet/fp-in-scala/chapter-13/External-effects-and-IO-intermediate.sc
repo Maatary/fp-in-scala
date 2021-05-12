@@ -17,8 +17,8 @@ object IO { // Notice that none of these operations DO anything
   def unit[A](a: => A): IO[A] = Return(a)
 
   def forever[A,B](a: IO[A]): IO[B] = {
-    lazy val t: IO[B] = forever(a)
-     a flatMap (_ => t)
+    //lazy val t: IO[B] = forever(a) // No need for this
+     a flatMap (_ => forever(a))
   }
 }
 

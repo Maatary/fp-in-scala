@@ -1,36 +1,59 @@
-import IO.unit
+
 
 
 /**
- * We can formalize this insight a bit. Given an impure function f of type A => B, we can split f into two functions:
+ * == Notes On the meaning of IO ==
  *
- *   - A pure function of type A => D, where D is some description of the result of f.
- *   - An impure function of type D => B, which can be thought of as an interpreter of these descriptions.
+ * `The Red Book is not so good at explaining the essence and meaning of IO. It explain its technical aspect well though.`
  *
- *
- *  It turns out that even procedures like println are doing more than one thing.
- *  And they can be factored in much the same way, by introducing a new data type that we’ll call IO
- *
- *  -The meaning is that println indeed does a lot of things which end with the actual side effects, "printing to the console".
- *   See Internal of Println.
- *
- *  -"And they can be factored in much the same way" i.e. the pure part and the impure part.
- *
- *  This is weird but we can think of it as stating what needs to happen and actually manipulating the console.
- *  It is like putting together what needs to happen, and actually making it happen.
- *
- *  But the example and explanation is weird because then we keep println. We just create something that describe what needs to happens,
- *  and when run, execute the side effect. But if println was doing both things already, then we have done nothing but create a structure that reproduce / mimic
- *  what println does internally and putting some actual control into it.
- *
- *  So if internally, println put together a description of what needs to happen, before executing something that make it happen,
- *  With that structure, we implement that ability to put together what needs to happen and have some control on it and when things will happen ultimately.
- *
- *  Yes a description of what needs to happen is a value and not the effect.
+ * `For a full understanding of IO and its purpose (description of external action and
+ * hence referential transparency and local reasoning),
+ * check your notes in Evernote.`
  *
  *
- *  "All it has given us is the ability to delay when something happen"
+ * == Notes ( sometime tweaked) from the book ==
  *
+ *
+ * === Part 1 (include run, ++ and empty ) ===
+ *
+ *  The first thing we can perhaps say about IO as it stands right now '''(see basic implementation below without map and flatMap)'''
+ *  is that it forms a '''Monoid '''(empty is the identity, and ++ is the associative operation).
+ *
+ *  So if we have, for example, a List[IO], we can ''reduce'' that to a '''single IO''',
+ *  and the '''associativity''' of '''++''' means that we can do this either by '''folding left''' or '''folding right'''.
+ *  On its own, this isn’t very interesting.
+ *
+ *  '''All it seems to have given us is the ability to delay when a side effect actually happens.'''
+ *
+ * === Part 2 (include all the definition below) ===
+ *
+ * ==== Benefit of IO ====
+ *
+ *  -- '''IO computations are ordinary values'''. We can store them in lists, pass them to functions, create them dynamically,
+ *  and so on. Any common pattern can be wrapped up in a function and reused.
+ *
+ *
+ *  -- '''Reifying IO computations as values means we can craft a more interesting interpreter than the simple run method
+ *  baked into the IO type itself'''.
+ *  Later in this chapter, we’ll build a more refined IO type and sketch out an interpreter that uses non-blocking I/O in its implementation.
+ *  What’s more, as we vary the interpreter, client code remains identical — we don’t expose the representation of IO to the programmer at all!
+ *  It’s entirely an implementation detail of our IO interpreter.
+ *
+ *
+ *  ==== Issue with Implementation bellow ====
+ *
+ *  -- '''flatMap StackOverflow'''
+ *
+ *  -- '''No Concurrency support'''
+ *
+ *  -- '''A value of type IO[A] is completely opaque'''. '''It’s really just a lazy identity — a function that takes no arguments.'''
+ *  When we call run, we hope that it will eventually produce a value of type A, '''but there’s no way for us to inspect such a program and see what it might do.'''
+ *  It might hang forever and do nothing, or it might eventually do something productive.
+ *  There’s no way to tell. '''We could say that it’s too general, and as a result there’s little reasoning that we can do with IO values.'''
+ *  '''We can compose them with the monadic combinators, or we can run them, but that’s all we can do.'''
+ *
+ *
+ *  == On the stack overflow of flatMap ==
  *
  *
  *
@@ -39,6 +62,21 @@ import IO.unit
 sealed trait IO[A] { self =>
 
   def run: A
+
+  /**
+   * Coincidence: act a bit like a flatMap
+   *
+   * Sequence 2 IO Action into one Bigger Action
+   *
+   * i.e. On interpretation run the first then the second
+   *
+   * However it does not take into account the first result
+   *
+   * It Just discard it.
+   */
+  def ++(io: IO[A]): IO[A] = new IO[A] {
+    def run: A = {self.run; io.run}
+  }
 
   def map[B](f: A => B): IO[B] = new IO[B] {
     def run: B = f(self.run)
@@ -54,21 +92,33 @@ sealed trait IO[A] { self =>
     g(self.run)
   }
 
-  def ++(io: IO[A]): IO[A] = new IO[A] {
-    def run: A = {self.run; io.run}
-  }
+
 
 }
 
 object IO {
 
+  /**
+   * Lift a Value into an IO
+   */
   def unit[A](a: => A): IO[A] = new IO[A] {def run = a}
 
+  /**
+   * Construct an IO Value
+   */
   def apply[A](a: => A): IO[A] = unit(a)
 
+  /**
+   * Compose a '''List of IO Action that each return an A''' into an '''IO Action that return a List of A'''
+   */
   def sequence[A](l: List[IO[A]]): IO[List[A]] = {
     l.foldRight(unit(Nil:List[A])) {(a, b) => a.flatMap{e => b.map(e::_)} }
   }
+
+  /**
+   * Fill a list with a monadic function and then compose list of functions into a bigger function
+   * that sequence them
+   */
   def replicateM[A](n:Int)(io: IO[A]) = {
     sequence[A](List.fill[IO[A]](n)(io))
   }
@@ -80,89 +130,24 @@ object IO {
   def buildMsg(msg:String) = new IO[String] {def run = msg}
 
   def forever[A,B](a: IO[A]): IO[B] = {
-    lazy val t: IO[B] = forever(a)
-    a flatMap (_ => t)
+    a flatMap (_ => forever(a))
   }
 }
 
 /**
  * PlayGround
  */
-
-/*
-val e0 = IO.printLine("Hello") ++ IO.printLine("IO Introduction")
-e0.run
-
-val e1 = IO.buildMsg("Hello") ++ IO.buildMsg("IO Introduction")
-e1.run
-
-
-
-//import scala.io.StdIn._
-//readLine()
-
-val e3 = IO.printLine("Hello").flatMap(_ => IO.printLine("IO Introduction"))
-e3.run
-
-val e4 = for {
-  fst <- IO.printLine("Hello")
-  snd <- IO.printLine("IO Introduction")
-} yield ()
-
-e4.run*/
-
 import IO._
-import cats.Monad
 
-/*val prog = for {
-  x <- IO[String] { "hello" }
-  y <- IO[String] { "IO Introduction"}
-  _ <- IO {println(x + " " + y)}
-} yield ()
+//Create an IO Value i.e. description of an action that affect the state of the world
+val ptrl1 = printLine("Hello IO") //An IO Action which when run, returns nothing
+val ptrl2 = printLine("An Introduction")
 
-prog.run
+// Interpret the IO Action i.e. run the action
+ptrl1.run // Do the effect and returns nothing
 
-replicateM(3)(IO{ "replicate 3 times"}).run
+//++ sequence the two actions into a bigger action.
+(ptrl1 ++ ptrl2).run  // Do the effect and returns nothing
 
-import cats.syntax.all._
-
-Monad[Option].replicateA(3, Some(10))
-
-val list0 = /*List[Either[Int, Int]](Right(10))*/ List.fill[Either[Int, Int]](3)(Right(10))
-
-val list1 = /*List[Option[Int]](Some(1), Some(2))*/ List.fill[Option[Int]](3)(Some(1))
-
-list0.sequence
-
-list1.sequence
-
-Some(2).flatMap(_ => Some(3))*/
-
-
-
-/*def factorial(n: Int) = {
-  def factorialRec(acc: Int, n: Int): Int =  n match {
-    case 0 => acc
-    case _ => factorialRec(acc * n, n - 1)
-  }
-  factorialRec(1, n)
-}
-
-val io1 = IO { println("Exc1") }.flatMap{_ => IO { println("Exec2") }}
-
-
-
-io1.run
-
-val io2 = IO { println("Exc10") }._flatMap{_ => IO { println("Exec22") }}
-
-
-
-println("after")
-
-
-
-
-io2.run*/
-
-IO.forever(IO{"println"}).run
+//This stackoverflow
+forever(printLine("forever hello")).run
