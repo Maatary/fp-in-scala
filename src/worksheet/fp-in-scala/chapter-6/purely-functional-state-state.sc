@@ -590,38 +590,45 @@ val nextIntState = State[RNG, Int](s => s.nextInt)
  */
 
 
-/*sealed trait Input
-case object Coin extends Input
-case object Turn extends Input
-
-case class Machine(locked: Boolean, candies: Int, coins: Int)
-
-object Candy {
-  def update = (i: Input) => (s: Machine) =>
-    (i, s) match {
-      case (_, Machine(_, 0, _)) => s
-      case (Coin, Machine(false, _, _)) => s
-      case (Turn, Machine(true, _, _)) => s
-      case (Coin, Machine(true, candy, coin)) =>
-        Machine(false, candy, coin + 1)
-      case (Turn, Machine(false, candy, coin)) =>
-        Machine(true, candy - 1, coin)
-    }
-
-  // modify[Machine] _ compose update = input => modify(update(input))
-  // = input => modify[Machine] i.e. ( modify(f: Machine => Machine) )
-  // sequence(modify[Machine])
-  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = for {
-    _ <- sequence(inputs map (modify[Machine] _ compose update) )
-    s <- get
-  } yield (s.coins, s.candies)
-
-  //simulateMachine(Nil).run(machine)
-}*/
 
 
-//TODO revisit that one day
-//modify[Machine] _  compose Candy.update
+
+
+/**
+ * `update:            Input => Machine => Machine`
+ *
+ * `modify[Machine]:  (Machine => Machine) => State[Machine, Unit]`
+ *
+ * `modify[Machine] _  compose Candy.update   == modify after update  == modify(update)`
+ *
+ * `modify[Machine] _  compose Candy.update = update andThen modify[Machine]`
+ *
+ * `modify(update): Input => State[Machine, Unit]`
+ *
+ * `inputs map modify(update) == List[State[Machine, Unit]]`
+ *
+ * === Critical Observation ===
+ *
+ * -- Remember that modify returns a state action function
+ *
+ * -- It seems it does not care about the value returned, only the state.
+ *
+ * -- When an input is passed to update we get a specific Machine => Machine function
+ *
+ *
+ *
+ * -- The key is really to keep in mind that with modify you are building a state action function.
+ *
+ * -- However it is a state action function focused on the state returned rather than the value.
+ *
+ * -- It seems it is with the understanding that ultimately the value will be picked up from the state with get and map
+ *
+ * -- In this particular example the value returned by the state action is not important because everything is tracked in the state.
+ *
+ *
+ *
+ */
+
 
 sealed trait Input
 case object Coin extends Input
@@ -630,8 +637,8 @@ case object Turn extends Input
 case class Machine(locked: Boolean, candies: Int, coins: Int)
 
 object Candy {
-  def update = (i: Input) => (s: Machine) =>
-    (i, s) match {
+
+  def update = (i: Input) => (s: Machine) => (i, s) match {
       case (_, Machine(_, 0, _)) => s
       case (Coin, Machine(false, _, _)) => s
       case (Turn, Machine(true, _, _)) => s
@@ -641,9 +648,14 @@ object Candy {
         Machine(true, candy - 1, coin)
     }
 
-  //modify[Machine] _  = eta expansion of modify[Machine] so we get
+
   def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = for {
-    _ <- sequence(inputs map (modify[Machine] _ compose update))
-    s <- get
-  } yield (s.coins, s.candies)
+
+    _ <- sequence(inputs map (modify[Machine] _ compose update)) //
+
+    s <- get // compose as in flapMap with a function (get) that retrieve final state
+
+  } yield (s.coins, s.candies) // map over the state action which as the state as a value (the returned value is generated from the state)
 }
+
+modify[Machine] _  compose Candy.update
