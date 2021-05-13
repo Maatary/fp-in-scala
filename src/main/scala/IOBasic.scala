@@ -1,5 +1,61 @@
 
-
+/**
+ * == Notes On the meaning of IO ==
+ *
+ * `The Red Book is not so good at explaining the essence and meaning of IO. It explain its technical aspect well though.`
+ *
+ * `For a full understanding of IO and its purpose (description of external action and
+ * hence referential transparency and local reasoning),
+ * check your notes in Evernote.`
+ *
+ *
+ * == Notes ( sometime tweaked) from the book ==
+ *
+ *
+ * === Part 1 (include run, ++ and empty ) ===
+ *
+ *  The first thing we can perhaps say about IO as it stands right now '''(see basic implementation below without map and flatMap)'''
+ *  is that it forms a '''Monoid '''(empty is the identity, and ++ is the associative operation).
+ *
+ *  So if we have, for example, a List[IO], we can ''reduce'' that to a '''single IO''',
+ *  and the '''associativity''' of '''++''' means that we can do this either by '''folding left''' or '''folding right'''.
+ *  On its own, this isn’t very interesting.
+ *
+ *  '''All it seems to have given us is the ability to delay when a side effect actually happens.'''
+ *
+ * === Part 2 (include all the definition below) ===
+ *
+ * ==== Benefit of IO ====
+ *
+ *  -- '''IO computations are ordinary values'''. We can store them in lists, pass them to functions, create them dynamically,
+ *  and so on. Any common pattern can be wrapped up in a function and reused.
+ *
+ *
+ *  -- '''Reifying IO computations as values means we can craft a more interesting interpreter than the simple run method
+ *  baked into the IO type itself'''.
+ *  Later in this chapter, we’ll build a more refined IO type and sketch out an interpreter that uses non-blocking I/O in its implementation.
+ *  What’s more, as we vary the interpreter, client code remains identical — we don’t expose the representation of IO to the programmer at all!
+ *  It’s entirely an implementation detail of our IO interpreter.
+ *
+ *
+ *  ==== Issue with Implementation bellow ====
+ *
+ *  -- '''flatMap StackOverflow'''
+ *
+ *  -- '''No Concurrency support'''
+ *
+ *  -- '''A value of type IO[A] is completely opaque'''. '''It’s really just a lazy identity — a function that takes no arguments.'''
+ *  When we call run, we hope that it will eventually produce a value of type A, '''but there’s no way for us to inspect such a program and see what it might do.'''
+ *  It might hang forever and do nothing, or it might eventually do something productive.
+ *  There’s no way to tell. '''We could say that it’s too general, and as a result there’s little reasoning that we can do with IO values.'''
+ *  '''We can compose them with the monadic combinators, or we can run them, but that’s all we can do.'''
+ *
+ *
+ *  == On the stack overflow of flatMap ==
+ *
+ *   see [[flatMap]]
+ *
+ */
 sealed trait IO[A] { self =>
 
   def run: A
@@ -24,6 +80,10 @@ sealed trait IO[A] { self =>
   }
 
   /**
+   *
+   *  FlatMap compose a bigger function out of the to input IO Function (see run).
+   *
+   *  However this implementation of flatMap Stackoverflow if the chain of flatMap is long.
    *
    *
    *  == On flatMap Recursion with Forever ==
@@ -115,16 +175,11 @@ object IOBasic extends App {
 
   import IO._
 
-/*
   val printHello   = new IO[Unit] {def run: Unit = println("Hello Forever")}
 
   val foreverHello = forever(printHello)
 
   foreverHello.run
-*/
 
-  def rec:Int = rec
-
-  rec
 
 }

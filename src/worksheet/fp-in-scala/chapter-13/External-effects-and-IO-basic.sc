@@ -55,6 +55,7 @@
  *
  *  == On the stack overflow of flatMap ==
  *
+ *  see [[flatMap]]
  *
  *
  */
@@ -81,8 +82,43 @@ sealed trait IO[A] { self =>
   def map[B](f: A => B): IO[B] = new IO[B] {
     def run: B = f(self.run)
   }
-
-  // Here we build a function see `def run`
+  /**
+   *
+   * FlatMap compose a bigger function out of the to input IO Function (see run).
+   *
+   * However this implementation of flatMap Stackoverflow if the chain of flatMap is long
+   *
+   *  == On flatMap Recursion with Forever ==
+   *
+   *  '''The recursion call behave as such'''
+   *
+   *  - run()
+   *      - newIO = forever(a)
+   *      - newIO.run()
+   *                - newIO = forever(a)
+   *                - newIO.run()
+   *                          - newIO = forever(a)
+   *                          - newIO.run()
+   *
+   *
+   *  `Note that for Debug purpose we rewrote the flatMap run method as as follow:`
+   *
+   *  -- we decompose: {{{g(self.run).run}}}
+   *
+   *  -- into {{{forever(a).run }}}
+   *
+   *  -- and ultimately {{{ { newIO = forever(a); newIO.run } }}}
+   *
+   *
+   * === Comment from Github and stack overflow on the issue ===
+   *
+   *  -- Although it seems to be in tail-recursive form, the compiler can't possibly know what f is returning and hence applies the static optimization
+   *  (see [[https://github.com/fpinscala/fpinscala/issues/517]]).
+   *
+   *  -- Other notes on this (see [[https://stackoverflow.com/questions/43487391/how-is-lazy-interpreted-in-recursive-context]]) .
+   *
+   *
+   */
   def flatMap[B](g: A => IO[B]): IO[B] = new IO[B] {
     def run = g(self.run).run
   }
@@ -126,8 +162,6 @@ object IO {
   def empty: IO[Unit] = new IO[Unit] { def run: Unit = () }
 
   def printLine(msg: String): IO[Unit] = new IO[Unit] {def run: Unit = println(msg)}
-
-  def buildMsg(msg:String) = new IO[String] {def run = msg}
 
   def forever[A,B](a: IO[A]): IO[B] = {
     a flatMap (_ => forever(a))
