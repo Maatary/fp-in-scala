@@ -88,7 +88,7 @@ sealed trait IO[A] { self =>
    *
    *  == On flatMap Recursion with Forever ==
    *
-   *  '''The recursion call behave as such'''
+   *  '''The recursion call behave as such (skipping the self.run evaluation for simplification)'''
    *
    *  - run()
    *      - newIO = forever(a)
