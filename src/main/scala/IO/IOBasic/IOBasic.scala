@@ -116,7 +116,7 @@ object IO {
    * -- `(y flatMap g) flatMap f --> y flatMap (a => g(a) flatMap f)`
    *
    *
-   * -- `FlatMap( FlatMap (y , g) , f ) ` --> `FlatMap( y, FlatMap (g, f) )`
+   * -- `FlatMap( FlatMap (y , g) , f ) ` --> `FlatMap( y, a => FlatMap (g(a), f) )`
    *
    *
    * --
@@ -129,11 +129,16 @@ object IO {
 
     case Suspend(r) => r()
 
-    case FlatMap(x, f) => x match {
+    case FlatMap(x, f) => x match { // things not to do run(f(run(x))) //can stackoverflow because of inner run
+
       case Return(a) => run(f (a))
+
       case Suspend(r) => run(f( r()))
-      case FlatMap(y, g) => run(y flatMap (a => g(a) flatMap f)) // y flatMap (a => g(a) flatMap f) == FlatMap( y, FlatMap (g, f) )
-      //case _ => run(f(run(x))) //can stackoverflow because of inner run
+
+      case FlatMap(y, g) => run(y flatMap (a => g(a) flatMap f)) //  FlatMap( FlatMap (y , g) , f ) --> FlatMap( y, a => FlatMap (g(a), f) )
+
+      //case FlatMap(y, g)  => run (  FlatMap (y, { (e:Any) => FlatMap ( g (e), f) } )  )
+
     }
   }
 
@@ -159,6 +164,21 @@ object IOBasic extends App {
    */
   val p = forever(printLine("Hello forever ... "))
 
-  run(p)
+  //run(p) //No Overflow
 
+  def f: Int => IO[Int] = (x: Int) => Return(x * 2)
+
+  val fun = List.fill(4)(f).foldLeft[(Int => IO[Int])](f) {
+
+    // Why not ? Because you have no delay no () => A, no suspension (Kind of if we consider the flatMap structure build that need to be interpreted)
+    // I don't think it really makes a difference here.
+    //TODO investigate this
+    //case (a,b) => { (x:Int) => a(x) flatMap b }
+
+    case (a,b) => {  x => Suspend( () => () ) flatMap { _ => a(x).flatMap(b)}  }// Book trick, i don't like it. Just to have a suspend but why
+
+    //case (a,b) => (x:Int) => Suspend ( () => a(x).flatMap(b) ) } errata error
+  }
+
+  println(run(fun(2)))
 }
