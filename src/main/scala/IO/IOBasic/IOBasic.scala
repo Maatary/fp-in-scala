@@ -98,20 +98,41 @@ object IO {
 
   /**
    *
-   * There is only one sensible way to implement this as a
-   * tail-recursive function, the one tricky case is left-nested
-   * flatMaps, as in `((a flatMap f) flatMap g)`, which we
-   * reassociate to the right as `a flatMap (ar => f(a) flatMap g)`
+   * -- If '''x''' is itself a '''FlatMap constructor''' , then we know that '''IO''' consists of '''two FlatMap constructors''' '''nested''' on the '''left''':
+   *
+   *
+   *
+   *
+   * -- `FlatMap( FlatMap (y , g) , f ) ` ==  ` ( y flatMap g ) flatMap f `
+   *
+   *
+   *
+   *
+   * -- We then '''re-associate it to the right''' as such:
+   *
+   *
+   *
+   *
+   * -- `(y flatMap g) flatMap f --> y flatMap (a => g(a) flatMap f)`
+   *
+   *
+   * -- `FlatMap( FlatMap (y , g) , f ) ` --> `FlatMap( y, FlatMap (g, f) )`
+   *
+   *
+   * --
    *
    */
   @annotation.tailrec
   def run[A](io: IO[A]): A = io match {
+
     case Return(a) => a
+
     case Suspend(r) => r()
+
     case FlatMap(x, f) => x match {
       case Return(a) => run(f (a))
       case Suspend(r) => run(f( r()))
-      case FlatMap(y, g) => run(y flatMap (a => g(a) flatMap f))
+      case FlatMap(y, g) => run(y flatMap (a => g(a) flatMap f)) // y flatMap (a => g(a) flatMap f) == FlatMap( y, FlatMap (g, f) )
       //case _ => run(f(run(x))) //can stackoverflow because of inner run
     }
   }
