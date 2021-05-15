@@ -155,6 +155,25 @@ object IO {
   }
 
   /**
+   *  -- This is just to make clear that '''Fold IO''' is not '''Sequence IO'''
+   *
+   *  -- This is one way of folding just for illustration
+   *
+   *  -- Folding should not be part of the IO dataType
+   *
+   *  -- How you fold (i.e. its meaning) depend on what is being done)
+   *
+   *  -- For instance the flatMapping could be stateful while here it is not.
+   *
+   *  -- Check jena-model-api.sc to this an example of folding where closure is used,
+   *     but that could easily be transformed in a stateful composition of action action.
+   *
+   */
+  def foldRights[A] (a: => A) (l: List[IO[A]]): IO[A] = {
+    l.foldRight(unit[A](a)) { (a, b) => a.flatMap{_ => b} }
+  }
+
+  /**
    * Fill a list with a monadic function and then compose list of functions into a bigger function
    * that sequence them
    */
