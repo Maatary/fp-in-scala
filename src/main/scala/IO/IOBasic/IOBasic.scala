@@ -180,5 +180,10 @@ object IOBasic extends App {
     //case (a,b) => (x:Int) => Suspend ( () => a(x).flatMap(b) ) } errata error
   }
 
-  println(run(fun(2)))
+  scribe.elapsed {
+    scribe.info("started run(fun2)")
+    println(run(fun(2)))
+    scribe.info("run(fun2) was successful")
+  }
+
 }
