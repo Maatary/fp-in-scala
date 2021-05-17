@@ -31,6 +31,7 @@ scalacOptions := Seq(
   "-Xlint:implicit-not-found",
   "-Wextra-implicit",
   "-Wunused:implicits",
+  "-Wunused:locals"
   //"-g:notailcalls"
   //"-Wself-implicit",
   //"-Vimplicits"
