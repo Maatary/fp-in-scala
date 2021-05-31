@@ -1,0 +1,5905 @@
+# baseURI: https://data.elsevier.com/lifescience/data/rdbsenrichchema/resnet
+# imports: https://data.elsevier.com/lifescience/schema/rdbs
+
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdbs: <https://data.elsevier.com/lifescience/schema/rdbs/> .
+@prefix rdbsrn: <https://data.elsevier.com/lifescience/data/rdbsenrichchema/resnet/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://data.elsevier.com/lifescience/data/rdbsenrichchema/resnet>
+  a owl:Ontology ;
+  owl:imports <https://data.elsevier.com/lifescience/schema/rdbs> ;
+  sh:declare [
+      sh:namespace "https://data.elsevier.com/lifescience/data/rdbsenrichchema/resnet/"^^xsd:anyURI ;
+      sh:prefix "base" ;
+    ] ;
+  sh:declare [
+      sh:namespace "https://data.elsevier.com/lifescience/schema/resnet/"^^xsd:anyURI ;
+      sh:prefix "schema" ;
+    ] ;
+.
+rdbsrn:AnnotationProps
+  a rdbs:Table ;
+  rdfs:label "AnnotationProps" ;
+  rdbs:hasColumn rdbsrn:AnnotationProps_ID ;
+  rdbs:hasColumn rdbsrn:AnnotationProps_idObject ;
+  rdbs:hasColumn rdbsrn:AnnotationProps_idPropertyType ;
+  rdbs:hasColumn rdbsrn:AnnotationProps_nType ;
+.
+rdbsrn:AnnotationProps_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:AnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:AnnotationProps_idObject
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:AnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Annotations_ID ;
+.
+rdbsrn:AnnotationProps_idPropertyType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:AnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:AnnotationProps_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:AnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Annotations
+  a rdbs:AnnotationTable ;
+  a rdbs:Table ;
+  rdfs:label "Annotations" ;
+  rdbs:hasColumn rdbsrn:Annotations_ID ;
+  rdbs:hasColumn rdbsrn:Annotations_URN ;
+  rdbs:hasColumn rdbsrn:Annotations_dateCreated ;
+  rdbs:hasColumn rdbsrn:Annotations_dateModified ;
+  rdbs:hasColumn rdbsrn:Annotations_idGroupNode ;
+  rdbs:hasColumn rdbsrn:Annotations_idNode ;
+  rdbs:hasColumn rdbsrn:Annotations_idObjectType ;
+  rdbs:hasColumn rdbsrn:Annotations_idOntology ;
+  rdbs:hasColumn rdbsrn:Annotations_idOwner ;
+  rdbs:hasColumn rdbsrn:Annotations_idRelationship ;
+.
+rdbsrn:Annotations_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Annotations_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Annotations_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Annotations_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Annotations_idGroupNode
+  a rdbs:AnnotationTargetVerticeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idGroupNode" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:Annotations_idNode
+  a rdbs:AnnotationSourceVerticeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:Annotations_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Annotations_idOntology
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:OntologyIdColumn ;
+  rdfs:label "idOntology" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:Annotations_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Annotations_idRelationship
+  a rdbs:AnnotationRelationIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idRelationship" ;
+  rdbs:belongsToTable rdbsrn:Annotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:AttributeDataType_idPropertyValue
+  a rdbs:AttributeDataType ;
+  rdfs:label "idPropertyValue" ;
+.
+rdbsrn:AttributeDataType_lPropertyValue
+  a rdbs:AttributeDataType ;
+  rdfs:label "lPropertyValue" ;
+.
+rdbsrn:AttributeDataType_rPropertyValue
+  a rdbs:AttributeDataType ;
+  rdfs:label "rPropertyValue" ;
+.
+rdbsrn:AttributeDataType_sLongPropertyValue
+  a rdbs:AttributeDataType ;
+  rdfs:label "sLongPropertyValue" ;
+.
+rdbsrn:AttributeDataType_sPropertyValue
+  a rdbs:AttributeDataType ;
+  rdfs:label "sPropertyValue" ;
+.
+rdbsrn:ChipMaps
+  a rdbs:Table ;
+  rdfs:label "ChipMaps" ;
+  rdbs:hasColumn rdbsrn:ChipMaps_URN ;
+  rdbs:hasColumn rdbsrn:ChipMaps_idChip ;
+  rdbs:hasColumn rdbsrn:ChipMaps_sMicroarrayID ;
+.
+rdbsrn:ChipMaps_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:ChipMaps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ChipMaps_idChip
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idChip" ;
+  rdbs:belongsToTable rdbsrn:ChipMaps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Chips_ID ;
+.
+rdbsrn:ChipMaps_sMicroarrayID
+  a rdbs:Column ;
+  rdfs:label "sMicroarrayID" ;
+  rdbs:belongsToTable rdbsrn:ChipMaps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Chips
+  a rdbs:Table ;
+  rdfs:label "Chips" ;
+  rdbs:hasColumn rdbsrn:Chips_ID ;
+  rdbs:hasColumn rdbsrn:Chips_dateCreated ;
+  rdbs:hasColumn rdbsrn:Chips_idManufacturer ;
+  rdbs:hasColumn rdbsrn:Chips_idObjectType ;
+  rdbs:hasColumn rdbsrn:Chips_idOrganism ;
+  rdbs:hasColumn rdbsrn:Chips_idOwner ;
+  rdbs:hasColumn rdbsrn:Chips_sDescription ;
+  rdbs:hasColumn rdbsrn:Chips_sName ;
+.
+rdbsrn:Chips_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Chips_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Chips_idManufacturer
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idManufacturer" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:Chips_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Chips_idOrganism
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOrganism" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:Chips_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Chips_sDescription
+  a rdbs:Column ;
+  rdfs:label "sDescription" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Chips_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:Chips ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Clipboard
+  a rdbs:Table ;
+  rdfs:label "Clipboard" ;
+  rdbs:hasColumn rdbsrn:Clipboard_cut ;
+  rdbs:hasColumn rdbsrn:Clipboard_flags ;
+  rdbs:hasColumn rdbsrn:Clipboard_idObject ;
+  rdbs:hasColumn rdbsrn:Clipboard_idObjectClass ;
+  rdbs:hasColumn rdbsrn:Clipboard_idSession ;
+.
+rdbsrn:Clipboard_cut
+  a rdbs:Column ;
+  rdfs:label "cut" ;
+  rdbs:belongsToTable rdbsrn:Clipboard ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Clipboard_flags
+  a rdbs:Column ;
+  rdfs:label "flags" ;
+  rdbs:belongsToTable rdbsrn:Clipboard ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Clipboard_idObject
+  a rdbs:Column ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:Clipboard ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Clipboard_idObjectClass
+  a rdbs:Column ;
+  rdfs:label "idObjectClass" ;
+  rdbs:belongsToTable rdbsrn:Clipboard ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Clipboard_idSession
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idSession" ;
+  rdbs:belongsToTable rdbsrn:Clipboard ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Sessions_ID ;
+.
+rdbsrn:ControlAttachments
+  a rdbs:Table ;
+  rdfs:label "ControlAttachments" ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_Data ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_ID ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_dateModified ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_idControl ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_idOwner ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_idRelatedNode ;
+  rdbs:hasColumn rdbsrn:ControlAttachments_nDatatype ;
+.
+rdbsrn:ControlAttachments_Data
+  a rdbs:Column ;
+  rdfs:label "Data" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:ControlAttachments_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ControlAttachments_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ControlAttachments_idControl
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idControl" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Controls_ID ;
+.
+rdbsrn:ControlAttachments_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:ControlAttachments_idRelatedNode
+  a rdbs:Column ;
+  rdfs:label "idRelatedNode" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ControlAttachments_nDatatype
+  a rdbs:Column ;
+  rdfs:label "nDatatype" ;
+  rdbs:belongsToTable rdbsrn:ControlAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ControlProps
+  a rdbs:EdgeAttributeTable ;
+  a rdbs:Table ;
+  rdfs:label "ControlProps" ;
+  rdbs:hasColumn rdbsrn:ControlProps_ID ;
+  rdbs:hasColumn rdbsrn:ControlProps_idObject ;
+  rdbs:hasColumn rdbsrn:ControlProps_idPropertyType ;
+  rdbs:hasColumn rdbsrn:ControlProps_nType ;
+.
+rdbsrn:ControlProps_ID
+  a rdbs:AttributeIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:ControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ControlProps_idObject
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:ObjectIdColumn ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:ControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Controls_ID ;
+.
+rdbsrn:ControlProps_idPropertyType
+  a rdbs:AttributeTypeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:ControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:ControlProps_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:ControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Controls
+  a rdbs:EdgeTable ;
+  a rdbs:Table ;
+  rdfs:label "Controls" ;
+  rdbs:hasColumn rdbsrn:Controls_ID ;
+  rdbs:hasColumn rdbsrn:Controls_URN ;
+  rdbs:hasColumn rdbsrn:Controls_bitSource ;
+  rdbs:hasColumn rdbsrn:Controls_dateCreated ;
+  rdbs:hasColumn rdbsrn:Controls_dateModified ;
+  rdbs:hasColumn rdbsrn:Controls_flags ;
+  rdbs:hasColumn rdbsrn:Controls_idEffect ;
+  rdbs:hasColumn rdbsrn:Controls_idMechanism ;
+  rdbs:hasColumn rdbsrn:Controls_idObjectType ;
+  rdbs:hasColumn rdbsrn:Controls_idOwner ;
+  rdbs:hasColumn rdbsrn:Controls_idPrototype ;
+.
+rdbsrn:Controls_ID
+  a rdbs:ObjectIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Controls_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Controls_bitSource
+  a rdbs:Column ;
+  rdfs:label "bitSource" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Controls_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Controls_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Controls_flags
+  a rdbs:Column ;
+  rdfs:label "flags" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Controls_idEffect
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idEffect" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:Controls_idMechanism
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idMechanism" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:Controls_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:ObjectTypeIdColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Controls_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Controls_idPrototype
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPrototype" ;
+  rdbs:belongsToTable rdbsrn:Controls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Controls_ID ;
+.
+rdbsrn:Dict
+  a rdbs:DictionaryTable ;
+  a rdbs:Table ;
+  rdfs:label "Dict" ;
+  rdbs:hasColumn rdbsrn:Dict_ID ;
+  rdbs:hasColumn rdbsrn:Dict_URN ;
+  rdbs:hasColumn rdbsrn:Dict_idParentFolder ;
+  rdbs:hasColumn rdbsrn:Dict_sPropertyValue ;
+  rdbs:hasColumn rdbsrn:Dict_sTypeName ;
+.
+rdbsrn:DictAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "DictAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:DictAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:DictAnnotationProps_idPropertyValue ;
+  rdbs:hasColumn rdbsrn:DictAnnotationProps_nIndex ;
+.
+rdbsrn:DictAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:DictAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:AnnotationProps_ID ;
+.
+rdbsrn:DictAnnotationProps_idPropertyValue
+  a rdbs:Column ;
+  rdfs:label "idPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:DictAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:DictAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:DictAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:DictControlProps
+  a rdbs:EdgeTypedAttributeValueTable ;
+  a rdbs:Table ;
+  rdfs:label "DictControlProps" ;
+  rdbs:hasColumn rdbsrn:DictControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:DictControlProps_idPropertyValue ;
+  rdbs:hasColumn rdbsrn:DictControlProps_nIndex ;
+.
+rdbsrn:DictControlProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:DictControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ControlProps_ID ;
+.
+rdbsrn:DictControlProps_idPropertyValue
+  a rdbs:DictionaryIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "idPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:DictControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:DictControlProps_nIndex
+  a rdbs:IndexValueColumn ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:DictControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:DictHierarchy
+  a rdbs:Table ;
+  rdfs:label "DictHierarchy" ;
+  rdbs:hasColumn rdbsrn:DictHierarchy_ID ;
+  rdbs:hasColumn rdbsrn:DictHierarchy_idParentFolder ;
+  rdbs:hasColumn rdbsrn:DictHierarchy_idPropertyType ;
+  rdbs:hasColumn rdbsrn:DictHierarchy_sFolderName ;
+.
+rdbsrn:DictHierarchy_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:DictHierarchy ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:DictHierarchy_idParentFolder
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idParentFolder" ;
+  rdbs:belongsToTable rdbsrn:DictHierarchy ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:DictHierarchy_ID ;
+.
+rdbsrn:DictHierarchy_idPropertyType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:DictHierarchy ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:DictHierarchy_sFolderName
+  a rdbs:Column ;
+  rdfs:label "sFolderName" ;
+  rdbs:belongsToTable rdbsrn:DictHierarchy ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:DictNodeProps
+  a rdbs:Table ;
+  a rdbs:VerticeTypedAttributeValueTable ;
+  rdfs:label "DictNodeProps" ;
+  rdbs:hasColumn rdbsrn:DictNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:DictNodeProps_idPropertyValue ;
+.
+rdbsrn:DictNodeProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:DictNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:NodeProps_ID ;
+.
+rdbsrn:DictNodeProps_idPropertyValue
+  a rdbs:DictionaryIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "idPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:DictNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:Dict_ID
+  a rdbs:DictionaryIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Dict ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Dict_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:Dict ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Dict_idParentFolder
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idParentFolder" ;
+  rdbs:belongsToTable rdbsrn:Dict ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:DictHierarchy_ID ;
+.
+rdbsrn:Dict_sPropertyValue
+  a rdbs:DictionaryValueColumn ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:Dict ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Dict_sTypeName
+  a rdbs:Column ;
+  rdfs:label "sTypeName" ;
+  rdbs:belongsToTable rdbsrn:Dict ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:ExpAttachments
+  a rdbs:Table ;
+  rdfs:label "ExpAttachments" ;
+  rdbs:hasColumn rdbsrn:ExpAttachments_Data ;
+  rdbs:hasColumn rdbsrn:ExpAttachments_ID ;
+  rdbs:hasColumn rdbsrn:ExpAttachments_dateModified ;
+  rdbs:hasColumn rdbsrn:ExpAttachments_idExperiment ;
+  rdbs:hasColumn rdbsrn:ExpAttachments_idOwner ;
+  rdbs:hasColumn rdbsrn:ExpAttachments_nDatatype ;
+.
+rdbsrn:ExpAttachments_Data
+  a rdbs:Column ;
+  rdfs:label "Data" ;
+  rdbs:belongsToTable rdbsrn:ExpAttachments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:ExpAttachments_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:ExpAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ExpAttachments_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:ExpAttachments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ExpAttachments_idExperiment
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idExperiment" ;
+  rdbs:belongsToTable rdbsrn:ExpAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Experiments_ID ;
+.
+rdbsrn:ExpAttachments_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:ExpAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:ExpAttachments_nDatatype
+  a rdbs:Column ;
+  rdfs:label "nDatatype" ;
+  rdbs:belongsToTable rdbsrn:ExpAttachments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments
+  a rdbs:Table ;
+  rdfs:label "Experiments" ;
+  rdbs:hasColumn rdbsrn:Experiments_ID ;
+  rdbs:hasColumn rdbsrn:Experiments_data ;
+  rdbs:hasColumn rdbsrn:Experiments_dateCreated ;
+  rdbs:hasColumn rdbsrn:Experiments_idObjectType ;
+  rdbs:hasColumn rdbsrn:Experiments_idOwner ;
+  rdbs:hasColumn rdbsrn:Experiments_nRows ;
+  rdbs:hasColumn rdbsrn:Experiments_nRowsMapped ;
+  rdbs:hasColumn rdbsrn:Experiments_nSamples ;
+  rdbs:hasColumn rdbsrn:Experiments_nType ;
+  rdbs:hasColumn rdbsrn:Experiments_sDescription ;
+  rdbs:hasColumn rdbsrn:Experiments_sName ;
+  rdbs:hasColumn rdbsrn:Experiments_statistics ;
+.
+rdbsrn:Experiments_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments_data
+  a rdbs:Column ;
+  rdfs:label "data" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Experiments_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Experiments_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Experiments_nRows
+  a rdbs:Column ;
+  rdfs:label "nRows" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments_nRowsMapped
+  a rdbs:Column ;
+  rdfs:label "nRowsMapped" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments_nSamples
+  a rdbs:Column ;
+  rdfs:label "nSamples" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Experiments_sDescription
+  a rdbs:Column ;
+  rdfs:label "sDescription" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Experiments_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Experiments_statistics
+  a rdbs:Column ;
+  rdfs:label "statistics" ;
+  rdbs:belongsToTable rdbsrn:Experiments ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:FolderObjects
+  a rdbs:Table ;
+  rdfs:label "FolderObjects" ;
+  rdbs:hasColumn rdbsrn:FolderObjects_flags ;
+  rdbs:hasColumn rdbsrn:FolderObjects_idFolder ;
+  rdbs:hasColumn rdbsrn:FolderObjects_idObject ;
+  rdbs:hasColumn rdbsrn:FolderObjects_idObjectClass ;
+.
+rdbsrn:FolderObjects_flags
+  a rdbs:Column ;
+  rdfs:label "flags" ;
+  rdbs:belongsToTable rdbsrn:FolderObjects ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:FolderObjects_idFolder
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idFolder" ;
+  rdbs:belongsToTable rdbsrn:FolderObjects ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Folders_ID ;
+.
+rdbsrn:FolderObjects_idObject
+  a rdbs:Column ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:FolderObjects ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:FolderObjects_idObjectClass
+  a rdbs:Column ;
+  rdfs:label "idObjectClass" ;
+  rdbs:belongsToTable rdbsrn:FolderObjects ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Folders
+  a rdbs:Table ;
+  rdfs:label "Folders" ;
+  rdbs:hasColumn rdbsrn:Folders_ID ;
+  rdbs:hasColumn rdbsrn:Folders_flags ;
+  rdbs:hasColumn rdbsrn:Folders_idContentObjectType ;
+  rdbs:hasColumn rdbsrn:Folders_idGroup ;
+  rdbs:hasColumn rdbsrn:Folders_idOwner ;
+  rdbs:hasColumn rdbsrn:Folders_idParent ;
+  rdbs:hasColumn rdbsrn:Folders_nOrder ;
+  rdbs:hasColumn rdbsrn:Folders_nType ;
+  rdbs:hasColumn rdbsrn:Folders_sDescription ;
+  rdbs:hasColumn rdbsrn:Folders_sName ;
+.
+rdbsrn:Folders_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Folders_flags
+  a rdbs:Column ;
+  rdfs:label "flags" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Folders_idContentObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idContentObjectType" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Folders_idGroup
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idGroup" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Groups_ID ;
+.
+rdbsrn:Folders_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Folders_idParent
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idParent" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Folders_ID ;
+.
+rdbsrn:Folders_nOrder
+  a rdbs:Column ;
+  rdfs:label "nOrder" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Folders_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Folders_sDescription
+  a rdbs:Column ;
+  rdfs:label "sDescription" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Folders_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:Folders ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:GroupMembers
+  a rdbs:Table ;
+  rdfs:label "GroupMembers" ;
+  rdbs:hasColumn rdbsrn:GroupMembers_idGroup ;
+  rdbs:hasColumn rdbsrn:GroupMembers_idUser ;
+.
+rdbsrn:GroupMembers_idGroup
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idGroup" ;
+  rdbs:belongsToTable rdbsrn:GroupMembers ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Groups_ID ;
+.
+rdbsrn:GroupMembers_idUser
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idUser" ;
+  rdbs:belongsToTable rdbsrn:GroupMembers ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:GroupRoles
+  a rdbs:Table ;
+  rdfs:label "GroupRoles" ;
+  rdbs:hasColumn rdbsrn:GroupRoles_RoleName ;
+  rdbs:hasColumn rdbsrn:GroupRoles_idGroup ;
+.
+rdbsrn:GroupRoles_RoleName
+  a rdbs:Column ;
+  rdfs:label "RoleName" ;
+  rdbs:belongsToTable rdbsrn:GroupRoles ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:GroupRoles_idGroup
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idGroup" ;
+  rdbs:belongsToTable rdbsrn:GroupRoles ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Groups_ID ;
+.
+rdbsrn:Groups
+  a rdbs:Table ;
+  rdfs:label "Groups" ;
+  rdbs:hasColumn rdbsrn:Groups_Description ;
+  rdbs:hasColumn rdbsrn:Groups_ID ;
+  rdbs:hasColumn rdbsrn:Groups_Name ;
+.
+rdbsrn:Groups_Description
+  a rdbs:Column ;
+  rdfs:label "Description" ;
+  rdbs:belongsToTable rdbsrn:Groups ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Groups_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Groups ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Groups_Name
+  a rdbs:Column ;
+  rdfs:label "Name" ;
+  rdbs:belongsToTable rdbsrn:Groups ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:IntAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "IntAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:IntAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:IntAnnotationProps_lPropertyValue ;
+  rdbs:hasColumn rdbsrn:IntAnnotationProps_nIndex ;
+.
+rdbsrn:IntAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:IntAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:AnnotationProps_ID ;
+.
+rdbsrn:IntAnnotationProps_lPropertyValue
+  a rdbs:Column ;
+  rdfs:label "lPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:IntAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:IntAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:IntAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:IntControlProps
+  a rdbs:EdgeTypedAttributeValueTable ;
+  a rdbs:Table ;
+  rdfs:label "IntControlProps" ;
+  rdbs:hasColumn rdbsrn:IntControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:IntControlProps_lPropertyValue ;
+  rdbs:hasColumn rdbsrn:IntControlProps_nIndex ;
+.
+rdbsrn:IntControlProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:IntControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ControlProps_ID ;
+.
+rdbsrn:IntControlProps_lPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "lPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:IntControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:IntControlProps_nIndex
+  a rdbs:IndexValueColumn ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:IntControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:IntNodeProps
+  a rdbs:Table ;
+  a rdbs:VerticeTypedAttributeValueTable ;
+  rdfs:label "IntNodeProps" ;
+  rdbs:hasColumn rdbsrn:IntNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:IntNodeProps_lPropertyValue ;
+.
+rdbsrn:IntNodeProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:IntNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:NodeProps_ID ;
+.
+rdbsrn:IntNodeProps_lPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "lPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:IntNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Links
+  a rdbs:Table ;
+  rdfs:label "Links" ;
+  rdbs:hasColumn rdbsrn:Links_ID ;
+  rdbs:hasColumn rdbsrn:Links_effect ;
+  rdbs:hasColumn rdbsrn:Links_idControl ;
+  rdbs:hasColumn rdbsrn:Links_idNode ;
+  rdbs:hasColumn rdbsrn:Links_nLinkType ;
+.
+rdbsrn:Links_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Links ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Links_effect
+  a rdbs:Column ;
+  rdfs:label "effect" ;
+  rdbs:belongsToTable rdbsrn:Links ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Links_idControl
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idControl" ;
+  rdbs:belongsToTable rdbsrn:Links ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Controls_ID ;
+.
+rdbsrn:Links_idNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:Links ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:Links_nLinkType
+  a rdbs:Column ;
+  rdfs:label "nLinkType" ;
+  rdbs:belongsToTable rdbsrn:Links ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Membership
+  a rdbs:MembershipTable ;
+  a rdbs:Table ;
+  rdfs:label "Membership" ;
+  rdbs:hasColumn rdbsrn:Membership_idComplexNode ;
+  rdbs:hasColumn rdbsrn:Membership_idControl ;
+  rdbs:hasColumn rdbsrn:Membership_idNode ;
+.
+rdbsrn:Membership_idComplexNode
+  a rdbs:ContainerVerticeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idComplexNode" ;
+  rdbs:belongsToTable rdbsrn:Membership ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:Membership_idControl
+  a rdbs:ContaineeEdgeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idControl" ;
+  rdbs:belongsToTable rdbsrn:Membership ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Controls_ID ;
+.
+rdbsrn:Membership_idNode
+  a rdbs:ContaineeVerticeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:Membership ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:MemoAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "MemoAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:MemoAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:MemoAnnotationProps_nIndex ;
+  rdbs:hasColumn rdbsrn:MemoAnnotationProps_sLongPropertyValue ;
+.
+rdbsrn:MemoAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:MemoAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:AnnotationProps_ID ;
+.
+rdbsrn:MemoAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:MemoAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:MemoAnnotationProps_sLongPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sLongPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:MemoAnnotationProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:MemoControlProps
+  a rdbs:EdgeTypedAttributeValueTable ;
+  a rdbs:Table ;
+  rdfs:label "MemoControlProps" ;
+  rdbs:hasColumn rdbsrn:MemoControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:MemoControlProps_nIndex ;
+  rdbs:hasColumn rdbsrn:MemoControlProps_sLongPropertyValue ;
+.
+rdbsrn:MemoControlProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:MemoControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ControlProps_ID ;
+.
+rdbsrn:MemoControlProps_nIndex
+  a rdbs:IndexValueColumn ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:MemoControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:MemoControlProps_sLongPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "sLongPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:MemoControlProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:MemoNodeProps
+  a rdbs:Table ;
+  a rdbs:VerticeTypedAttributeValueTable ;
+  rdfs:label "MemoNodeProps" ;
+  rdbs:hasColumn rdbsrn:MemoNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:MemoNodeProps_sLongPropertyValue ;
+.
+rdbsrn:MemoNodeProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:MemoNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:NodeProps_ID ;
+.
+rdbsrn:MemoNodeProps_sLongPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "sLongPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:MemoNodeProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:NodeProps
+  a rdbs:Table ;
+  a rdbs:VerticeAttributeTable ;
+  rdfs:label "NodeProps" ;
+  rdbs:hasColumn rdbsrn:NodeProps_ID ;
+  rdbs:hasColumn rdbsrn:NodeProps_idObject ;
+  rdbs:hasColumn rdbsrn:NodeProps_idPropertyType ;
+  rdbs:hasColumn rdbsrn:NodeProps_nType ;
+.
+rdbsrn:NodeProps_ID
+  a rdbs:AttributeIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:NodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:NodeProps_idObject
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:ObjectIdColumn ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:NodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:NodeProps_idPropertyType
+  a rdbs:AttributeTypeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:NodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:NodeProps_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:NodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Nodes
+  a rdbs:Table ;
+  a rdbs:VerticeTable ;
+  rdfs:label "Nodes" ;
+  rdbs:hasColumn rdbsrn:Nodes_ID ;
+  rdbs:hasColumn rdbsrn:Nodes_URN ;
+  rdbs:hasColumn rdbsrn:Nodes_dateCreated ;
+  rdbs:hasColumn rdbsrn:Nodes_dateModified ;
+  rdbs:hasColumn rdbsrn:Nodes_flags ;
+  rdbs:hasColumn rdbsrn:Nodes_idObjectClass ;
+  rdbs:hasColumn rdbsrn:Nodes_idObjectType ;
+  rdbs:hasColumn rdbsrn:Nodes_idOwner ;
+  rdbs:hasColumn rdbsrn:Nodes_idPrototype ;
+  rdbs:hasColumn rdbsrn:Nodes_sName ;
+.
+rdbsrn:Nodes_ID
+  a rdbs:ObjectIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Nodes_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Nodes_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Nodes_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Nodes_flags
+  a rdbs:Column ;
+  rdfs:label "flags" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Nodes_idObjectClass
+  a rdbs:Column ;
+  rdfs:label "idObjectClass" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Nodes_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:ObjectTypeIdColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Nodes_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Nodes_idPrototype
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPrototype" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:Nodes_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:Nodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:NumAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "NumAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:NumAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:NumAnnotationProps_nIndex ;
+  rdbs:hasColumn rdbsrn:NumAnnotationProps_rPropertyValue ;
+.
+rdbsrn:NumAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:NumAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:AnnotationProps_ID ;
+.
+rdbsrn:NumAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:NumAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:NumAnnotationProps_rPropertyValue
+  a rdbs:Column ;
+  rdfs:label "rPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:NumAnnotationProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:NumControlProps
+  a rdbs:EdgeTypedAttributeValueTable ;
+  a rdbs:Table ;
+  rdfs:label "NumControlProps" ;
+  rdbs:hasColumn rdbsrn:NumControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:NumControlProps_nIndex ;
+  rdbs:hasColumn rdbsrn:NumControlProps_rPropertyValue ;
+.
+rdbsrn:NumControlProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:NumControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ControlProps_ID ;
+.
+rdbsrn:NumControlProps_nIndex
+  a rdbs:IndexValueColumn ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:NumControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:NumControlProps_rPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "rPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:NumControlProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:NumNodeProps
+  a rdbs:Table ;
+  a rdbs:VerticeTypedAttributeValueTable ;
+  rdfs:label "NumNodeProps" ;
+  rdbs:hasColumn rdbsrn:NumNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:NumNodeProps_rPropertyValue ;
+.
+rdbsrn:NumNodeProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:NumNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:NodeProps_ID ;
+.
+rdbsrn:NumNodeProps_rPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "rPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:NumNodeProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:ObjectPermissions
+  a rdbs:Table ;
+  rdfs:label "ObjectPermissions" ;
+  rdbs:hasColumn rdbsrn:ObjectPermissions_idGroup ;
+  rdbs:hasColumn rdbsrn:ObjectPermissions_idObject ;
+  rdbs:hasColumn rdbsrn:ObjectPermissions_idUser ;
+  rdbs:hasColumn rdbsrn:ObjectPermissions_level ;
+.
+rdbsrn:ObjectPermissions_idGroup
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idGroup" ;
+  rdbs:belongsToTable rdbsrn:ObjectPermissions ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Groups_ID ;
+.
+rdbsrn:ObjectPermissions_idObject
+  a rdbs:Column ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:ObjectPermissions ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ObjectPermissions_idUser
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idUser" ;
+  rdbs:belongsToTable rdbsrn:ObjectPermissions ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:ObjectPermissions_level
+  a rdbs:Column ;
+  rdfs:label "level" ;
+  rdbs:belongsToTable rdbsrn:ObjectPermissions ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:ObjectTypes
+  a rdbs:ObjectTypeTable ;
+  a rdbs:Table ;
+  rdfs:label "ObjectTypes" ;
+  rdbs:hasColumn rdbsrn:ObjectTypes_ID ;
+  rdbs:hasColumn rdbsrn:ObjectTypes_idObjectClass ;
+  rdbs:hasColumn rdbsrn:ObjectTypes_sDisplayName ;
+  rdbs:hasColumn rdbsrn:ObjectTypes_sObjectTypeName ;
+  rdbs:hasColumn rdbsrn:ObjectTypes_sSynonyms ;
+.
+rdbsrn:ObjectTypes_ID
+  a rdbs:ObjectTypeIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:ObjectTypes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ObjectTypes_idObjectClass
+  a rdbs:Column ;
+  rdfs:label "idObjectClass" ;
+  rdbs:belongsToTable rdbsrn:ObjectTypes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ObjectTypes_sDisplayName
+  a rdbs:Column ;
+  rdfs:label "sDisplayName" ;
+  rdbs:belongsToTable rdbsrn:ObjectTypes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:ObjectTypes_sObjectTypeName
+  a rdbs:ObjectTypeColumn ;
+  rdfs:label "sObjectTypeName" ;
+  rdbs:belongsToTable rdbsrn:ObjectTypes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ObjectTypes_sSynonyms
+  a rdbs:Column ;
+  rdfs:label "sSynonyms" ;
+  rdbs:belongsToTable rdbsrn:ObjectTypes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:PropAssoc
+  a rdbs:Table ;
+  rdfs:label "PropAssoc" ;
+  rdbs:hasColumn rdbsrn:PropAssoc_idObjectType ;
+  rdbs:hasColumn rdbsrn:PropAssoc_idPropertyType ;
+  rdbs:hasColumn rdbsrn:PropAssoc_sAliasName ;
+.
+rdbsrn:PropAssoc_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:PropAssoc ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:PropAssoc_idPropertyType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:PropAssoc ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:PropAssoc_sAliasName
+  a rdbs:Column ;
+  rdfs:label "sAliasName" ;
+  rdbs:belongsToTable rdbsrn:PropAssoc ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:PropTypes
+  a rdbs:AttributeTypeTable ;
+  a rdbs:Table ;
+  rdfs:label "PropTypes" ;
+  rdbs:hasColumn rdbsrn:PropTypes_ID ;
+  rdbs:hasColumn rdbsrn:PropTypes_nImplType ;
+  rdbs:hasColumn rdbsrn:PropTypes_nOptions ;
+  rdbs:hasColumn rdbsrn:PropTypes_nType ;
+  rdbs:hasColumn rdbsrn:PropTypes_sDisplayName ;
+  rdbs:hasColumn rdbsrn:PropTypes_sPropertyName ;
+.
+rdbsrn:PropTypes_ID
+  a rdbs:AttributeTypeIdColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:PropTypes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:PropTypes_nImplType
+  a rdbs:Column ;
+  rdfs:label "nImplType" ;
+  rdbs:belongsToTable rdbsrn:PropTypes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:PropTypes_nOptions
+  a rdbs:Column ;
+  rdfs:label "nOptions" ;
+  rdbs:belongsToTable rdbsrn:PropTypes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:PropTypes_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:PropTypes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:PropTypes_sDisplayName
+  a rdbs:Column ;
+  rdfs:label "sDisplayName" ;
+  rdbs:belongsToTable rdbsrn:PropTypes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:PropTypes_sPropertyName
+  a rdbs:AttributeTypeColumn ;
+  rdfs:label "sPropertyName" ;
+  rdbs:belongsToTable rdbsrn:PropTypes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:QARs
+  a rdbs:Table ;
+  rdfs:label "QARs" ;
+  rdbs:hasColumn rdbsrn:QARs_DefaultLimit ;
+  rdbs:hasColumn rdbsrn:QARs_Description ;
+  rdbs:hasColumn rdbsrn:QARs_Discriminator ;
+  rdbs:hasColumn rdbsrn:QARs_GracePeriod ;
+  rdbs:hasColumn rdbsrn:QARs_Hint ;
+  rdbs:hasColumn rdbsrn:QARs_ID ;
+  rdbs:hasColumn rdbsrn:QARs_Name ;
+.
+rdbsrn:QARs_DefaultLimit
+  a rdbs:Column ;
+  rdfs:label "DefaultLimit" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:QARs_Description
+  a rdbs:Column ;
+  rdfs:label "Description" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:QARs_Discriminator
+  a rdbs:Column ;
+  rdfs:label "Discriminator" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:QARs_GracePeriod
+  a rdbs:Column ;
+  rdfs:label "GracePeriod" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:QARs_Hint
+  a rdbs:Column ;
+  rdfs:label "Hint" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:QARs_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:QARs_Name
+  a rdbs:Column ;
+  rdfs:label "Name" ;
+  rdbs:belongsToTable rdbsrn:QARs ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Quotas
+  a rdbs:Table ;
+  rdfs:label "Quotas" ;
+  rdbs:hasColumn rdbsrn:Quotas_Exceeded ;
+  rdbs:hasColumn rdbsrn:Quotas_Expenditure ;
+  rdbs:hasColumn rdbsrn:Quotas_GracePeriod ;
+  rdbs:hasColumn rdbsrn:Quotas_Limit ;
+  rdbs:hasColumn rdbsrn:Quotas_QarID ;
+  rdbs:hasColumn rdbsrn:Quotas_UserID ;
+.
+rdbsrn:Quotas_Exceeded
+  a rdbs:Column ;
+  rdfs:label "Exceeded" ;
+  rdbs:belongsToTable rdbsrn:Quotas ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Quotas_Expenditure
+  a rdbs:Column ;
+  rdfs:label "Expenditure" ;
+  rdbs:belongsToTable rdbsrn:Quotas ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Quotas_GracePeriod
+  a rdbs:Column ;
+  rdfs:label "GracePeriod" ;
+  rdbs:belongsToTable rdbsrn:Quotas ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Quotas_Limit
+  a rdbs:Column ;
+  rdfs:label "Limit" ;
+  rdbs:belongsToTable rdbsrn:Quotas ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Quotas_QarID
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "QarID" ;
+  rdbs:belongsToTable rdbsrn:Quotas ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:QARs_ID ;
+.
+rdbsrn:Quotas_UserID
+  a rdbs:ForeignKeyColumn ;
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "UserID" ;
+  rdbs:belongsToTable rdbsrn:Quotas ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:RawControls
+  a rdbs:Table ;
+  rdfs:label "RawControls" ;
+  rdbs:hasColumn rdbsrn:RawControls_Control ;
+  rdbs:hasColumn rdbsrn:RawControls_ID ;
+  rdbs:hasColumn rdbsrn:RawControls_NodeURNs ;
+  rdbs:hasColumn rdbsrn:RawControls_URN ;
+.
+rdbsrn:RawControls_Control
+  a rdbs:Column ;
+  rdfs:label "Control" ;
+  rdbs:belongsToTable rdbsrn:RawControls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:RawControls_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:RawControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:RawControls_NodeURNs
+  a rdbs:Column ;
+  rdfs:label "NodeURNs" ;
+  rdbs:belongsToTable rdbsrn:RawControls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:RawControls_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:RawControls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:RawData
+  a rdbs:Table ;
+  rdfs:label "RawData" ;
+  rdbs:hasColumn rdbsrn:RawData_Data ;
+  rdbs:hasColumn rdbsrn:RawData_ID ;
+  rdbs:hasColumn rdbsrn:RawData_dateModified ;
+  rdbs:hasColumn rdbsrn:RawData_idNode ;
+  rdbs:hasColumn rdbsrn:RawData_idOwner ;
+  rdbs:hasColumn rdbsrn:RawData_idRelatedNode ;
+  rdbs:hasColumn rdbsrn:RawData_nDatatype ;
+.
+rdbsrn:RawData_Data
+  a rdbs:Column ;
+  rdfs:label "Data" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:RawData_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:RawData_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:RawData_idNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:RawData_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:RawData_idRelatedNode
+  a rdbs:Column ;
+  rdfs:label "idRelatedNode" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:RawData_nDatatype
+  a rdbs:Column ;
+  rdfs:label "nDatatype" ;
+  rdbs:belongsToTable rdbsrn:RawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:ResultId
+  a rdbs:Table ;
+  rdfs:label "ResultId" ;
+  rdbs:hasColumn rdbsrn:ResultId_ID ;
+.
+rdbsrn:ResultId_ID
+  a rdbs:Column ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:ResultId ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Results
+  a rdbs:Table ;
+  rdfs:label "Results" ;
+  rdbs:hasColumn rdbsrn:Results_ID ;
+  rdbs:hasColumn rdbsrn:Results_dateCreated ;
+  rdbs:hasColumn rdbsrn:Results_idObjectType ;
+  rdbs:hasColumn rdbsrn:Results_idOwner ;
+  rdbs:hasColumn rdbsrn:Results_idResult ;
+  rdbs:hasColumn rdbsrn:Results_idSession ;
+  rdbs:hasColumn rdbsrn:Results_result ;
+  rdbs:hasColumn rdbsrn:Results_sDescription ;
+  rdbs:hasColumn rdbsrn:Results_sName ;
+.
+rdbsrn:Results_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Results_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Results_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:Results_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Results_idResult
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idResult" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Results_ID ;
+.
+rdbsrn:Results_idSession
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idSession" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Sessions_ID ;
+.
+rdbsrn:Results_result
+  a rdbs:Column ;
+  rdfs:label "result" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Results_sDescription
+  a rdbs:Column ;
+  rdfs:label "sDescription" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Results_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:Results ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:SchemaMD
+  a rdbs:Table ;
+  rdfs:label "SchemaMD" ;
+  rdbs:hasColumn rdbsrn:SchemaMD_Key ;
+  rdbs:hasColumn rdbsrn:SchemaMD_Value ;
+.
+rdbsrn:SchemaMD_Key
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "Key" ;
+  rdbs:belongsToTable rdbsrn:SchemaMD ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:SchemaMD_Value
+  a rdbs:Column ;
+  rdfs:label "Value" ;
+  rdbs:belongsToTable rdbsrn:SchemaMD ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Sessions
+  a rdbs:Table ;
+  rdfs:label "Sessions" ;
+  rdbs:hasColumn rdbsrn:Sessions_ID ;
+  rdbs:hasColumn rdbsrn:Sessions_NID ;
+  rdbs:hasColumn rdbsrn:Sessions_idUser ;
+  rdbs:hasColumn rdbsrn:Sessions_tLastRequest ;
+  rdbs:hasColumn rdbsrn:Sessions_tLogin ;
+.
+rdbsrn:Sessions_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Sessions ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Sessions_NID
+  a rdbs:Column ;
+  rdfs:label "NID" ;
+  rdbs:belongsToTable rdbsrn:Sessions ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Sessions_idUser
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idUser" ;
+  rdbs:belongsToTable rdbsrn:Sessions ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Sessions_tLastRequest
+  a rdbs:Column ;
+  rdfs:label "tLastRequest" ;
+  rdbs:belongsToTable rdbsrn:Sessions ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Sessions_tLogin
+  a rdbs:Column ;
+  rdfs:label "tLogin" ;
+  rdbs:belongsToTable rdbsrn:Sessions ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:StrAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "StrAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:StrAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:StrAnnotationProps_nIndex ;
+  rdbs:hasColumn rdbsrn:StrAnnotationProps_sPropertyValue ;
+.
+rdbsrn:StrAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:StrAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:AnnotationProps_ID ;
+.
+rdbsrn:StrAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:StrAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:StrAnnotationProps_sPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:StrAnnotationProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:StrControlProps
+  a rdbs:EdgeTypedAttributeValueTable ;
+  a rdbs:Table ;
+  rdfs:label "StrControlProps" ;
+  rdbs:hasColumn rdbsrn:StrControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:StrControlProps_nIndex ;
+  rdbs:hasColumn rdbsrn:StrControlProps_sPropertyValue ;
+.
+rdbsrn:StrControlProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:StrControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ControlProps_ID ;
+.
+rdbsrn:StrControlProps_nIndex
+  a rdbs:IndexValueColumn ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:StrControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:StrControlProps_sPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:StrControlProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:StrNodeProps
+  a rdbs:Table ;
+  a rdbs:VerticeTypedAttributeValueTable ;
+  rdfs:label "StrNodeProps" ;
+  rdbs:hasColumn rdbsrn:StrNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:StrNodeProps_sPropertyValue ;
+.
+rdbsrn:StrNodeProps_idProperty
+  a rdbs:AttributeIdColumn ;
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:StrNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:NodeProps_ID ;
+.
+rdbsrn:StrNodeProps_sPropertyValue
+  a rdbs:TypedAttributeValueColumn ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:StrNodeProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TempRawData
+  a rdbs:Table ;
+  rdfs:label "TempRawData" ;
+  rdbs:hasColumn rdbsrn:TempRawData_Data ;
+  rdbs:hasColumn rdbsrn:TempRawData_ID ;
+  rdbs:hasColumn rdbsrn:TempRawData_dateModified ;
+  rdbs:hasColumn rdbsrn:TempRawData_idNode ;
+  rdbs:hasColumn rdbsrn:TempRawData_idOwner ;
+  rdbs:hasColumn rdbsrn:TempRawData_idRelatedNode ;
+  rdbs:hasColumn rdbsrn:TempRawData_nDatatype ;
+.
+rdbsrn:TempRawData_Data
+  a rdbs:Column ;
+  rdfs:label "Data" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TempRawData_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TempRawData_dateModified
+  a rdbs:Column ;
+  rdfs:label "dateModified" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TempRawData_idNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TempRawData_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:TempRawData_idRelatedNode
+  a rdbs:Column ;
+  rdfs:label "idRelatedNode" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TempRawData_nDatatype
+  a rdbs:Column ;
+  rdfs:label "nDatatype" ;
+  rdbs:belongsToTable rdbsrn:TempRawData ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotationProps_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotationProps_idObject ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotationProps_idPropertyType ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotationProps_nType ;
+.
+rdbsrn:TemporaryAnnotationProps_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryAnnotationProps_idObject
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryAnnotations_ID ;
+.
+rdbsrn:TemporaryAnnotationProps_idPropertyType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:TemporaryAnnotationProps_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryAnnotations
+  a rdbs:Table ;
+  rdfs:label "TemporaryAnnotations" ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_URN ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_idGroupNode ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_idNode ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_idObjectType ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_idOntology ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_idRelationship ;
+  rdbs:hasColumn rdbsrn:TemporaryAnnotations_idTemporaryNode ;
+.
+rdbsrn:TemporaryAnnotations_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryAnnotations_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryAnnotations_idGroupNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idGroupNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TemporaryAnnotations_idNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:TemporaryAnnotations_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:TemporaryAnnotations_idOntology
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOntology" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:TemporaryAnnotations_idRelationship
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idRelationship" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:TemporaryAnnotations_idTemporaryNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idTemporaryNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryAnnotations ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TemporaryControlProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryControlProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryControlProps_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryControlProps_idObject ;
+  rdbs:hasColumn rdbsrn:TemporaryControlProps_idPropertyType ;
+  rdbs:hasColumn rdbsrn:TemporaryControlProps_nType ;
+.
+rdbsrn:TemporaryControlProps_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryControlProps_idObject
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControls_ID ;
+.
+rdbsrn:TemporaryControlProps_idPropertyType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:TemporaryControlProps_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryControls
+  a rdbs:Table ;
+  rdfs:label "TemporaryControls" ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_URN ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_idControl ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_idEffect ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_idMechanism ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_idObjectType ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_idResult ;
+  rdbs:hasColumn rdbsrn:TemporaryControls_idSession ;
+.
+rdbsrn:TemporaryControls_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryControls_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryControls_idControl
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idControl" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Controls_ID ;
+.
+rdbsrn:TemporaryControls_idEffect
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idEffect" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:TemporaryControls_idMechanism
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idMechanism" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:TemporaryControls_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:TemporaryControls_idResult
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idResult" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Results_ID ;
+.
+rdbsrn:TemporaryControls_idSession
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idSession" ;
+  rdbs:belongsToTable rdbsrn:TemporaryControls ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Sessions_ID ;
+.
+rdbsrn:TemporaryDictAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryDictAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryDictAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryDictAnnotationProps_idPropertyValue ;
+  rdbs:hasColumn rdbsrn:TemporaryDictAnnotationProps_nIndex ;
+.
+rdbsrn:TemporaryDictAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryAnnotationProps_ID ;
+.
+rdbsrn:TemporaryDictAnnotationProps_idPropertyValue
+  a rdbs:Column ;
+  rdfs:label "idPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryDictAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryDictControlProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryDictControlProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryDictControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryDictControlProps_idPropertyValue ;
+  rdbs:hasColumn rdbsrn:TemporaryDictControlProps_nIndex ;
+.
+rdbsrn:TemporaryDictControlProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControlProps_ID ;
+.
+rdbsrn:TemporaryDictControlProps_idPropertyValue
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:TemporaryDictControlProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryDictNodeProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryDictNodeProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryDictNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryDictNodeProps_idPropertyValue ;
+.
+rdbsrn:TemporaryDictNodeProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodeProps_ID ;
+.
+rdbsrn:TemporaryDictNodeProps_idPropertyValue
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryDictNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Dict_ID ;
+.
+rdbsrn:TemporaryIntAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryIntAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryIntAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryIntAnnotationProps_lPropertyValue ;
+  rdbs:hasColumn rdbsrn:TemporaryIntAnnotationProps_nIndex ;
+.
+rdbsrn:TemporaryIntAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryAnnotationProps_ID ;
+.
+rdbsrn:TemporaryIntAnnotationProps_lPropertyValue
+  a rdbs:Column ;
+  rdfs:label "lPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryIntAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryIntControlProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryIntControlProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryIntControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryIntControlProps_lPropertyValue ;
+  rdbs:hasColumn rdbsrn:TemporaryIntControlProps_nIndex ;
+.
+rdbsrn:TemporaryIntControlProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControlProps_ID ;
+.
+rdbsrn:TemporaryIntControlProps_lPropertyValue
+  a rdbs:Column ;
+  rdfs:label "lPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryIntControlProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryIntNodeProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryIntNodeProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryIntNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryIntNodeProps_lPropertyValue ;
+.
+rdbsrn:TemporaryIntNodeProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodeProps_ID ;
+.
+rdbsrn:TemporaryIntNodeProps_lPropertyValue
+  a rdbs:Column ;
+  rdfs:label "lPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryIntNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryLinks
+  a rdbs:Table ;
+  rdfs:label "TemporaryLinks" ;
+  rdbs:hasColumn rdbsrn:TemporaryLinks_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryLinks_effect ;
+  rdbs:hasColumn rdbsrn:TemporaryLinks_idControl ;
+  rdbs:hasColumn rdbsrn:TemporaryLinks_idNode ;
+  rdbs:hasColumn rdbsrn:TemporaryLinks_nLinkType ;
+.
+rdbsrn:TemporaryLinks_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryLinks ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryLinks_effect
+  a rdbs:Column ;
+  rdfs:label "effect" ;
+  rdbs:belongsToTable rdbsrn:TemporaryLinks ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryLinks_idControl
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idControl" ;
+  rdbs:belongsToTable rdbsrn:TemporaryLinks ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControls_ID ;
+.
+rdbsrn:TemporaryLinks_idNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryLinks ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TemporaryLinks_nLinkType
+  a rdbs:Column ;
+  rdfs:label "nLinkType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryLinks ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryMembership
+  a rdbs:Table ;
+  rdfs:label "TemporaryMembership" ;
+  rdbs:hasColumn rdbsrn:TemporaryMembership_idTemporaryComplexNode ;
+  rdbs:hasColumn rdbsrn:TemporaryMembership_idTemporaryControl ;
+  rdbs:hasColumn rdbsrn:TemporaryMembership_idTemporaryNode ;
+.
+rdbsrn:TemporaryMembership_idTemporaryComplexNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idTemporaryComplexNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMembership ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TemporaryMembership_idTemporaryControl
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idTemporaryControl" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMembership ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControls_ID ;
+.
+rdbsrn:TemporaryMembership_idTemporaryNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idTemporaryNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMembership ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TemporaryMemoAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryMemoAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoAnnotationProps_nIndex ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoAnnotationProps_sLongPropertyValue ;
+.
+rdbsrn:TemporaryMemoAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryAnnotationProps_ID ;
+.
+rdbsrn:TemporaryMemoAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryMemoAnnotationProps_sLongPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sLongPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoAnnotationProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryMemoControlProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryMemoControlProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoControlProps_nIndex ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoControlProps_sLongPropertyValue ;
+.
+rdbsrn:TemporaryMemoControlProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControlProps_ID ;
+.
+rdbsrn:TemporaryMemoControlProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryMemoControlProps_sLongPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sLongPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoControlProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryMemoNodeProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryMemoNodeProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryMemoNodeProps_sLongPropertyValue ;
+.
+rdbsrn:TemporaryMemoNodeProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodeProps_ID ;
+.
+rdbsrn:TemporaryMemoNodeProps_sLongPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sLongPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryMemoNodeProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNodeProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryNodeProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryNodeProps_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryNodeProps_idObject ;
+  rdbs:hasColumn rdbsrn:TemporaryNodeProps_idPropertyType ;
+  rdbs:hasColumn rdbsrn:TemporaryNodeProps_nType ;
+.
+rdbsrn:TemporaryNodeProps_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryNodeProps_idObject
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObject" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodes_ID ;
+.
+rdbsrn:TemporaryNodeProps_idPropertyType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idPropertyType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:PropTypes_ID ;
+.
+rdbsrn:TemporaryNodeProps_nType
+  a rdbs:Column ;
+  rdfs:label "nType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryNodes
+  a rdbs:Table ;
+  rdfs:label "TemporaryNodes" ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_URN ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_idNode ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_idObjectClass ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_idObjectType ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_idResult ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_idSession ;
+  rdbs:hasColumn rdbsrn:TemporaryNodes_sName ;
+.
+rdbsrn:TemporaryNodes_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryNodes_URN
+  a rdbs:Column ;
+  rdfs:label "URN" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNodes_idNode
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idNode" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Nodes_ID ;
+.
+rdbsrn:TemporaryNodes_idObjectClass
+  a rdbs:Column ;
+  rdfs:label "idObjectClass" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryNodes_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:TemporaryNodes_idResult
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idResult" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Results_ID ;
+.
+rdbsrn:TemporaryNodes_idSession
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idSession" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:Sessions_ID ;
+.
+rdbsrn:TemporaryNodes_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNodes ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNumAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryNumAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryNumAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryNumAnnotationProps_nIndex ;
+  rdbs:hasColumn rdbsrn:TemporaryNumAnnotationProps_rPropertyValue ;
+.
+rdbsrn:TemporaryNumAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryAnnotationProps_ID ;
+.
+rdbsrn:TemporaryNumAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNumAnnotationProps_rPropertyValue
+  a rdbs:Column ;
+  rdfs:label "rPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumAnnotationProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNumControlProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryNumControlProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryNumControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryNumControlProps_nIndex ;
+  rdbs:hasColumn rdbsrn:TemporaryNumControlProps_rPropertyValue ;
+.
+rdbsrn:TemporaryNumControlProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControlProps_ID ;
+.
+rdbsrn:TemporaryNumControlProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNumControlProps_rPropertyValue
+  a rdbs:Column ;
+  rdfs:label "rPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumControlProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryNumNodeProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryNumNodeProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryNumNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryNumNodeProps_rPropertyValue ;
+.
+rdbsrn:TemporaryNumNodeProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodeProps_ID ;
+.
+rdbsrn:TemporaryNumNodeProps_rPropertyValue
+  a rdbs:Column ;
+  rdfs:label "rPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryNumNodeProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryObjects
+  a rdbs:Table ;
+  rdfs:label "TemporaryObjects" ;
+  rdbs:hasColumn rdbsrn:TemporaryObjects_ID ;
+  rdbs:hasColumn rdbsrn:TemporaryObjects_data ;
+  rdbs:hasColumn rdbsrn:TemporaryObjects_idSession ;
+.
+rdbsrn:TemporaryObjects_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:TemporaryObjects ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:TemporaryObjects_data
+  a rdbs:Column ;
+  rdfs:label "data" ;
+  rdbs:belongsToTable rdbsrn:TemporaryObjects ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryObjects_idSession
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idSession" ;
+  rdbs:belongsToTable rdbsrn:TemporaryObjects ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Sessions_ID ;
+.
+rdbsrn:TemporaryStrAnnotationProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryStrAnnotationProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryStrAnnotationProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryStrAnnotationProps_nIndex ;
+  rdbs:hasColumn rdbsrn:TemporaryStrAnnotationProps_sPropertyValue ;
+.
+rdbsrn:TemporaryStrAnnotationProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryAnnotationProps_ID ;
+.
+rdbsrn:TemporaryStrAnnotationProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrAnnotationProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryStrAnnotationProps_sPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrAnnotationProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryStrControlProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryStrControlProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryStrControlProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryStrControlProps_nIndex ;
+  rdbs:hasColumn rdbsrn:TemporaryStrControlProps_sPropertyValue ;
+.
+rdbsrn:TemporaryStrControlProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryControlProps_ID ;
+.
+rdbsrn:TemporaryStrControlProps_nIndex
+  a rdbs:Column ;
+  rdfs:label "nIndex" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrControlProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryStrControlProps_sPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrControlProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:TemporaryStrNodeProps
+  a rdbs:Table ;
+  rdfs:label "TemporaryStrNodeProps" ;
+  rdbs:hasColumn rdbsrn:TemporaryStrNodeProps_idProperty ;
+  rdbs:hasColumn rdbsrn:TemporaryStrNodeProps_sPropertyValue ;
+.
+rdbsrn:TemporaryStrNodeProps_idProperty
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idProperty" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrNodeProps ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:TemporaryNodeProps_ID ;
+.
+rdbsrn:TemporaryStrNodeProps_sPropertyValue
+  a rdbs:Column ;
+  rdfs:label "sPropertyValue" ;
+  rdbs:belongsToTable rdbsrn:TemporaryStrNodeProps ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Users
+  a rdbs:Table ;
+  rdfs:label "Users" ;
+  rdbs:hasColumn rdbsrn:Users_EMail ;
+  rdbs:hasColumn rdbsrn:Users_FullName ;
+  rdbs:hasColumn rdbsrn:Users_ID ;
+  rdbs:hasColumn rdbsrn:Users_Name ;
+  rdbs:hasColumn rdbsrn:Users_Password ;
+  rdbs:hasColumn rdbsrn:Users_expire ;
+  rdbs:hasColumn rdbsrn:Users_flags ;
+.
+rdbsrn:UsersPreferences
+  a rdbs:Table ;
+  rdfs:label "UsersPreferences" ;
+  rdbs:hasColumn rdbsrn:UsersPreferences_ID ;
+  rdbs:hasColumn rdbsrn:UsersPreferences_Preference ;
+  rdbs:hasColumn rdbsrn:UsersPreferences_UserID ;
+  rdbs:hasColumn rdbsrn:UsersPreferences_Value ;
+.
+rdbsrn:UsersPreferences_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:UsersPreferences ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:UsersPreferences_Preference
+  a rdbs:Column ;
+  rdfs:label "Preference" ;
+  rdbs:belongsToTable rdbsrn:UsersPreferences ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:UsersPreferences_UserID
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "UserID" ;
+  rdbs:belongsToTable rdbsrn:UsersPreferences ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:UsersPreferences_Value
+  a rdbs:Column ;
+  rdfs:label "Value" ;
+  rdbs:belongsToTable rdbsrn:UsersPreferences ;
+  rdbs:hasDataType rdbs:CLOB ;
+  rdbs:isNullable true ;
+.
+rdbsrn:UsersRoles
+  a rdbs:Table ;
+  rdfs:label "UsersRoles" ;
+  rdbs:hasColumn rdbsrn:UsersRoles_RoleName ;
+  rdbs:hasColumn rdbsrn:UsersRoles_idUser ;
+.
+rdbsrn:UsersRoles_RoleName
+  a rdbs:Column ;
+  rdfs:label "RoleName" ;
+  rdbs:belongsToTable rdbsrn:UsersRoles ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:UsersRoles_idUser
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idUser" ;
+  rdbs:belongsToTable rdbsrn:UsersRoles ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:Users_EMail
+  a rdbs:Column ;
+  rdfs:label "EMail" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Users_FullName
+  a rdbs:Column ;
+  rdfs:label "FullName" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Users_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Users_Name
+  a rdbs:Column ;
+  rdfs:label "Name" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:Users_Password
+  a rdbs:Column ;
+  rdfs:label "Password" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Users_expire
+  a rdbs:Column ;
+  rdfs:label "expire" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:Users_flags
+  a rdbs:Column ;
+  rdfs:label "flags" ;
+  rdbs:belongsToTable rdbsrn:Users ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable true ;
+.
+rdbsrn:VaSamples
+  a rdbs:Table ;
+  rdfs:label "VaSamples" ;
+  rdbs:hasColumn rdbsrn:VaSamples_ID ;
+  rdbs:hasColumn rdbsrn:VaSamples_data ;
+  rdbs:hasColumn rdbsrn:VaSamples_dateCreated ;
+  rdbs:hasColumn rdbsrn:VaSamples_idObjectType ;
+  rdbs:hasColumn rdbsrn:VaSamples_idOwner ;
+  rdbs:hasColumn rdbsrn:VaSamples_ngsId ;
+  rdbs:hasColumn rdbsrn:VaSamples_sDescription ;
+  rdbs:hasColumn rdbsrn:VaSamples_sName ;
+.
+rdbsrn:VaSamples_ID
+  a rdbs:PrimaryKeyColumn ;
+  rdfs:label "ID" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:VaSamples_data
+  a rdbs:Column ;
+  rdfs:label "data" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:VaSamples_dateCreated
+  a rdbs:Column ;
+  rdfs:label "dateCreated" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable false ;
+.
+rdbsrn:VaSamples_idObjectType
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idObjectType" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:ObjectTypes_ID ;
+.
+rdbsrn:VaSamples_idOwner
+  a rdbs:ForeignKeyColumn ;
+  rdfs:label "idOwner" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+  rdbs:refersToPrimaryKey rdbsrn:Users_ID ;
+.
+rdbsrn:VaSamples_ngsId
+  a rdbs:Column ;
+  rdfs:label "ngsId" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:INT ;
+  rdbs:isNullable false ;
+.
+rdbsrn:VaSamples_sDescription
+  a rdbs:Column ;
+  rdfs:label "sDescription" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:VaSamples_sName
+  a rdbs:Column ;
+  rdfs:label "sName" ;
+  rdbs:belongsToTable rdbsrn:VaSamples ;
+  rdbs:hasDataType rdbs:STRING ;
+  rdbs:isNullable true ;
+.
+rdbsrn:annotationtype_derivativeOf
+  a rdbs:AnnotationType ;
+  rdfs:label "derivative-of" ;
+.
+rdbsrn:annotationtype_isA
+  a rdbs:AnnotationType ;
+  rdfs:label "is-a" ;
+.
+rdbsrn:annotationtype_partOf
+  a rdbs:AnnotationType ;
+  rdfs:label "part-of" ;
+.
+rdbsrn:annotationtype_similarTo
+  a rdbs:AnnotationType ;
+  rdfs:label "similar-to" ;
+.
+rdbsrn:annotationtypeassociation-0
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_protein ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_geneOntology ;
+.
+rdbsrn:annotationtypeassociation-1
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_geneOntology ;
+.
+rdbsrn:annotationtypeassociation-10
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_cellObject ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-11
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_cellProcess ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_cellProcess ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-12
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_disease ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_cellProcess ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-13
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_cellProcess ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-14
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_cellType ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_cellType ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-15
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_organ ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_cellType ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-16
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_cellType ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-17
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_clinicalParameter ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_clinicalParameter ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-18
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_clinicalParameter ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-19
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_disease ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_disease ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-2
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_smallMol ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_protein ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_derivativeOf ;
+  rdbs:hasOntology rdbsrn:ontology_humanProteinAtlasExpressionOntology ;
+.
+rdbsrn:annotationtypeassociation-20
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_disease ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-21
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_complex ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_functionalClass ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-22
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_functionalClass ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_functionalClass ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-23
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_protein ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_functionalClass ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-24
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_functionalClass ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-25
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_smallMol ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_functionalClass ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-26
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_cellType ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_organ ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-27
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_organ ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_organ ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-28
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_organ ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-29
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_tissue ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_organ ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-3
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_complex ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_protein ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_humanProteinAtlasExpressionOntology ;
+.
+rdbsrn:annotationtypeassociation-30
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_organism ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_organism ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-31
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_complex ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_protein ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-32
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_protein ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_protein ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-33
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_cellObject ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-34
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_cellProcess ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-35
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_cellType ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-36
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_clinicalParameter ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-37
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_complex ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-38
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_disease ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-39
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_functionalClass ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-4
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_protein ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_humanProteinAtlasExpressionOntology ;
+.
+rdbsrn:annotationtypeassociation-40
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_geneticVariant ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-41
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_organ ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-42
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_organism ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-43
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_protein ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-44
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-45
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_smallMol ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-46
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_tissue ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-47
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_treatment ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-48
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_virus ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-49
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_smallMol ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-5
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_humanProteinAtlasExpressionOntology ;
+.
+rdbsrn:annotationtypeassociation-50
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_smallMol ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_smallMol ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-51
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_cellType ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_tissue ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-52
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_organ ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_tissue ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-53
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_tissue ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_tissue ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-54
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_treatment ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_treatment ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-55
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_virus ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-56
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_virus ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_virus ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-57
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_complex ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_complex ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_partOf ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-58
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_functionalClass ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_complex ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_partOf ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-59
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_protein ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_complex ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_partOf ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-6
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_smallMol ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_smallMol ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_humanProteinAtlasExpressionOntology ;
+.
+rdbsrn:annotationtypeassociation-60
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_semanticConcept ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_complex ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_partOf ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-61
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_smallMol ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_complex ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_partOf ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-62
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_smallMol ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_smallMol ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_similarTo ;
+  rdbs:hasOntology rdbsrn:ontology_similarCompounds ;
+.
+rdbsrn:annotationtypeassociation-7
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_cellType ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_cellType ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_derivativeOf ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-8
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_smallMol ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_protein ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_derivativeOf ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:annotationtypeassociation-9
+  a rdbs:AnnotationTypeAssociation ;
+  rdbs:hasAnnotationSourceType rdbsrn:verticetype_cellObject ;
+  rdbs:hasAnnotationTargetType rdbsrn:verticetype_cellObject ;
+  rdbs:hasAnnotationType rdbsrn:annotationtype_isA ;
+  rdbs:hasOntology rdbsrn:ontology_pathwayStudioOntology ;
+.
+rdbsrn:attributedatatype_idPropertyValue
+  a rdbs:AttributeDataType ;
+  rdfs:label "idPropertyValue" ;
+.
+rdbsrn:attributedatatype_lPropertyValue
+  a rdbs:AttributeDataType ;
+  rdfs:label "lPropertyValue" ;
+.
+rdbsrn:attributedatatype_rPropertyValue
+  a rdbs:AttributeDataType ;
+  rdfs:label "rPropertyValue" ;
+.
+rdbsrn:attributedatatype_sLongPropertyValue
+  a rdbs:AttributeDataType ;
+  rdfs:label "sLongPropertyValue" ;
+.
+rdbsrn:attributedatatype_sPropertyValue
+  a rdbs:AttributeDataType ;
+  rdfs:label "sPropertyValue" ;
+.
+rdbsrn:attributetype_alias
+  a rdbs:AttributeType ;
+  rdfs:label "Alias" ;
+.
+rdbsrn:attributetype_authors
+  a rdbs:AttributeType ;
+  rdfs:label "Authors" ;
+.
+rdbsrn:attributetype_biomarkerType
+  a rdbs:AttributeType ;
+  rdfs:label "BiomarkerType" ;
+.
+rdbsrn:attributetype_casId
+  a rdbs:AttributeType ;
+  rdfs:label "CAS ID" ;
+.
+rdbsrn:attributetype_cellLineName
+  a rdbs:AttributeType ;
+  rdfs:label "CellLineName" ;
+.
+rdbsrn:attributetype_cellLocalization
+  a rdbs:AttributeType ;
+  rdfs:label "Cell Localization" ;
+.
+rdbsrn:attributetype_cellObject
+  a rdbs:AttributeType ;
+  rdfs:label "CellObject" ;
+.
+rdbsrn:attributetype_cellProcess
+  a rdbs:AttributeType ;
+  rdfs:label "CellProcess" ;
+.
+rdbsrn:attributetype_cellType
+  a rdbs:AttributeType ;
+  rdfs:label "CellType" ;
+.
+rdbsrn:attributetype_chEbiId
+  a rdbs:AttributeType ;
+  rdfs:label "ChEBI ID" ;
+.
+rdbsrn:attributetype_changeType
+  a rdbs:AttributeType ;
+  rdfs:label "ChangeType" ;
+.
+rdbsrn:attributetype_class
+  a rdbs:AttributeType ;
+  rdfs:label "Class" ;
+.
+rdbsrn:attributetype_clinicalSignificance
+  a rdbs:AttributeType ;
+  rdfs:label "Clinical Significance" ;
+.
+rdbsrn:attributetype_collaborator
+  a rdbs:AttributeType ;
+  rdfs:label "Collaborator" ;
+.
+rdbsrn:attributetype_company
+  a rdbs:AttributeType ;
+  rdfs:label "Company" ;
+.
+rdbsrn:attributetype_condition
+  a rdbs:AttributeType ;
+  rdfs:label "Condition" ;
+.
+rdbsrn:attributetype_description
+  a rdbs:AttributeType ;
+  rdfs:label "Description" ;
+.
+rdbsrn:attributetype_doi
+  a rdbs:AttributeType ;
+  rdfs:label "DOI" ;
+.
+rdbsrn:attributetype_ecNumber
+  a rdbs:AttributeType ;
+  rdfs:label "EC Number" ;
+.
+rdbsrn:attributetype_embase
+  a rdbs:AttributeType ;
+  rdfs:label "EMBASE" ;
+.
+rdbsrn:attributetype_ensemblId
+  a rdbs:AttributeType ;
+  rdfs:label "Ensembl ID" ;
+.
+rdbsrn:attributetype_essn
+  a rdbs:AttributeType ;
+  rdfs:label "ESSN" ;
+.
+rdbsrn:attributetype_experimentalSystem
+  a rdbs:AttributeType ;
+  rdfs:label "Experimental System" ;
+.
+rdbsrn:attributetype_genBankId
+  a rdbs:AttributeType ;
+  rdfs:label "GenBank ID" ;
+.
+rdbsrn:attributetype_geneSetOrigin
+  a rdbs:AttributeType ;
+  rdfs:label "GeneSetOrigin" ;
+.
+rdbsrn:attributetype_goId
+  a rdbs:AttributeType ;
+  rdfs:label "GO ID" ;
+.
+rdbsrn:attributetype_hmdbId
+  a rdbs:AttributeType ;
+  rdfs:label "HMDB ID" ;
+.
+rdbsrn:attributetype_homologeneId
+  a rdbs:AttributeType ;
+  rdfs:label "Homologene ID" ;
+.
+rdbsrn:attributetype_hugoId
+  a rdbs:AttributeType ;
+  rdfs:label "Hugo ID" ;
+.
+rdbsrn:attributetype_humanChromosomePosition
+  a rdbs:AttributeType ;
+  rdfs:label "Human chromosome position" ;
+.
+rdbsrn:attributetype_inChIKey
+  a rdbs:AttributeType ;
+  rdfs:label "InChIKey" ;
+.
+rdbsrn:attributetype_intervention
+  a rdbs:AttributeType ;
+  rdfs:label "Intervention" ;
+.
+rdbsrn:attributetype_isGeneSet
+  a rdbs:AttributeType ;
+  rdfs:label "IsGeneSet" ;
+.
+rdbsrn:attributetype_issn
+  a rdbs:AttributeType ;
+  rdfs:label "ISSN" ;
+.
+rdbsrn:attributetype_issue
+  a rdbs:AttributeType ;
+  rdfs:label "Issue" ;
+.
+rdbsrn:attributetype_iupacName
+  a rdbs:AttributeType ;
+  rdfs:label "IUPAC Name" ;
+.
+rdbsrn:attributetype_journal
+  a rdbs:AttributeType ;
+  rdfs:label "Journal" ;
+.
+rdbsrn:attributetype_keggId
+  a rdbs:AttributeType ;
+  rdfs:label "KEGG ID" ;
+.
+rdbsrn:attributetype_locusLinkId
+  a rdbs:AttributeType ;
+  rdfs:label "LocusLink ID" ;
+.
+rdbsrn:attributetype_meShHeading
+  a rdbs:AttributeType ;
+  rdfs:label "MeSH Heading" ;
+.
+rdbsrn:attributetype_meShId
+  a rdbs:AttributeType ;
+  rdfs:label "MeSH ID" ;
+.
+rdbsrn:attributetype_medScanId
+  a rdbs:AttributeType ;
+  rdfs:label "MedScan ID" ;
+.
+rdbsrn:attributetype_medlineTa
+  a rdbs:AttributeType ;
+  rdfs:label "MedlineTA" ;
+.
+rdbsrn:attributetype_mgiId
+  a rdbs:AttributeType ;
+  rdfs:label "MGI ID" ;
+.
+rdbsrn:attributetype_miRBaseId
+  a rdbs:AttributeType ;
+  rdfs:label "miRBase ID" ;
+.
+rdbsrn:attributetype_modeOfAction
+  a rdbs:AttributeType ;
+  rdfs:label "Mode of Action" ;
+.
+rdbsrn:attributetype_molecularFormula
+  a rdbs:AttributeType ;
+  rdfs:label "Molecular Formula" ;
+.
+rdbsrn:attributetype_molecularWeight
+  a rdbs:AttributeType ;
+  rdfs:label "Molecular Weight" ;
+.
+rdbsrn:attributetype_mouseChromosomePosition
+  a rdbs:AttributeType ;
+  rdfs:label "Mouse chromosome position" ;
+.
+rdbsrn:attributetype_mref
+  a rdbs:AttributeType ;
+  rdfs:label "mref" ;
+.
+rdbsrn:attributetype_msrc
+  a rdbs:AttributeType ;
+  rdfs:label "msrc" ;
+.
+rdbsrn:attributetype_ncImId
+  a rdbs:AttributeType ;
+  rdfs:label "NCIm ID" ;
+.
+rdbsrn:attributetype_nctId
+  a rdbs:AttributeType ;
+  rdfs:label "NCT ID" ;
+.
+rdbsrn:attributetype_notes
+  a rdbs:AttributeType ;
+  rdfs:label "Notes" ;
+.
+rdbsrn:attributetype_omimId
+  a rdbs:AttributeType ;
+  rdfs:label "OMIM ID" ;
+.
+rdbsrn:attributetype_organ
+  a rdbs:AttributeType ;
+  rdfs:label "Organ" ;
+.
+rdbsrn:attributetype_organSystem
+  a rdbs:AttributeType ;
+  rdfs:label "Organ System" ;
+.
+rdbsrn:attributetype_organelle
+  a rdbs:AttributeType ;
+  rdfs:label "Organelle" ;
+.
+rdbsrn:attributetype_organism
+  a rdbs:AttributeType ;
+  rdfs:label "Organism" ;
+.
+rdbsrn:attributetype_orphanetId
+  a rdbs:AttributeType ;
+  rdfs:label "Orphanet ID" ;
+.
+rdbsrn:attributetype_pX
+  a rdbs:AttributeType ;
+  rdfs:label "pX" ;
+.
+rdbsrn:attributetype_pathwayType
+  a rdbs:AttributeType ;
+  rdfs:label "PathwayType" ;
+.
+rdbsrn:attributetype_percent
+  a rdbs:AttributeType ;
+  rdfs:label "Percent" ;
+.
+rdbsrn:attributetype_pharmaPendiumId
+  a rdbs:AttributeType ;
+  rdfs:label "PharmaPendium ID" ;
+.
+rdbsrn:attributetype_phase
+  a rdbs:AttributeType ;
+  rdfs:label "Phase" ;
+.
+rdbsrn:attributetype_phenotype
+  a rdbs:AttributeType ;
+  rdfs:label "Phenotype" ;
+.
+rdbsrn:attributetype_pii
+  a rdbs:AttributeType ;
+  rdfs:label "PII" ;
+.
+rdbsrn:attributetype_pirId
+  a rdbs:AttributeType ;
+  rdfs:label "PIR ID" ;
+.
+rdbsrn:attributetype_pmid
+  a rdbs:AttributeType ;
+  rdfs:label "PMID" ;
+.
+rdbsrn:attributetype_primaryCellLocalization
+  a rdbs:AttributeType ;
+  rdfs:label "Primary Cell Localization" ;
+.
+rdbsrn:attributetype_pubChemCid
+  a rdbs:AttributeType ;
+  rdfs:label "PubChem CID" ;
+.
+rdbsrn:attributetype_pubChemSid
+  a rdbs:AttributeType ;
+  rdfs:label "PubChem SID" ;
+.
+rdbsrn:attributetype_pubVersion
+  a rdbs:AttributeType ;
+  rdfs:label "PubVersion" ;
+.
+rdbsrn:attributetype_pubYear
+  a rdbs:AttributeType ;
+  rdfs:label "PubYear" ;
+.
+rdbsrn:attributetype_pui
+  a rdbs:AttributeType ;
+  rdfs:label "PUI" ;
+.
+rdbsrn:attributetype_quantitativeType
+  a rdbs:AttributeType ;
+  rdfs:label "QuantitativeType" ;
+.
+rdbsrn:attributetype_ratChromosomePosition
+  a rdbs:AttributeType ;
+  rdfs:label "Rat chromosome position" ;
+.
+rdbsrn:attributetype_reaxysId
+  a rdbs:AttributeType ;
+  rdfs:label "Reaxys ID" ;
+.
+rdbsrn:attributetype_rgdId
+  a rdbs:AttributeType ;
+  rdfs:label "RGD ID" ;
+.
+rdbsrn:attributetype_rotatableBondCount
+  a rdbs:AttributeType ;
+  rdfs:label "Rotatable Bond Count" ;
+.
+rdbsrn:attributetype_snvType
+  a rdbs:AttributeType ;
+  rdfs:label "SNV Type" ;
+.
+rdbsrn:attributetype_source
+  a rdbs:AttributeType ;
+  rdfs:label "Source" ;
+.
+rdbsrn:attributetype_start
+  a rdbs:AttributeType ;
+  rdfs:label "Start" ;
+.
+rdbsrn:attributetype_studyType
+  a rdbs:AttributeType ;
+  rdfs:label "StudyType" ;
+.
+rdbsrn:attributetype_swissProtAccession
+  a rdbs:AttributeType ;
+  rdfs:label "Swiss-Prot Accession" ;
+.
+rdbsrn:attributetype_swissProtId
+  a rdbs:AttributeType ;
+  rdfs:label "Swiss-Prot ID" ;
+.
+rdbsrn:attributetype_taxId
+  a rdbs:AttributeType ;
+  rdfs:label "Tax ID" ;
+.
+rdbsrn:attributetype_taxonomyObjectType
+  a rdbs:AttributeType ;
+  rdfs:label "TaxonomyObjectType" ;
+.
+rdbsrn:attributetype_tcdbId
+  a rdbs:AttributeType ;
+  rdfs:label "TCDB ID" ;
+.
+rdbsrn:attributetype_textMods
+  a rdbs:AttributeType ;
+  rdfs:label "TextMods" ;
+.
+rdbsrn:attributetype_textPath
+  a rdbs:AttributeType ;
+  rdfs:label "TextPath" ;
+.
+rdbsrn:attributetype_textRef
+  a rdbs:AttributeType ;
+  rdfs:label "TextRef" ;
+.
+rdbsrn:attributetype_tissue
+  a rdbs:AttributeType ;
+  rdfs:label "Tissue" ;
+.
+rdbsrn:attributetype_title
+  a rdbs:AttributeType ;
+  rdfs:label "Title" ;
+.
+rdbsrn:attributetype_trialStatus
+  a rdbs:AttributeType ;
+  rdfs:label "TrialStatus" ;
+.
+rdbsrn:attributetype_unigeneId
+  a rdbs:AttributeType ;
+  rdfs:label "Unigene ID" ;
+.
+rdbsrn:attributetype_url
+  a rdbs:AttributeType ;
+  rdfs:label "URL" ;
+.
+rdbsrn:attributetype_xLogP
+  a rdbs:AttributeType ;
+  rdfs:label "XLogP" ;
+.
+rdbsrn:attributetype_xLogPAa
+  a rdbs:AttributeType ;
+  rdfs:label "XLogP-AA" ;
+.
+rdbsrn:edgeattributetypeassociation-0
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_essn ;
+.
+rdbsrn:edgeattributetypeassociation-1
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_percent ;
+.
+rdbsrn:edgeattributetypeassociation-10
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_issue ;
+.
+rdbsrn:edgeattributetypeassociation-11
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_issn ;
+.
+rdbsrn:edgeattributetypeassociation-12
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_doi ;
+.
+rdbsrn:edgeattributetypeassociation-13
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pui ;
+.
+rdbsrn:edgeattributetypeassociation-14
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pX ;
+.
+rdbsrn:edgeattributetypeassociation-15
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_company ;
+.
+rdbsrn:edgeattributetypeassociation-16
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_textRef ;
+.
+rdbsrn:edgeattributetypeassociation-17
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_authors ;
+.
+rdbsrn:edgeattributetypeassociation-18
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medlineTa ;
+.
+rdbsrn:edgeattributetypeassociation-19
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pmid ;
+.
+rdbsrn:edgeattributetypeassociation-2
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_experimentalSystem ;
+.
+rdbsrn:edgeattributetypeassociation-20
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_start ;
+.
+rdbsrn:edgeattributetypeassociation-21
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_collaborator ;
+.
+rdbsrn:edgeattributetypeassociation-22
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_mref ;
+.
+rdbsrn:edgeattributetypeassociation-23
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pii ;
+.
+rdbsrn:edgeattributetypeassociation-24
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_modeOfAction ;
+.
+rdbsrn:edgeattributetypeassociation-25
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sLongPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_url ;
+.
+rdbsrn:edgeattributetypeassociation-26
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sLongPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_textMods ;
+.
+rdbsrn:edgeattributetypeassociation-27
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sLongPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_intervention ;
+.
+rdbsrn:edgeattributetypeassociation-28
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sLongPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_msrc ;
+.
+rdbsrn:edgeattributetypeassociation-29
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sLongPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_title ;
+.
+rdbsrn:edgeattributetypeassociation-3
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pubVersion ;
+.
+rdbsrn:edgeattributetypeassociation-30
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sLongPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_condition ;
+.
+rdbsrn:edgeattributetypeassociation-31
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_lPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pubYear ;
+.
+rdbsrn:edgeattributetypeassociation-32
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellType ;
+.
+rdbsrn:edgeattributetypeassociation-33
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organism ;
+.
+rdbsrn:edgeattributetypeassociation-34
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_biomarkerType ;
+.
+rdbsrn:edgeattributetypeassociation-35
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellLineName ;
+.
+rdbsrn:edgeattributetypeassociation-36
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_quantitativeType ;
+.
+rdbsrn:edgeattributetypeassociation-37
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_trialStatus ;
+.
+rdbsrn:edgeattributetypeassociation-38
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_phase ;
+.
+rdbsrn:edgeattributetypeassociation-39
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_source ;
+.
+rdbsrn:edgeattributetypeassociation-4
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_textPath ;
+.
+rdbsrn:edgeattributetypeassociation-40
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organ ;
+.
+rdbsrn:edgeattributetypeassociation-41
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_changeType ;
+.
+rdbsrn:edgeattributetypeassociation-42
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_studyType ;
+.
+rdbsrn:edgeattributetypeassociation-43
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_tissue ;
+.
+rdbsrn:edgeattributetypeassociation-5
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_embase ;
+.
+rdbsrn:edgeattributetypeassociation-6
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_journal ;
+.
+rdbsrn:edgeattributetypeassociation-7
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_nctId ;
+.
+rdbsrn:edgeattributetypeassociation-8
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_phenotype ;
+.
+rdbsrn:edgeattributetypeassociation-9
+  a rdbs:EdgeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellObject ;
+.
+rdbsrn:edgetype_binding
+  a rdbs:EdgeType ;
+  rdfs:label "Binding" ;
+.
+rdbsrn:edgetype_biomarker
+  a rdbs:EdgeType ;
+  rdfs:label "Biomarker" ;
+.
+rdbsrn:edgetype_cellExpression
+  a rdbs:EdgeType ;
+  rdfs:label "CellExpression" ;
+.
+rdbsrn:edgetype_chemicalReaction
+  a rdbs:EdgeType ;
+  rdfs:label "ChemicalReaction" ;
+.
+rdbsrn:edgetype_clinicalTrial
+  a rdbs:EdgeType ;
+  rdfs:label "ClinicalTrial" ;
+.
+rdbsrn:edgetype_directRegulation
+  a rdbs:EdgeType ;
+  rdfs:label "DirectRegulation" ;
+.
+rdbsrn:edgetype_expression
+  a rdbs:EdgeType ;
+  rdfs:label "Expression" ;
+.
+rdbsrn:edgetype_functionalAssociation
+  a rdbs:EdgeType ;
+  rdfs:label "FunctionalAssociation" ;
+.
+rdbsrn:edgetype_geneticChange
+  a rdbs:EdgeType ;
+  rdfs:label "GeneticChange" ;
+.
+rdbsrn:edgetype_miRnaEffect
+  a rdbs:EdgeType ;
+  rdfs:label "miRNAEffect" ;
+.
+rdbsrn:edgetype_molSynthesis
+  a rdbs:EdgeType ;
+  rdfs:label "MolSynthesis" ;
+.
+rdbsrn:edgetype_molTransport
+  a rdbs:EdgeType ;
+  rdfs:label "MolTransport" ;
+.
+rdbsrn:edgetype_promoterBinding
+  a rdbs:EdgeType ;
+  rdfs:label "PromoterBinding" ;
+.
+rdbsrn:edgetype_protModification
+  a rdbs:EdgeType ;
+  rdfs:label "ProtModification" ;
+.
+rdbsrn:edgetype_quantitativeChange
+  a rdbs:EdgeType ;
+  rdfs:label "QuantitativeChange" ;
+.
+rdbsrn:edgetype_regulation
+  a rdbs:EdgeType ;
+  rdfs:label "Regulation" ;
+.
+rdbsrn:edgetype_stateChange
+  a rdbs:EdgeType ;
+  rdfs:label "StateChange" ;
+.
+rdbsrn:membershiptypeassociation-0
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_cellObject ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-1
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_cellProcess ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-10
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_organism ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-11
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_protein ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-12
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_smallMol ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-13
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_tissue ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-14
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_treatment ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-15
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_virus ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-16
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_cellObject ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-17
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_cellProcess ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-18
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_cellType ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-19
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_clinicalParameter ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-2
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_cellType ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-20
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_complex ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-21
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_disease ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-22
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_functionalClass ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-23
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_geneticVariant ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-24
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_organ ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-25
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_protein ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-26
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_smallMol ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-27
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_tissue ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-28
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_treatment ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-29
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_virus ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-3
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_clinicalParameter ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-30
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_binding ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-31
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_biomarker ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-32
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_cellExpression ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-33
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_chemicalReaction ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-34
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_clinicalTrial ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-35
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_directRegulation ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-36
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_expression ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-37
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_functionalAssociation ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-38
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_geneticChange ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-39
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_molSynthesis ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-4
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_complex ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-40
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_molTransport ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-41
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_promoterBinding ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-42
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_protModification ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-43
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_quantitativeChange ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-44
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_regulation ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-45
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_stateChange ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-46
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeEdgeType rdbsrn:edgetype_miRnaEffect ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:membershiptypeassociation-5
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_disease ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-6
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_functionalClass ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-7
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_geneticVariant ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-8
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_medicalProcedure ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:membershiptypeassociation-9
+  a rdbs:MembershipTypeAssociation ;
+  rdbs:ContaineeVerticeType rdbsrn:verticetype_organ ;
+  rdbs:ContainerVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:ontology_geneOntology
+  a rdbs:Ontology ;
+  rdfs:label "Gene Ontology" ;
+.
+rdbsrn:ontology_humanProteinAtlasExpressionOntology
+  a rdbs:Ontology ;
+  rdfs:label "Human Protein Atlas Expression Ontology" ;
+.
+rdbsrn:ontology_pathwayStudioOntology
+  a rdbs:Ontology ;
+  rdfs:label "Pathway Studio Ontology" ;
+.
+rdbsrn:ontology_similarCompounds
+  a rdbs:Ontology ;
+  rdfs:label "Similar Compounds" ;
+.
+rdbsrn:verticeattributetypeassociation-0
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_humanChromosomePosition ;
+.
+rdbsrn:verticeattributetypeassociation-1
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_genBankId ;
+.
+rdbsrn:verticeattributetypeassociation-10
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_iupacName ;
+.
+rdbsrn:verticeattributetypeassociation-11
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_meShId ;
+.
+rdbsrn:verticeattributetypeassociation-12
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_omimId ;
+.
+rdbsrn:verticeattributetypeassociation-13
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_hmdbId ;
+.
+rdbsrn:verticeattributetypeassociation-14
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_keggId ;
+.
+rdbsrn:verticeattributetypeassociation-15
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_meShHeading ;
+.
+rdbsrn:verticeattributetypeassociation-16
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_orphanetId ;
+.
+rdbsrn:verticeattributetypeassociation-17
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_mouseChromosomePosition ;
+.
+rdbsrn:verticeattributetypeassociation-18
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_unigeneId ;
+.
+rdbsrn:verticeattributetypeassociation-19
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_ecNumber ;
+.
+rdbsrn:verticeattributetypeassociation-2
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_swissProtAccession ;
+.
+rdbsrn:verticeattributetypeassociation-20
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_casId ;
+.
+rdbsrn:verticeattributetypeassociation-21
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_goId ;
+.
+rdbsrn:verticeattributetypeassociation-22
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_taxId ;
+.
+rdbsrn:verticeattributetypeassociation-23
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_inChIKey ;
+.
+rdbsrn:verticeattributetypeassociation-24
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_rgdId ;
+.
+rdbsrn:verticeattributetypeassociation-25
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pharmaPendiumId ;
+.
+rdbsrn:verticeattributetypeassociation-26
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_chEbiId ;
+.
+rdbsrn:verticeattributetypeassociation-27
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_tcdbId ;
+.
+rdbsrn:verticeattributetypeassociation-28
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_mgiId ;
+.
+rdbsrn:verticeattributetypeassociation-29
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_ratChromosomePosition ;
+.
+rdbsrn:verticeattributetypeassociation-3
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_swissProtId ;
+.
+rdbsrn:verticeattributetypeassociation-30
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_xLogPAa ;
+.
+rdbsrn:verticeattributetypeassociation-31
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_homologeneId ;
+.
+rdbsrn:verticeattributetypeassociation-32
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+.
+rdbsrn:verticeattributetypeassociation-33
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+.
+rdbsrn:verticeattributetypeassociation-34
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_miRBaseId ;
+.
+rdbsrn:verticeattributetypeassociation-35
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_hugoId ;
+.
+rdbsrn:verticeattributetypeassociation-36
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pmid ;
+.
+rdbsrn:verticeattributetypeassociation-37
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_locusLinkId ;
+.
+rdbsrn:verticeattributetypeassociation-38
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_molecularFormula ;
+.
+rdbsrn:verticeattributetypeassociation-39
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pubChemSid ;
+.
+rdbsrn:verticeattributetypeassociation-4
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pirId ;
+.
+rdbsrn:verticeattributetypeassociation-40
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_geneSetOrigin ;
+.
+rdbsrn:verticeattributetypeassociation-41
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pii ;
+.
+rdbsrn:verticeattributetypeassociation-42
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_rPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_molecularWeight ;
+.
+rdbsrn:verticeattributetypeassociation-43
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_rPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_xLogP ;
+.
+rdbsrn:verticeattributetypeassociation-44
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sLongPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_notes ;
+.
+rdbsrn:verticeattributetypeassociation-45
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_lPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_rotatableBondCount ;
+.
+rdbsrn:verticeattributetypeassociation-46
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellType ;
+.
+rdbsrn:verticeattributetypeassociation-47
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organism ;
+.
+rdbsrn:verticeattributetypeassociation-48
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_primaryCellLocalization ;
+.
+rdbsrn:verticeattributetypeassociation-49
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_taxonomyObjectType ;
+.
+rdbsrn:verticeattributetypeassociation-5
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pubChemCid ;
+.
+rdbsrn:verticeattributetypeassociation-50
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_clinicalSignificance ;
+.
+rdbsrn:verticeattributetypeassociation-51
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organ ;
+.
+rdbsrn:verticeattributetypeassociation-52
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_isGeneSet ;
+.
+rdbsrn:verticeattributetypeassociation-53
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_snvType ;
+.
+rdbsrn:verticeattributetypeassociation-54
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellLocalization ;
+.
+rdbsrn:verticeattributetypeassociation-55
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pathwayType ;
+.
+rdbsrn:verticeattributetypeassociation-56
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organelle ;
+.
+rdbsrn:verticeattributetypeassociation-57
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_class ;
+.
+rdbsrn:verticeattributetypeassociation-58
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellProcess ;
+.
+rdbsrn:verticeattributetypeassociation-59
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_tissue ;
+.
+rdbsrn:verticeattributetypeassociation-6
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_reaxysId ;
+.
+rdbsrn:verticeattributetypeassociation-60
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organSystem ;
+.
+rdbsrn:verticeattributetypeassociation-7
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_ncImId ;
+.
+rdbsrn:verticeattributetypeassociation-8
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_description ;
+.
+rdbsrn:verticeattributetypeassociation-9
+  a rdbs:VerticeAttributeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_ensemblId ;
+.
+rdbsrn:verticetype_cellObject
+  a rdbs:VerticeType ;
+  rdfs:label "CellObject" ;
+.
+rdbsrn:verticetype_cellProcess
+  a rdbs:VerticeType ;
+  rdfs:label "CellProcess" ;
+.
+rdbsrn:verticetype_cellType
+  a rdbs:VerticeType ;
+  rdfs:label "CellType" ;
+.
+rdbsrn:verticetype_clinicalParameter
+  a rdbs:VerticeType ;
+  rdfs:label "ClinicalParameter" ;
+.
+rdbsrn:verticetype_complex
+  a rdbs:VerticeType ;
+  rdfs:label "Complex" ;
+.
+rdbsrn:verticetype_disease
+  a rdbs:VerticeType ;
+  rdfs:label "Disease" ;
+.
+rdbsrn:verticetype_functionalClass
+  a rdbs:VerticeType ;
+  rdfs:label "FunctionalClass" ;
+.
+rdbsrn:verticetype_geneticVariant
+  a rdbs:VerticeType ;
+  rdfs:label "GeneticVariant" ;
+.
+rdbsrn:verticetype_group
+  a rdbs:VerticeType ;
+  rdfs:label "Group" ;
+.
+rdbsrn:verticetype_medicalProcedure
+  a rdbs:VerticeType ;
+  rdfs:label "MedicalProcedure" ;
+.
+rdbsrn:verticetype_organ
+  a rdbs:VerticeType ;
+  rdfs:label "Organ" ;
+.
+rdbsrn:verticetype_organism
+  a rdbs:VerticeType ;
+  rdfs:label "Organism" ;
+.
+rdbsrn:verticetype_pathway
+  a rdbs:VerticeType ;
+  rdfs:label "Pathway" ;
+.
+rdbsrn:verticetype_protein
+  a rdbs:VerticeType ;
+  rdfs:label "Protein" ;
+.
+rdbsrn:verticetype_semanticConcept
+  a rdbs:VerticeType ;
+  rdfs:label "SemanticConcept" ;
+.
+rdbsrn:verticetype_smallMol
+  a rdbs:VerticeType ;
+  rdfs:label "SmallMol" ;
+.
+rdbsrn:verticetype_tissue
+  a rdbs:VerticeType ;
+  rdfs:label "Tissue" ;
+.
+rdbsrn:verticetype_treatment
+  a rdbs:VerticeType ;
+  rdfs:label "Treatment" ;
+.
+rdbsrn:verticetype_virus
+  a rdbs:VerticeType ;
+  rdfs:label "Virus" ;
+.
+rdbsrn:verticetypeassociation-0
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_functionalClass ;
+.
+rdbsrn:verticetypeassociation-1
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-10
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_description ;
+  rdbs:hasVerticeType rdbsrn:verticetype_disease ;
+.
+rdbsrn:verticetypeassociation-100
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_genBankId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-101
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_description ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-102
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_omimId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-103
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_ecNumber ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-104
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_rPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_xLogP ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-105
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_rPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_molecularWeight ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-106
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sLongPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_notes ;
+  rdbs:hasVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:verticetypeassociation-107
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sLongPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_notes ;
+  rdbs:hasVerticeType rdbsrn:verticetype_semanticConcept ;
+.
+rdbsrn:verticetypeassociation-108
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sLongPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_notes ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-109
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sLongPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_notes ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-11
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_goId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_disease ;
+.
+rdbsrn:verticetypeassociation-110
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_lPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_rotatableBondCount ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-111
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organelle ;
+  rdbs:hasVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:verticetypeassociation-112
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_class ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-113
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_class ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-114
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_disease ;
+.
+rdbsrn:verticetypeassociation-115
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_snvType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_geneticVariant ;
+.
+rdbsrn:verticetypeassociation-116
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_tissue ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-117
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_taxonomyObjectType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_functionalClass ;
+.
+rdbsrn:verticetypeassociation-118
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_taxonomyObjectType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellType ;
+.
+rdbsrn:verticetypeassociation-119
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellProcess ;
+.
+rdbsrn:verticetypeassociation-12
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_goId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-120
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellProcess ;
+  rdbs:hasVerticeType rdbsrn:verticetype_clinicalParameter ;
+.
+rdbsrn:verticetypeassociation-121
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_taxonomyObjectType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_semanticConcept ;
+.
+rdbsrn:verticetypeassociation-122
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pathwayType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:verticetypeassociation-123
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_tissue ;
+  rdbs:hasVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:verticetypeassociation-124
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organSystem ;
+  rdbs:hasVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:verticetypeassociation-125
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellProcess ;
+  rdbs:hasVerticeType rdbsrn:verticetype_disease ;
+.
+rdbsrn:verticetypeassociation-126
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_clinicalSignificance ;
+  rdbs:hasVerticeType rdbsrn:verticetype_geneticVariant ;
+.
+rdbsrn:verticetypeassociation-127
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organ ;
+  rdbs:hasVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:verticetypeassociation-128
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pathwayType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-129
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organSystem ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-13
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-130
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-131
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_isGeneSet ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-132
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organelle ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-133
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organism ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-134
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellProcess ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellProcess ;
+.
+rdbsrn:verticetypeassociation-135
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_clinicalParameter ;
+.
+rdbsrn:verticetypeassociation-136
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_taxonomyObjectType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_virus ;
+.
+rdbsrn:verticetypeassociation-137
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:verticetypeassociation-138
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organ ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-139
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_organism ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-14
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-140
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_cellLocalization ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-141
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_primaryCellLocalization ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-142
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_idPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_taxonomyObjectType ;
+  rdbs:hasVerticeType rdbsrn:verticetype_organ ;
+.
+rdbsrn:verticetypeassociation-15
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_locusLinkId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-16
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_chEbiId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-17
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_meShId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_disease ;
+.
+rdbsrn:verticetypeassociation-18
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_clinicalParameter ;
+.
+rdbsrn:verticetypeassociation-19
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_taxId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_virus ;
+.
+rdbsrn:verticetypeassociation-2
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_goId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_complex ;
+.
+rdbsrn:verticetypeassociation-20
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_meShId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_clinicalParameter ;
+.
+rdbsrn:verticetypeassociation-21
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_treatment ;
+.
+rdbsrn:verticetypeassociation-22
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_goId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_semanticConcept ;
+.
+rdbsrn:verticetypeassociation-23
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_inChIKey ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-24
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_mouseChromosomePosition ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-25
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pmid ;
+  rdbs:hasVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:verticetypeassociation-26
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_xLogPAa ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-27
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_ecNumber ;
+  rdbs:hasVerticeType rdbsrn:verticetype_functionalClass ;
+.
+rdbsrn:verticetypeassociation-28
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-29
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellObject ;
+.
+rdbsrn:verticetypeassociation-3
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellProcess ;
+.
+rdbsrn:verticetypeassociation-30
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_disease ;
+.
+rdbsrn:verticetypeassociation-31
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_orphanetId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_disease ;
+.
+rdbsrn:verticetypeassociation-32
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellType ;
+.
+rdbsrn:verticetypeassociation-33
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_virus ;
+.
+rdbsrn:verticetypeassociation-34
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_organism ;
+.
+rdbsrn:verticetypeassociation-35
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_organism ;
+.
+rdbsrn:verticetypeassociation-36
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_tissue ;
+.
+rdbsrn:verticetypeassociation-37
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_miRBaseId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-38
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_virus ;
+.
+rdbsrn:verticetypeassociation-39
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_description ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellType ;
+.
+rdbsrn:verticetypeassociation-4
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_meShId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellProcess ;
+.
+rdbsrn:verticetypeassociation-40
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_molecularFormula ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-41
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_swissProtId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-42
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pirId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-43
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_omimId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-44
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_description ;
+  rdbs:hasVerticeType rdbsrn:verticetype_functionalClass ;
+.
+rdbsrn:verticetypeassociation-45
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_description ;
+  rdbs:hasVerticeType rdbsrn:verticetype_tissue ;
+.
+rdbsrn:verticetypeassociation-46
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_goId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_functionalClass ;
+.
+rdbsrn:verticetypeassociation-47
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellObject ;
+.
+rdbsrn:verticetypeassociation-48
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pharmaPendiumId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-49
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_taxId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_organism ;
+.
+rdbsrn:verticetypeassociation-5
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_chEbiId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_complex ;
+.
+rdbsrn:verticetypeassociation-50
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_geneticVariant ;
+.
+rdbsrn:verticetypeassociation-51
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_ensemblId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-52
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pmid ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-53
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_functionalClass ;
+.
+rdbsrn:verticetypeassociation-54
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-55
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_keggId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-56
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_meShHeading ;
+  rdbs:hasVerticeType rdbsrn:verticetype_disease ;
+.
+rdbsrn:verticetypeassociation-57
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_goId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellProcess ;
+.
+rdbsrn:verticetypeassociation-58
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_organ ;
+.
+rdbsrn:verticetypeassociation-59
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_clinicalParameter ;
+.
+rdbsrn:verticetypeassociation-6
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_swissProtAccession ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-60
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_tissue ;
+.
+rdbsrn:verticetypeassociation-61
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_miRBaseId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_disease ;
+.
+rdbsrn:verticetypeassociation-62
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_semanticConcept ;
+.
+rdbsrn:verticetypeassociation-63
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_keggId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-64
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_goId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-65
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_ratChromosomePosition ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-66
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pubChemSid ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-67
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_homologeneId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-68
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_meShHeading ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellProcess ;
+.
+rdbsrn:verticetypeassociation-69
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pii ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-7
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_mgiId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-70
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_semanticConcept ;
+.
+rdbsrn:verticetypeassociation-71
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_complex ;
+.
+rdbsrn:verticetypeassociation-72
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_reaxysId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-73
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_hmdbId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-74
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_disease ;
+.
+rdbsrn:verticetypeassociation-75
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellProcess ;
+.
+rdbsrn:verticetypeassociation-76
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_organ ;
+.
+rdbsrn:verticetypeassociation-77
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_ncImId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_tissue ;
+.
+rdbsrn:verticetypeassociation-78
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellType ;
+.
+rdbsrn:verticetypeassociation-79
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_keggId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_complex ;
+.
+rdbsrn:verticetypeassociation-8
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_description ;
+  rdbs:hasVerticeType rdbsrn:verticetype_group ;
+.
+rdbsrn:verticetypeassociation-80
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_geneticVariant ;
+.
+rdbsrn:verticetypeassociation-81
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_rgdId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-82
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_tcdbId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-83
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_humanChromosomePosition ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-84
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_hugoId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-85
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pubChemCid ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-86
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_unigeneId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_protein ;
+.
+rdbsrn:verticetypeassociation-87
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_casId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_functionalClass ;
+.
+rdbsrn:verticetypeassociation-88
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_pii ;
+  rdbs:hasVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:verticetypeassociation-89
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_alias ;
+  rdbs:hasVerticeType rdbsrn:verticetype_complex ;
+.
+rdbsrn:verticetypeassociation-9
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_iupacName ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-90
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_goId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellObject ;
+.
+rdbsrn:verticetypeassociation-91
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_medScanId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_treatment ;
+.
+rdbsrn:verticetypeassociation-92
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_description ;
+  rdbs:hasVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:verticetypeassociation-93
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_description ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-94
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_geneSetOrigin ;
+  rdbs:hasVerticeType rdbsrn:verticetype_pathway ;
+.
+rdbsrn:verticetypeassociation-95
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_casId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_smallMol ;
+.
+rdbsrn:verticetypeassociation-96
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_ncImId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_organ ;
+.
+rdbsrn:verticetypeassociation-97
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_meShId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_treatment ;
+.
+rdbsrn:verticetypeassociation-98
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_ncImId ;
+  rdbs:hasVerticeType rdbsrn:verticetype_cellType ;
+.
+rdbsrn:verticetypeassociation-99
+  a rdbs:VerticeTypeAssociation ;
+  rdbs:hasAttributeDataType rdbsrn:attributedatatype_sPropertyValue ;
+  rdbs:hasAttributeType rdbsrn:attributetype_humanChromosomePosition ;
+  rdbs:hasVerticeType rdbsrn:verticetype_geneticVariant ;
+.
+rdbs:DataPropertyColumn
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasSemanticName ;
+      sh:datatype xsd:string ;
+      sh:description "The Semantic Name of the Column. {@en}" ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has semantic name {@en}" ;
+    ] ;
+.
+rdbs:ObjectPropertyColumn
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasObjectSemanticName ;
+      sh:datatype xsd:string ;
+      sh:description "The Semantinc Name of the Object of which this column has the Ids. {@en}" ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has object semantic name {@en}" ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path rdbs:hasSemanticName ;
+      sh:datatype xsd:string ;
+      sh:description "The Semantic Name of the Column. {@en}" ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:name "has semantic name {@en}" ;
+    ] ;
+.
