@@ -117,6 +117,7 @@ object JenaARQApp extends App {
   def execVerticeAttributeTablesQuery(model: Model): IO[List[VerticeAttributeSchemaQueryParameter]] = {
 
     import VerticeAttributeTablesQuery._
+
     for {
 
       qexec        <- IO { QueryExecutionFactory.create(qString.qs, model ) }
