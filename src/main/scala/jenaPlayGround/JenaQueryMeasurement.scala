@@ -229,7 +229,8 @@ object JenaQueryMeasurement extends App {
 
 
   val experimentalQueryClean =
-    """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+    """
+      |PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
       |PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       |PREFIX owl: <http://www.w3.org/2002/07/owl#>
       |PREFIX rdbs:<https://data.elsevier.com/lifescience/schema/rdbs/>
@@ -371,53 +372,60 @@ object JenaQueryMeasurement extends App {
       |			rdbs:hasDataType ?dynamic_attribute_type_column_data_type
       |		] .
       |# Get the associated Membership Type Associations and mint related IRIs
-      |	#?vertice_type rdfs:label ?vertice_type_label_optional .
-      |	#BIND ( rdbs:mintGraphCBEDescriptionTable( ?vertice_type_label_optional, rdbs:VerticeCBETable ) AS ?table_label ) .
       |	BIND ( rdbs:mintClassifiedColumn( ?table_label, ?attribute_data_type_label, ?attribute_type ) AS ?dynamic_attribute_type_column ) .
       |	BIND ( rdbs:mintClassifiedColumnLabel( ?attribute_data_type_label, ?attribute_type ) AS ?dynamic_attribute_type_column_label ) .
       |
       |}
       |UNION
       |{
-      |# Get all the Vertice Types
-      |	?vertice_type a rdbs:VerticeType ;
-      |		rdfs:label ?vertice_type_label .
-      |# Mint Vertice CBE IRI
-      |	BIND ( rdbs:mintGraphCBEDescriptionTable( ?vertice_type_label, rdbs:VerticeCBETable ) AS ?table_label ) .
+      |
+      |	?vertice_type a rdbs:VerticeType .
+      |	?vertice_type rdfs:label ?vertice_type_label .
+      |    BIND ( rdbs:mintGraphCBEDescriptionTable(?vertice_type_label, rdbs:VerticeCBETable ) AS ?table_label ) .
       |	BIND( rdbs:createIRIFromString( ?table_label, "base" ) AS ?table ) .
       |	#FILTER NOT EXISTS {?table a rdbs:VerticeCBETable}
       |
-      |	?membership_type_association a rdbs:MembershipTypeAssociation .
+      |	#?membership_type_association a rdbs:MembershipTypeAssociation .
+      |
       |	{
       |		?membership_type_association rdbs:ContainerVerticeType ?vertice_type .
       |		{
+      |
       |			?membership_type_association rdbs:ContaineeVerticeType ?containee_vertice_type .
       |			?containee_vertice_type rdfs:label ?containee_vertice_type_label .
+      |
       |# Create Dynamic Data Column
-      |			#?vertice_type rdfs:label ?vertice_type_label_optional .
-      |			#BIND ( rdbs:mintGraphCBEDescriptionTable( ?vertice_type_label_optional, rdbs:VerticeCBETable ) AS ?table_label ) .
+      |			?vertice_type a rdbs:VerticeType .
+      |			?vertice_type rdfs:label ?vertice_type_label .
+      |            BIND ( rdbs:mintGraphCBEDescriptionTable(?vertice_type_label, rdbs:VerticeCBETable ) AS ?table_label ) .
       |			BIND ( rdbs:mintClassifiedColumn( ?table_label, "contains", ?containee_vertice_type ) AS ?dynamic_membership_vertice_containee_column ) .
       |			BIND ( rdbs:mintClassifiedColumnLabel( "contains", ?containee_vertice_type ) AS ?dynamic_membership_vertice_containee_column_label ) .
       |		}
       |		UNION
       |		{
+      |
       |			?membership_type_association rdbs:ContaineeEdgeType ?containee_edge_type .
       |			?containee_edge_type rdfs:label ?containee_edge_type_label .
+      |
       |# Create Dynamic Data Column
-      |			#?vertice_type rdfs:label ?vertice_type_label_optional .
-      |			#BIND ( rdbs:mintGraphCBEDescriptionTable( ?vertice_type_label_optional, rdbs:VerticeCBETable ) AS ?table_label ) .
+      |			?vertice_type a rdbs:VerticeType .
+      |			?vertice_type rdfs:label ?vertice_type_label .
+      |            BIND ( rdbs:mintGraphCBEDescriptionTable(?vertice_type_label, rdbs:VerticeCBETable ) AS ?table_label ) .
       |			BIND ( rdbs:mintClassifiedColumn( ?table_label, "contains", ?containee_edge_type ) AS ?dynamic_membership_edge_containee_column ) .
       |			BIND ( rdbs:mintClassifiedColumnLabel( "contains", ?containee_edge_type ) AS ?dynamic_membership_edge_containee_column_label ) .
       |		}
       |	}
       |	UNION
       |	{
+      |
       |		?membership_type_association rdbs:ContaineeVerticeType ?vertice_type .
       |		?membership_type_association rdbs:ContainerVerticeType ?container_vertice_type .
       |		?container_vertice_type rdfs:label ?container_vertice_type_label .
+      |
       |# Create Dynamic Data Column
-      |		#?vertice_type rdfs:label ?vertice_type_label_optional .
-      |		#BIND ( rdbs:mintGraphCBEDescriptionTable( ?vertice_type_label_optional, rdbs:VerticeCBETable ) AS ?table_label ) .
+      |		#?vertice_type a rdbs:VerticeType .
+      |		?vertice_type rdfs:label ?vertice_type_label .
+      |        BIND ( rdbs:mintGraphCBEDescriptionTable(?vertice_type_label, rdbs:VerticeCBETable ) AS ?table_label ) .
       |		BIND ( rdbs:mintClassifiedColumn( ?table_label, "isMemberOf", ?container_vertice_type ) AS ?dynamic_membership_vertice_container_column ) .
       |		BIND ( rdbs:mintClassifiedColumnLabel( "isMemberOf", ?container_vertice_type ) AS ?dynamic_membership_vertice_container_column_label ) .
       |	}
@@ -539,8 +547,10 @@ object JenaQueryMeasurement extends App {
       |	BIND ( rdbs:mintTopologyJoin( "vertice-CBE" ) AS ?topology ) .
       |	BIND ( rdbs:mintTopologyJoin( "vertice-CBE" , ?membership_topic ) AS ?membership_join ) .
       |	BIND ( rdbs:mintTopologyJoin( "vertice-CBE" , ?attribute_type_topic ) AS ?attribute_type_join ) .
-      |	BIND ( rdbs:mintCopyOfColumn(?static_membership_column, ?table_label) AS ?copied_static_membership_column ) .
-      |} UNION {
+      |	BIND (  rdbs:mintCopyOfColumn(?static_membership_column, ?table_label) AS ?copied_static_membership_column ) .
+      |}
+      |UNION
+      |{
       |# Get all the Vertice Types
       |	?vertice_type a rdbs:VerticeType ;
       |		rdfs:label ?vertice_type_label .
@@ -573,7 +583,9 @@ object JenaQueryMeasurement extends App {
       |		BIND ( rdbs:mintClassifiedColumn( ?table_label, ?attribute_data_type_label, ?attribute_type ) AS ?dynamic_attribute_type_column ) .
       |		BIND ( rdbs:mintClassifiedColumnLabel( ?attribute_data_type_label, ?attribute_type ) AS ?dynamic_attribute_type_column_label ) .
       |	}
-      |} UNION {
+      |}
+      |UNION
+      |{
       |# Get all the Vertice Types
       |	?vertice_type a rdbs:VerticeType ;
       |		rdfs:label ?vertice_type_label .
@@ -619,7 +631,7 @@ object JenaQueryMeasurement extends App {
       |            BIND ( rdbs:mintClassifiedColumnLabel( "isMemberOf", ?container_vertice_type ) AS ?dynamic_membership_vertice_container_column_label ) .
       |        }
       |     }
-      |	}
+      |}
       |}
       |""".stripMargin
 
@@ -677,7 +689,11 @@ object JenaQueryMeasurement extends App {
 
 
   (execConstructQuery(experimentalQuery) flatTap(excTime => IO{info(s"Execution time for experimentalQuery was: $excTime \n")}),
-    execConstructQuery(experimentalQueryClean) flatTap(excTime => IO{info(s"Execution time for experimentalQueryClean was: $excTime \n")})).parTupled.unsafeRunSync()
+    execConstructQuery(experimentalQueryClean) flatTap(excTime => IO{info(s"Execution time for experimentalQueryClean was: $excTime \n")}))
+    .parTupled
+    .flatMap(_ => execConstructQuery(experimentalQuery) flatTap(excTime => IO{info(s"Execution time for last experimentalQuery was: $excTime \n")}))
+    .flatMap(_ => execConstructQuery(experimentalQueryClean) flatTap(excTime => IO{info(s"Execution time for last experimentalQueryClean was: $excTime \n")}))
+    .unsafeRunSync()
 
 
 
