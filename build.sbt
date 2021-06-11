@@ -15,7 +15,14 @@ libraryDependencies ++= Seq (
   "co.fs2"          %% "fs2-core"          % "3.0.2",
   "co.fs2"          %% "fs2-io"            % "3.0.2",
   "org.tpolecat"    %% "doobie-core"       % "1.0.0-M2",
-  "com.oracle.database.jdbc" % "ojdbc8"    % "12.2.0.1"
+
+
+  "org.http4s"      %% "http4s-dsl"          % "1.0.0-M23",
+  "org.http4s"      %% "http4s-blaze-server" % "1.0.0-M23",
+  "org.http4s"      %% "http4s-blaze-client" % "1.0.0-M23",
+
+
+  "com.oracle.database.jdbc" % "ojdbc8"      % "12.2.0.1",
 
 
   )
