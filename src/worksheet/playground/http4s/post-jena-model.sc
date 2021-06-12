@@ -36,7 +36,6 @@ def loadEnrichedAsByteArray(filename: String) = {
     _             <- IO {model.write(outStream, Lang.TTL.getName)} //Jena uses Uft-8 per default
 
 
-
   } yield(outStream.toByteArray)
 
 }
@@ -62,15 +61,13 @@ enrichGraphService(req).flatMap(_.as[String]).unsafeRunSync()
 
 
 
-val receviedModel =
+val receivedModel =
   for {
-  arrayBytes <- enrichGraphService(req).flatMap(_.as[Array[Byte]]) //utf-8
-  inStream   <- IO {new ByteArrayInputStream(arrayBytes)}
-  model      <- IO {ModelFactory.createDefaultModel().read(inStream, null, Lang.TTL.getName)} //jena expect utf-8 per default
+    arrayBytes <- enrichGraphService(req).flatMap(_.as[Array[Byte]]) //utf-8
+    inStream   <- IO {new ByteArrayInputStream(arrayBytes)}
+    model      <- IO {ModelFactory.createDefaultModel().read(inStream, null, Lang.TTL.getName)} //jena expect utf-8 per default
 
   } yield(model)
 
-receviedModel.flatMap(model => IO{model.write(System.out, Lang.TTL.getName)}).unsafeRunSync()
-
-
+receivedModel.flatMap(model => IO{model.write(System.out, Lang.TTL.getName)}).unsafeRunSync()
 

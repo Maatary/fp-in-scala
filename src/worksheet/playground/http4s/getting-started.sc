@@ -41,7 +41,7 @@ val req = Request[IO](GET, uri"http://www.example.com/hello").withContentType(`C
 
 //POST("hello", uri"")
 
-`Cache-Control`
+
 
 val resp = helloWorldService(req).unsafeRunSync()
 
