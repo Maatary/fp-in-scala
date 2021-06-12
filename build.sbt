@@ -11,9 +11,9 @@ libraryDependencies ++= Seq (
   "org.topbraid"    % "shacl"              % "1.3.2",
   "com.beachape"    %% "enumeratum"        % "1.6.0",
   "com.lihaoyi"     %% "ammonite-ops"      % "2.3.8",
-  "com.outr"        %% "scribe-slf4j"      % "3.4.0",
-  "co.fs2"          %% "fs2-core"          % "3.0.2",
-  "co.fs2"          %% "fs2-io"            % "3.0.2",
+  "com.outr"        %% "scribe-slf4j"      % "3.0.4",
+  "co.fs2"          %% "fs2-core"          % "3.0.4",
+  "co.fs2"          %% "fs2-io"            % "3.0.4",
   "org.tpolecat"    %% "doobie-core"       % "1.0.0-M2",
 
 
