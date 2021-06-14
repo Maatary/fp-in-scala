@@ -5,6 +5,7 @@ import org.apache.jena.riot._
 import cats.syntax.all._
 import fs2.io.readInputStream
 import org.http4s.EntityDecoder.multipart
+import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.multipart.Part._
 //import cats._
 //import cats.implicits._
@@ -41,7 +42,7 @@ object MultiPartServerApp extends App {
     Multipart[IO](
       Vector(
         //Part.formData("text", "This is text."),
-        inputStreamAsFileData[IO]("basicSchema", "basic_with_tag", new ByteArrayInputStream(basicTagArray), `Content-Type`(MediaType.text.turtle, DefaultCharset))
+        inputStreamAsFileData[IO]("basic_with_tag", "basic_with_tag", new ByteArrayInputStream(basicTagArray), `Content-Type`(MediaType.text.turtle, DefaultCharset))
       ))
   }
 
@@ -73,9 +74,9 @@ object MultiPartServerApp extends App {
 
       req.decodeWith(multipart[IO], strict = true) { multipart : Multipart[IO] =>
 
-        multipart.parts.find(_.filename === Some("basic_with_tag"))
+        multipart.parts.find(_.name === Some("basic_with_tag"))
           .fold { BadRequest("missing basic_with_tag file") } { part =>
-            part.as[String].flatTap(e => IO {info(e)}).flatMap(_ => response)
+            part.as[String].flatTap{ _ => IO { info("Received basic_with_tag content") } }.flatMap{_ => Ok("ok got basic_with_tag")}
           }
       }
 
@@ -96,6 +97,16 @@ object MultiPartServerApp extends App {
 
   } yield (response)
 
-  println(stringIO.unsafeRunSync())
+
+
+
+  // note cats.effect.unsafe.implicits.global is IORuntime.global but as implicit.
+  BlazeServerBuilder[IO](IORuntime.global.compute)
+    .bindHttp()
+    .withHttpApp(enrichGraphService)
+    .resource
+    .use(_ => IO.never).as(ExitCode.Success)
+    .unsafeRunSync()
+
 
 }
