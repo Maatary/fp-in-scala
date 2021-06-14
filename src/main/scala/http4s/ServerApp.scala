@@ -65,23 +65,4 @@ object ServerApp extends App {
 }
 
 
-/*
-object BlazeExample extends IOApp {
-  override def run(args: List[String]): IO[ExitCode] =
-    BlazeExampleApp.resource[IO].use(_ => IO.never).as(ExitCode.Success)
-}
 
-object BlazeExampleApp {
-  def httpApp[F[_]: Async]: HttpApp[F] =
-    Router(
-      "/http4s" -> ExampleService[F].routes
-    ).orNotFound
-
-  def resource[F[_]: Async]: Resource[F, Server] = {
-    val app = httpApp[F]
-    BlazeServerBuilder[F](global)
-      .bindHttp(8080)
-      .withHttpApp(app)
-      .resource
-  }
-}*/
