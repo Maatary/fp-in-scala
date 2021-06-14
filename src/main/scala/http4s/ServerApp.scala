@@ -30,9 +30,13 @@ import java.io.ByteArrayOutputStream
 
 object ServerApp extends App {
 
-  Logger(classOf[org.http4s.blaze.server.BlazeServerBuilder[IO]].getName).withMinimumLevel(Level.Error).replace()
+  //Logger(classOf[org.http4s.blaze.server.BlazeServerBuilder[IO]].getName).withMinimumLevel(Level.Error).replace()
+
+
 
   val enrichedWithDynamic = "elsevier_entellect_enriched_dbschema_resnet_basic_with_tag_with_dynamic.ttl"
+
+
 
   def loadEnrichedAsByteArray(filename: String) = for {
       model         <- IO { ModelFactory.createDefaultModel() }
@@ -41,6 +45,8 @@ object ServerApp extends App {
       _             <- IO { model.write(outStream, Lang.TTL.getName) } //Jena uses Uft-8 per default
 
     } yield(outStream.toByteArray)
+
+
 
   val enrichGraphService  = HttpRoutes.of[IO] {
 
@@ -52,6 +58,8 @@ object ServerApp extends App {
 
   }.orNotFound
 
+
+  
   // note cats.effect.unsafe.implicits.global is IORuntime.global but as implicit.
   BlazeServerBuilder[IO](IORuntime.global.compute)
   .bindHttp()

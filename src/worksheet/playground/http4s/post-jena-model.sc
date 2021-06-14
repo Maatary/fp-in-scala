@@ -57,9 +57,6 @@ val enrichGraphService  = HttpRoutes.of[IO] {
 val req = Request[IO](GET, uri"http://www.example.com/enrichGraph")
 
 
-enrichGraphService(req).flatMap(_.as[String]).unsafeRunSync()
-
-
 
 val receivedModel =
   for {
