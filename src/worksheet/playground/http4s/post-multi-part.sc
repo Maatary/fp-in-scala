@@ -22,7 +22,7 @@ import org.http4s.client.Client
 
 import java.io._
 
-import scribe.{Level, Logger}
+import scribe._
 
 
 def inputStreamAsFileData[F[_]](name: String, filename: String, in: => InputStream, headers: Header.ToRaw*) (implicit F: Sync[F]): Part[F] = {
@@ -54,7 +54,7 @@ val basicWithTag        = "elsevier_entellect_enriched_dbschema_resnet_basic_wit
 
 val enrichGraphService  = HttpRoutes.of[IO] {
 
-  case POST -> Root / "enrichGraph" =>
+  case req @ POST -> Root / "enrichGraph" =>
 
     loadEnrichedAsByteArray(enrichedWithDynamic).flatMap { bArray =>
       Ok(bArray) map { _.withContentType(`Content-Type`(MediaType.text.turtle, DefaultCharset)) } //utf-8 is default
