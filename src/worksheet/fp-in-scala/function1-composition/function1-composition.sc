@@ -6,7 +6,7 @@ val g: Int => Int = (i: Int) => i + 1
 
 
 /**
- *  g compose f = g after f = g . f = x => g(f(x)
+ *  g compose f = g after f = g . f = x => g(f(x))
  *
  *  f: String => Int
  *  g: Int => Int
@@ -36,6 +36,15 @@ val fandTheng = f andThen g
 fandTheng("2")
 
 assert(fandTheng("2") == gcomposef("2") )
+
+import cats.syntax.all._
+
+/**
+ *  Implementing Compose via flatmap for the exercise
+ */
+val  gcomposef2 = f.flatMap{fr => {_ => g(fr) } } // g  compose f or g after f
+
+assert(gcomposef2("2") == gcomposef("2") )
 
 
 
