@@ -33,7 +33,7 @@ scalacOptions := Seq(
   "-deprecation",
   "-Xlint:valpattern",
   "-language:higherKinds",
-  "-Xlint:missing-interpolator",
+  //"-Xlint:missing-interpolator",
   "-Xlint:stars-align",
   "-Yrangepos",
   "-Xlint:implicit-not-found",
