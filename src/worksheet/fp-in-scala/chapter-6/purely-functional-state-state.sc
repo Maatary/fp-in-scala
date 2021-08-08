@@ -1,5 +1,6 @@
 
 
+
 import scala.annotation.tailrec
 
 /**
@@ -48,19 +49,21 @@ import scala.annotation.tailrec
  *
  *    -- This in turn has implication on function like '''foldLeft''' and ordering see [[__sequence]] which is implemented trough a '''foldLeft''' **
  *
+ */
 
 
 case class State[S, +A](run: S => (A, S)) {
 
-  *
+  /**
    * Map Compose a mapping function f: A => B with the state action function S => (A, S)
    * into a new state action function S => (f(A), S)
+   */
   def map[B](f: A => B): State[S, B] = State[S, B] { (s: S) =>
     val (a1, s1) = run(s)
     f(a1) -> s1
   }
 
-  *
+  /**
    * '''Map2 Compose 2 state action functions and a mapping function into one state action function''' in which:
    *
    *  -- it sequences the first state action with the second state action
@@ -92,6 +95,7 @@ case class State[S, +A](run: S => (A, S)) {
    *
    *
    *
+   */
   def map2[B, C](stB: State[S, B])(f: (A, B) => C): State[S, C] = State[S, C] { (s: S) =>
     val (a, sa) = run(s)
     val (b, sb) = stB.run(sa)
@@ -99,7 +103,7 @@ case class State[S, +A](run: S => (A, S)) {
     // Or stB.map(b => f(a, b)).run(sa)
   }
 
-  *
+  /**
    *  == Critical Reminder ==
    *
    * FlatMap compose '''(i) a state action function State[S, A] ''' with
@@ -127,6 +131,7 @@ case class State[S, +A](run: S => (A, S)) {
    *  -- '''This is how flatMap can implement map2 or map, it is more powerful see [[_map]] and [[_map2]]'''
    *
    *
+   */
   def flatMap[B](g: A => State[S, B]): State[S, B] = State[S, B] { (s: S) =>
     val (a, sa) = run(s)
     g(a).run(sa) // We pass the new state along, that's state monad enforcement.
@@ -134,7 +139,7 @@ case class State[S, +A](run: S => (A, S)) {
 
   import State._ // To reuse unit
 
-  *
+  /**
    *  == Remember ==
    *
    *  Here you map in terms of flatMap,
@@ -143,27 +148,30 @@ case class State[S, +A](run: S => (A, S)) {
    *
    *  It combines State[S, A] with the glue function that returns unit(f(a)) i.e. constant State[S, B]
    *
+   */
   def _map[B](f: A => B): State[S, B] = {
     flatMap { a => unit ( f(a)) } // unit type inferred because of currying of flatMap
   }
 
 
 
-  *
+  /**
    * == Remember ==
    *
    *  flatMap is more powerful than [[map]] and [[map2]].
    *
    *  Both can be implemented in term of [[flatMap]]
    *
+   */
 
   def _map2[B, C](stB: State[S, B])(f: (A, B) => C): State[S, C] = {
     flatMap { a => stB.map { b => f(a, b) } }
   }
 
 
-  *
+  /**
    * == As flatMap using for-Comprehension ==
+   */
   def __map[B](f: A => B): State[S, B] = {
     for {
       a <- this // thread the result of the first function
@@ -171,8 +179,9 @@ case class State[S, +A](run: S => (A, S)) {
     } yield b // map over the result of the second function desugared to unit(f(a)).map(b => b)
   }
 
-  *
+  /**
    * == As flatMap using for-Comprehension ==
+   */
   def __map2[B, C](stB: State[S, B])(f: (A, B) => C): State[S, C] = {
     for {
       a <- this // thread the result of the first function
@@ -184,7 +193,7 @@ case class State[S, +A](run: S => (A, S)) {
 
 object State {
 
-  *
+  /**
    * Lift '''a''' into a state action '''s -> (a, s)''', that return '''a''' as value and maintain the input state '''s'''
    *
    * It allows among other to build neutral state action function, in operation like '''foldLeft''' and '''foldRight'''
@@ -192,10 +201,11 @@ object State {
    * -- In '''foldLeft''' unit pass along the input state to the composed computation
    *
    * -- In '''foldRight''' unit pass along the returned state of the composed computation
+   */
   def unit[S, A](a: A): State[S, A] = State { s => (a, s) }
 
 
-  *
+  /**
    *  == Notes - Sequence Via foldRight ==
    *
    *
@@ -299,12 +309,13 @@ object State {
    *
    *  `When we call e, we stack it and then call d and c, then we stack c which call a and b`
    *
+   */
   def sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = {
     l.foldRight(unit[S, List[A]](Nil)) { (a, b) => a.map2(b)((a, b) => a :: b) }
   }
 
 
-  *
+  /**
    *  == Notes - Sequence Via foldRight Raw ==
    *
    *
@@ -405,13 +416,14 @@ object State {
    *
    *  `When we call e, we stack it and then call d and c, then we stack c which call a and b`
    *
+   */
   def _sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = l match {
     case Nil => unit(Nil)
     case s :: xs => s.map2(_sequence(xs))((a, b) => a :: b)
   }
 
 
-  *
+  /**
    * == Critical Notes - Via foldLeft ==
    *
    * see [[sequence]] and [[_sequence]] which implement the '''foldRight''' approach
@@ -507,14 +519,16 @@ object State {
    * stack, not being tail recursive. And the call stack will be as tall as the list
    * is long.
    *
+   */
   def __sequence[S, A](l: List[State[S, A]]): State[S, List[A]] = {
     l.foldLeft(unit[S, List[A]](Nil)) { (sb, sa) => sb.map2(sa)((b, a) => a :: b) } map (_.reverse)
   }
 
 
-  *
+  /**
    * == Critical Notes - Via foldLeft Raw ==
    *
+   */
   def ___sequence[S, A](states: List[State[S, A]]): State[S, List[A]] = {
 
     @tailrec
@@ -528,13 +542,14 @@ object State {
   }
 
 
-  *
+  /**
    * == Sequence via fold Left Raw (More Raw i.e. Bare Bone) ==
    *
    * his implementation uses a loop internally and is the same recursion
    * pattern as a left fold. It is quite common with left folds to build
    * up a list in reverse order, then reverse it at the end.
    * (We could also use a collection.mutable.ListBuffer internally.)
+   */
   def sequenceBook[S, A](sas: List[State[S, A]]): State[S, List[A]] = {
     def go(s: S, actions: List[State[S,A]], acc: List[A]): (List[A],S) =
       actions match {
@@ -545,17 +560,99 @@ object State {
   }
 
 
+  /**
+   * ==  State Modification ==
+   *
+   * === Motivation for a pure state modification mechanism ===
+   *
+   * The mechanism is motivated by the scenario where we are not interested by the value returned by the state action function but rather the state itself
+   *
+   * In other words, it is when we want to do a successive number of state transformation, where we are interested in the final state e.g.
+   *
+   *  -- Building a state gradually as in a builder pattern.
+   *
+   *  -- Performing a recursive stateful computation
+   *
+   * This the opposite of a scenario such as Random number generator,  where we are not interested in the state, but the values returned.
+   *
+   * In that that scenario, we certainly do not want to repeat  ourself by carrying the state, so the state monad allows us to simply thread it.
+   *
+   *
+   * === Ingredients ===
+   *
+   * The shape of a state action that do not care about the value returned or returns no values for the  matter, but focus on the state is as follows:
+   *
+   *    -- s -> ((), s)
+   *
+   * So if we were to use the state monad to combine multiple of those function to perform a suite of transformation on a state, we would get something as follows:
+   *
+   *
+   * {{{
+   *   for {
+   *
+   *   () <- {s -> ((), s1)}
+   *
+   *   () <- {s -> ((), s2)}
+   *
+   *   () <- {s -> ((), s3)}
+   *
+   *   } yield ()
+   *
+   * }}}
+   *
+   * This for-comprehension compose a function that returns s3.  Note that  s1, s2, s3, are  just for illustration. s3 is dependent on what is thread.
+   *
+   * It is the result of a computation, it is not a fixed valued here.
+   *
+   * If we squint hard here we can see two things:
+   *
+   *  -- a pattern s -> ((), s)
+   *
+   *  -- a transformation s -> s1 or more accurately  s -> s. We we call this function f: s -> s
+   *
+   *  So in a sense we have a pattern modify: f -> s -> ((), f(s))
+   *
+   *  '''TODO better'''
+   *
+   *  However this is not a state action function. We want something that can compose as part of the state monad i.e. s -> (a, s)
+   *
+   *  To that end we need to use the functional idiom of building/creating/returning a function from a function with some closure in it.
+   *
+   *  This can be achieve by combining a function that extract the state as value, and a function that ignore its input state,
+   *  but set its state by closing over an outter function.
+   *
+   *
+   * === Implementation Mechanism ===
+   *
+   * -- '''get''', is a '''state action function''' that takes a state and returns '''its state along with the state as value''' i.e. (s, s).
+   *
+   * -- '''set''', is a '''function''' that takes '''a state''', and returns '''a state action function that''':
+   *
+   * ---- ignore its input state
+   *
+   * ---- returns '''the state provided by set''', '''along with unit as a value''', i.e. ((), s)
+   *
+   * ---- It could be said the state action function '''close over the state provided by the function set'''.
+   *
+   * ---- It is an idiomatic functional programing technic, in which function build (returns) function.
+   *
+   *
+   *
+   *
+   */
+
+  def get[S]: State[S, S] = State(s => (s, s))
+
+  def set[S](s: S): State[S, Unit] = State(_ => ((), s))
 
   def modify[S](f: S => S): State[S, Unit] = for {
     s <- get // Gets the current state and assigns it to `s`.
     _ <- set(f(s)) // Sets the new state to `f` applied to `s`.
   } yield ()
 
-  def get[S]: State[S, S] = State(s => (s, s))
-
-  def set[S](s: S): State[S, Unit] = State(_ => ((), s))
-
-
+  def modify2[S](f: S => S): State[S, Unit] = State { s =>
+    ((), f(s))
+  }
 
 }
 
@@ -582,15 +679,16 @@ val nextIntState = State[RNG, Int](s => s.nextInt)
 
 //val listNextInt = List.fill(100000)(nextIntState)
 
-* foldRight composition, will stack overflow while composing the function see [[_sequence]]
+/** foldRight composition, will stack overflow while composing the function see [[_sequence]] */
 //val seqRight = _sequence(listNextInt)
 
-* Will not stack overflow on composition (we accumulate the composition) *
+/** Will not stack overflow on composition (we accumulate the composition) **/
 //val SeqRightScala = sequence(listNextInt) //which use mutation and buffer so as a foldLeft
-* Stack overflow at execution in any case because the composition stack calls see [[sequence]] and [[_sequence]].
+/** Stack overflow at execution in any case because the composition stack calls see [[sequence]] and [[_sequence]].*/
 //SeqRightScala.run(SimpleRNG(42))
 
 //seq.run(SimpleRNG(42))
+/*
 {println("Sequence via foldRight")} pipe { _ => sequence(listNextInt).run(SimpleRNG(42))}
 
 {println("Sequence via foldRight Raw")} pipe { _ => sequence(listNextInt).run(SimpleRNG(42))}
@@ -599,11 +697,11 @@ val nextIntState = State[RNG, Int](s => s.nextInt)
 
 {println("Sequence via foldLeft Raw")} pipe { _ => ___sequence(listNextInt).run(SimpleRNG(42))}
 
-{println("Sequence via foldLeft Raw")} pipe { _ => sequenceBook(listNextInt).run(SimpleRNG(42))}
+{println("Sequence via foldLeft Raw")} pipe { _ => sequenceBook(listNextInt).run(SimpleRNG(42))}*/
 
 
 
-*
+/**
  * The rules of the machine are as follows:
  *
  *  -- Inserting a coin into a locked machine will cause it to unlock if there’s any candy left.
@@ -613,13 +711,14 @@ val nextIntState = State[RNG, Int](s => s.nextInt)
  *  -- Turning the knob on a locked machine or inserting a coin into an unlocked machine does nothing.
  *
  *  -- A machine that’s out of candy ignores all inputs.
+ */
 
 
 
 
 
 
-*
+/**
  * `update:            Input => Machine => Machine`
  *
  * `modify[Machine]:  (Machine => Machine) => State[Machine, Unit]`
@@ -652,6 +751,7 @@ val nextIntState = State[RNG, Int](s => s.nextInt)
  *
  *
  *
+ */
 
 
 sealed trait Input
@@ -673,7 +773,7 @@ object Candy {
     }
 
 
-  *
+  /**
    *  `modify[Machine] compose update` is tricky
    *
    *  explain g compose f = g(f(x))
@@ -684,6 +784,7 @@ object Candy {
    *
    *  Good new is f return a function upon passing it an argument.
    *
+   */
   def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = for {
 
     _ <- sequence(inputs map (modify[Machine] _ compose update)) //
@@ -694,11 +795,11 @@ object Candy {
 }
 
 Candy.simulateMachine(List()).run
-*/
 
 
 
-  import cats.syntax.all._
+
+  /*import cats.syntax.all._
 
   import cats.data.State
 
@@ -710,6 +811,6 @@ Candy.simulateMachine(List()).run
 
   val fun = e.sequence
 
-  fun.run(2).value
+  fun.run(2).value*/
 
 
