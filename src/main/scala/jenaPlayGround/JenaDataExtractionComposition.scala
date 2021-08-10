@@ -19,7 +19,7 @@ object AlignmentDataTypes {
   case class TableAlignment(tableLabel: TableLabel, isCBE: isCBE, primaryFieldAlignment: PrimaryFieldAlignment, dataFieldAlignments: List[DataFieldAlignment], entityFieldAlignments: List[EntityFieldAlignment])
 
   trait FieldAlignment
-  case class PrimaryFieldAlignment(fieldLabel: String,  fieldDataType: String) extends FieldAlignment
+  case class PrimaryFieldAlignment(fieldLabel: String,  fieldDataType: String, mapsToClass: String) extends FieldAlignment
   case class DataFieldAlignment(fieldLabel: String,  fieldDataType: String, isArrayField: Boolean, mapsToProperty: String) extends FieldAlignment
   case class EntityFieldAlignment(fieldLabel: String,  fieldClass: String, isArrayField: Boolean, mapsToProperty: String) extends FieldAlignment
 
@@ -28,12 +28,26 @@ object AlignmentDataTypes {
   type isCBE                = Boolean
   type TablePrimaryKeyLabel = String
   type TablePrimaryKeyType  = String
+  type MapsToClass          = String
 
 
   type FieldAlignmentResource       = Resource
   type DataFieldAlignmentResource   = Resource
   type EntityFieldAlignmentResource = Resource
   type TableAlignmentResource       = Resource
+
+  import cats.Show
+
+  implicit val showTableAlignment: Show[TableAlignment] = (ta: TableAlignment) => {
+    s"""
+       |TableAlignment(
+       |tableLabel: ${ta.tableLabel},
+       |isCBE: ${ta.isCBE},
+       |primaryFieldAlignment: ${ta.primaryFieldAlignment},
+       |dataFieldAlignments: ${ta.dataFieldAlignments},
+       |entityFieldAlignments: ${ta.entityFieldAlignments}
+       |)""".stripMargin
+  }
 
 }
 
@@ -65,10 +79,10 @@ object JenaDataExtractionComposition extends App {
 
     tableAlignmentResourceDescriptions    <- IO.fromEither { tableAlignmentResources traverse getTableAlignmentResourceDescription }
 
-    tableAlignments                       <- IO.fromEither { tableAlignmentResourceDescriptions.traverse { rd => getFieldAlignments(rd._1) map { case (ld, le) => TableAlignment(rd._2, rd._3, PrimaryFieldAlignment(rd._4, rd._5), ld, le)} } }
+    tableAlignments                       <- IO.fromEither { tableAlignmentResourceDescriptions.traverse { rd => getFieldAlignments(rd._1) map { case (ld, le) => TableAlignment(rd._2, rd._3, PrimaryFieldAlignment(rd._4, rd._5, rd._6), ld, le)} } }
 
 
-    _                                     <- IO { println(tableAlignments.toString()) }
+    _                                     <- IO { println(tableAlignments.show) }
 
 
 
@@ -93,7 +107,7 @@ object JenaDataExtractionComposition extends App {
       .toList
   }
 
-  def getTableAlignmentResourceDescription(resource:  TableAlignmentResource): Either[Throwable, (TableAlignmentResource, TableLabel, isCBE, TablePrimaryKeyLabel, TablePrimaryKeyType)]  = {
+  def getTableAlignmentResourceDescription(resource:  TableAlignmentResource): Either[Throwable, (TableAlignmentResource, TableLabel, isCBE, TablePrimaryKeyLabel, TablePrimaryKeyType, MapsToClass)]  = {
 
     for {
 
@@ -105,21 +119,23 @@ object JenaDataExtractionComposition extends App {
 
       tablePrimaryKeyType  <- Either.catchNonFatal { resource.getRequiredProperty(ResourceFactory.createProperty("https://data.elsevier.com/lifescience/schema/rdbs/hasTablePrimaryKeyType")).getResource.getURI }
 
-    } yield (resource, tableLabel, isCbe, tablePrimaryKeyLabel, tablePrimaryKeyType)
+      mapsToClass          <- Either.catchNonFatal { resource.getRequiredProperty(ResourceFactory.createProperty("https://data.elsevier.com/lifescience/schema/rdbs/mapsToClass")).getResource.getURI }
+
+
+    } yield (resource, tableLabel, isCbe, tablePrimaryKeyLabel, tablePrimaryKeyType, mapsToClass)
 
   }
 
-  def makePrimaryFieldAlignment(tableAlignmentResource:  TableAlignmentResource): Either[Throwable, PrimaryFieldAlignment] = {
+  /*def makePrimaryFieldAlignment(tableAlignmentResource:  TableAlignmentResource): Either[Throwable, PrimaryFieldAlignment] = {
 
     Either.catchNonFatal{
       PrimaryFieldAlignment(
         fieldLabel     = tableAlignmentResource.getRequiredProperty(ResourceFactory.createProperty("https://data.elsevier.com/lifescience/schema/rdbs/hasTablePrimaryKeyLabel")).getString,
         fieldDataType  = tableAlignmentResource.getRequiredProperty(ResourceFactory.createProperty("https://data.elsevier.com/lifescience/schema/rdbs/hasTablePrimaryKeyType")).getResource.getURI,
+        mapsToClass    = tableAlignmentResource.getRequiredProperty(ResourceFactory.createProperty("https://data.elsevier.com/lifescience/schema/rdbs/mapsToClass")).getResource.getURI,
       )
     }
-
-
-  }
+  }*/
 
   def getFieldAlignments(tableAlignmentResource: TableAlignmentResource): Either[Throwable, (List[DataFieldAlignment], List[EntityFieldAlignment])] = {
 
