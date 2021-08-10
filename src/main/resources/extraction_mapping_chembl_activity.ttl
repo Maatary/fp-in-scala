@@ -1,0 +1,4351 @@
+@prefix chproteinclass: <https://data.elsevier.com/lifescience/taxonomy/chembl/proteinclass/> .
+@prefix chatcclassification: <https://data.elsevier.com/lifescience/taxonomy/chembl/atcclassification/> .
+@prefix chpatentusecode: <https://data.elsevier.com/lifescience/taxonomy/chembl/patentusecode/> .
+@prefix chhracclassification: <https://data.elsevier.com/lifescience/taxonomy/chembl/hracclassification/> .
+@prefix chactiontype: <https://data.elsevier.com/lifescience/taxonomy/chembl/actiontype/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix adms: <http://www.w3.org/ns/adms#> .
+@prefix chcompsyn: <https://data.elsevier.com/lifescience/taxonomy/chembl/componentsequencesynonym/> .
+@prefix chembl: <https://data.elsevier.com/lifescience/schema/chembl/> .
+@prefix resnet: <https://data.elsevier.com/lifescience/schema/resnet/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix chbao: <https://data.elsevier.com/lifescience/taxonomy/chembl/bao/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix chiracclassification: <https://data.elsevier.com/lifescience/taxonomy/chembl/iracclassification/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix chtargettype: <https://data.elsevier.com/lifescience/taxonomy/chembl/targettype/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix grddl: <http://www.w3.org/2003/g/data-view#> .
+@prefix chassayphenotypicclass: <https://data.elsevier.com/lifescience/taxonomy/chembl/assayphenotypicclass/> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix tosh: <http://topbraid.org/tosh#> .
+@prefix chgeneontology: <https://data.elsevier.com/lifescience/taxonomy/chembl/geneontology/> .
+@prefix swa: <http://topbraid.org/swa#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix chorganismclass: <https://data.elsevier.com/lifescience/taxonomy/chembl/organismclass/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix chfracclassification: <https://data.elsevier.com/lifescience/taxonomy/chembl/fracclassification/> .
+@prefix chusanstem: <https://data.elsevier.com/lifescience/taxonomy/chembl/usanstem/> .
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix km-dev: <http://isi.edu/integration/karma/dev#> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> a km-dev:R2RMLMapping , owl:Ontology ;
+	km-dev:sourceName "elsevier-cbe-chembl-activities" ;
+	km-dev:modelPublicationTime "1580138915429"^^xsd:long ;
+	km-dev:modelVersion "1.7" ;
+	km-dev:hasModelLabel "elsevier-cbe-chembl-activities" ;
+	km-dev:hasBaseURI "https://data.elsevier.com/lifescience/entity/chembl/activity/" ;
+	km-dev:hasWorksheetHistory """[
+    {
+        \"commandName\": \"SetWorksheetPropertiesCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"properties\",
+                \"type\": \"other\",
+                \"value\": {
+                    \"graphLabel\": \"\",
+                    \"hasBaseURI\": true,
+                    \"baseURI\": \"https://data.elsevier.com/lifescience/entity/chembl/activity/\",
+                    \"hasPrefix\": false,
+                    \"hasServiceProperties\": false
+                }
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"assay_id\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"ASSAY_URI\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return \\\"https://data.elsevier.com/lifescience/entity/chembl/assay/\\\"+getValue(\\\"assay_id\\\") if getValue(\\\"assay_id\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"assay_id\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"ASSAY_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [
+                    {\"columnName\": \"ap_ids\"},
+                    {\"columnName\": \"values\"}
+                ]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"AP_URI\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return \\\"https://data.elsevier.com/lifescience/entity/chembl/activityproperty/\\\"+getValue(\\\"values\\\") if getValue(\\\"values\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"ap_ids\\\"},{\\\"columnName\\\":\\\"values\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"ap_ids\\\"},{\\\"columnName\\\":\\\"AP_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"value\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"LOWER_VALUE\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return getValue(\\\"value\\\") if getValue(\\\"upper_value\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"upper_value\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"LOWER_VALUE\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"value\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"SINGLE_VALUE\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return getValue(\\\"value\\\") if not getValue(\\\"upper_value\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"upper_value\\\"}]},{\\\"value\\\":[{\\\"columnName\\\":\\\"value\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"SINGLE_VALUE\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"standard_value\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"STANDARD_LOWER_VALUE\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return getValue(\\\"standard_value\\\") if getValue(\\\"standard_upper_value\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_upper_value\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"STANDARD_LOWER_VALUE\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"standard_value\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"STANDARD_SINGLE_VALUE\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return getValue(\\\"standard_value\\\") if not getValue(\\\"standard_upper_value\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_upper_value\\\"}]},{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_value\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"STANDARD_SINGLE_VALUE\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"uo_units\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"UOUNITS\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return \\\"UO:\\\"+getValue(\\\"uo_units\\\") if getValue(\\\"uo_units\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"uo_units\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"UOUNITS\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"bao_endpoint\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"BAO_URI\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return \\\"https://data.elsevier.com/lifescience/entity/chembl/baoconcept/\\\"+getValue(\\\"bao_endpoint\\\") if getValue(\\\"bao_endpoint\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"bao_endpoint\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"BAO_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"doc_id\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"DOCUMENT_URI\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return \\\"https://data.elsevier.com/lifescience/entity/chembl/document/\\\"+getValue(\\\"doc_id\\\") if getValue(\\\"doc_id\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"doc_id\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"DOCUMENT_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"molregno\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"COMPOUND_PROP_URI\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return \\\"https://data.elsevier.com/lifescience/entity/chembl/compoundproperty/\\\"+getValue(\\\"molregno\\\") if getValue(\\\"molregno\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"molregno\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"COMPOUND_PROP_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"record_id\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"COMPOUND_URI\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return \\\"https://data.elsevier.com/lifescience/entity/chembl/compound/\\\"+getValue(\\\"record_id\\\") if getValue(\\\"record_id\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"record_id\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"COMPOUND_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"src_id\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"SOURCE_ID\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return \\\"https://data.elsevier.com/lifescience/entity/chembl/source/\\\"+getValue(\\\"src_id\\\") if getValue(\\\"src_id\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"src_id\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"SOURCE_ID\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"COMPOUND_URI\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"COMPOUND_REC_URI\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return \\\"https://data.elsevier.com/lifescience/entity/chembl/compoundrecord/\\\"+getValue(\\\"record_id\\\") if getValue(\\\"record_id\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"record_id\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"COMPOUND_REC_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"COMPOUND_PROP_URI\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"TCOMPOUND_URI\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return \\\"https://data.elsevier.com/lifescience/entity/chembl/compound/\\\"+getValue(\\\"molregno\\\") if getValue(\\\"molregno\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"molregno\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"TCOMPOUND_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [
+                    {\"columnName\": \"as_ids\"},
+                    {\"columnName\": \"values\"}
+                ]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"ACTIVITY_SUPPORTING_DATA_URI\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return \\\"https://data.elsevier.com/lifescience/entity/chembl/activitysupportingdata/\\\"+getValue(\\\"values\\\") if getValue(\\\"values\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"as_ids\\\"},{\\\"columnName\\\":\\\"values\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"as_ids\\\"},{\\\"columnName\\\":\\\"ACTIVITY_SUPPORTING_DATA_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SetWorksheetPropertiesCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"properties\",
+                \"type\": \"other\",
+                \"value\": {
+                    \"graphLabel\": \"elsevier-cbe-chembl-activities\",
+                    \"hasBaseURI\": false,
+                    \"hasPrefix\": false,
+                    \"hasServiceProperties\": false
+                }
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SetWorksheetPropertiesCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"properties\",
+                \"type\": \"other\",
+                \"value\": {
+                    \"graphLabel\": \"\",
+                    \"hasBaseURI\": true,
+                    \"baseURI\": \"https://data.elsevier.com/lifescience/entity/chembl/activity/\",
+                    \"hasPrefix\": false,
+                    \"hasServiceProperties\": false
+                }
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"SubmitPythonTransformationCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [
+                    {\"columnName\": \"predbind_ids\"},
+                    {\"columnName\": \"values\"}
+                ]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"newColumnName\",
+                \"type\": \"other\",
+                \"value\": \"PREDICTED_BDOMAIN_URI\"
+            },
+            {
+                \"name\": \"transformationCode\",
+                \"type\": \"other\",
+                \"value\": \"return \\\"https://data.elsevier.com/lifescience/entity/chembl/predictedbindingdomain/\\\"+getValue(\\\"values\\\") if getValue(\\\"values\\\") else None\"
+            },
+            {
+                \"name\": \"errorDefaultValue\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"isJSONOutput\",
+                \"type\": \"other\",
+                \"value\": \"false\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"predbind_ids\\\"},{\\\"columnName\\\":\\\"PREDICTED_BDOMAIN_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"Transformation\"]
+    },
+    {
+        \"commandName\": \"OrganizeColumnsCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"orderedColumns\",
+                \"type\": \"orderedColumns\",
+                \"value\": [
+                    {
+                        \"visible\": true,
+                        \"name\": \"activity_comment\",
+                        \"id\": [{\"columnName\": \"activity_comment\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"activity_id\",
+                        \"id\": [{\"columnName\": \"activity_id\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"children\": \"[{\\\"visible\\\":true,\\\"name\\\":\\\"values\\\",\\\"id\\\":[{\\\"columnName\\\":\\\"ap_ids\\\"},{\\\"columnName\\\":\\\"values\\\"}]},{\\\"visible\\\":true,\\\"name\\\":\\\"AP_URI\\\",\\\"id\\\":[{\\\"columnName\\\":\\\"ap_ids\\\"},{\\\"columnName\\\":\\\"AP_URI\\\"}]}]\",
+                        \"name\": \"ap_ids\",
+                        \"id\": [{\"columnName\": \"ap_ids\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"children\": \"[{\\\"visible\\\":true,\\\"name\\\":\\\"values\\\",\\\"id\\\":[{\\\"columnName\\\":\\\"as_ids\\\"},{\\\"columnName\\\":\\\"values\\\"}]}]\",
+                        \"name\": \"as_ids\",
+                        \"id\": [{\"columnName\": \"as_ids\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"assay_id\",
+                        \"id\": [{\"columnName\": \"assay_id\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"ASSAY_URI\",
+                        \"id\": [{\"columnName\": \"ASSAY_URI\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"bao_endpoint\",
+                        \"id\": [{\"columnName\": \"bao_endpoint\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"BAO_URI\",
+                        \"id\": [{\"columnName\": \"BAO_URI\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"beis\",
+                        \"id\": [{\"columnName\": \"beis\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"data_validity_comment\",
+                        \"id\": [{\"columnName\": \"data_validity_comment\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"doc_id\",
+                        \"id\": [{\"columnName\": \"doc_id\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"DOCUMENT_URI\",
+                        \"id\": [{\"columnName\": \"DOCUMENT_URI\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"les\",
+                        \"id\": [{\"columnName\": \"les\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"lles\",
+                        \"id\": [{\"columnName\": \"lles\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"molregno\",
+                        \"id\": [{\"columnName\": \"molregno\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"COMPOUND_PROP_URI\",
+                        \"id\": [{\"columnName\": \"COMPOUND_PROP_URI\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"TCOMPOUND_URI\",
+                        \"id\": [{\"columnName\": \"TCOMPOUND_URI\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"pchembl_value\",
+                        \"id\": [{\"columnName\": \"pchembl_value\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"potential_duplicate\",
+                        \"id\": [{\"columnName\": \"potential_duplicate\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"predbind_ids\",
+                        \"id\": [{\"columnName\": \"predbind_ids\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"qudt_units\",
+                        \"id\": [{\"columnName\": \"qudt_units\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"record_id\",
+                        \"id\": [{\"columnName\": \"record_id\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"COMPOUND_URI\",
+                        \"id\": [{\"columnName\": \"COMPOUND_URI\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"COMPOUND_REC_URI\",
+                        \"id\": [{\"columnName\": \"COMPOUND_REC_URI\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"relation\",
+                        \"id\": [{\"columnName\": \"relation\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"seis\",
+                        \"id\": [{\"columnName\": \"seis\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"src_id\",
+                        \"id\": [{\"columnName\": \"src_id\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"SOURCE_ID\",
+                        \"id\": [{\"columnName\": \"SOURCE_ID\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"standard_flag\",
+                        \"id\": [{\"columnName\": \"standard_flag\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"standard_relation\",
+                        \"id\": [{\"columnName\": \"standard_relation\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"standard_text_value\",
+                        \"id\": [{\"columnName\": \"standard_text_value\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"standard_type\",
+                        \"id\": [{\"columnName\": \"standard_type\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"standard_units\",
+                        \"id\": [{\"columnName\": \"standard_units\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"standard_upper_value\",
+                        \"id\": [{\"columnName\": \"standard_upper_value\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"standard_value\",
+                        \"id\": [{\"columnName\": \"standard_value\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"STANDARD_SINGLE_VALUE\",
+                        \"id\": [{\"columnName\": \"STANDARD_SINGLE_VALUE\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"STANDARD_LOWER_VALUE\",
+                        \"id\": [{\"columnName\": \"STANDARD_LOWER_VALUE\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"text_value\",
+                        \"id\": [{\"columnName\": \"text_value\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"toid\",
+                        \"id\": [{\"columnName\": \"toid\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"type\",
+                        \"id\": [{\"columnName\": \"type\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"units\",
+                        \"id\": [{\"columnName\": \"units\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"uo_units\",
+                        \"id\": [{\"columnName\": \"uo_units\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"UOUNITS\",
+                        \"id\": [{\"columnName\": \"UOUNITS\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"upper_value\",
+                        \"id\": [{\"columnName\": \"upper_value\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"value\",
+                        \"id\": [{\"columnName\": \"value\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"SINGLE_VALUE\",
+                        \"id\": [{\"columnName\": \"SINGLE_VALUE\"}]
+                    },
+                    {
+                        \"visible\": true,
+                        \"name\": \"LOWER_VALUE\",
+                        \"id\": [{\"columnName\": \"LOWER_VALUE\"}]
+                    }
+                ]
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [
+            \"Transformation\",
+            \"IgnoreInBatch\"
+        ]
+    },
+    {
+        \"commandName\": \"RefreshSuperSelectionCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [
+            \"Selection\",
+            \"IgnoreInBatch\"
+        ]
+    },
+    {
+        \"commandName\": \"SetMetaPropertyCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"activity_id\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"metaPropertyName\",
+                \"type\": \"other\",
+                \"value\": \"isUriOfClass\"
+            },
+            {
+                \"name\": \"metaPropertyUri\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\"
+            },
+            {
+                \"name\": \"metaPropertyId\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"http://isi.edu/integration/karma/dev#classLink\",
+                    \"DomainLabel\": \"chembl:Activity1 (add)\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"activity_id\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"activity_id\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetMetaPropertyCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"ASSAY_URI\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"metaPropertyName\",
+                \"type\": \"other\",
+                \"value\": \"isUriOfClass\"
+            },
+            {
+                \"name\": \"metaPropertyUri\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/Assay\"
+            },
+            {
+                \"name\": \"metaPropertyId\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/Assay1\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Assay\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Assay1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"http://isi.edu/integration/karma/dev#classLink\",
+                    \"DomainLabel\": \"chembl:Assay1 (add)\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"ASSAY_URI\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"ASSAY_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetMetaPropertyCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [
+                    {\"columnName\": \"ap_ids\"},
+                    {\"columnName\": \"AP_URI\"}
+                ]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"metaPropertyName\",
+                \"type\": \"other\",
+                \"value\": \"isUriOfClass\"
+            },
+            {
+                \"name\": \"metaPropertyUri\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/ActivityProperty\"
+            },
+            {
+                \"name\": \"metaPropertyId\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/ActivityProperty1\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/ActivityProperty\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/ActivityProperty1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"http://isi.edu/integration/karma/dev#classLink\",
+                    \"DomainLabel\": \"chembl:ActivityProperty1 (add)\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"ap_ids\\\"},{\\\"columnName\\\":\\\"AP_URI\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"ap_ids\\\"},{\\\"columnName\\\":\\\"AP_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"pchembl_value\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityPCHEMBLValue\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:double\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"pchembl_value\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"pchembl_value\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"upper_value\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityUpperValue\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:double\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"upper_value\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"upper_value\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"LOWER_VALUE\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityLowerValue\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:double\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"LOWER_VALUE\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"LOWER_VALUE\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"SINGLE_VALUE\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityValue\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:double\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"SINGLE_VALUE\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"SINGLE_VALUE\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"text_value\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityTextValue\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:string\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"text_value\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"text_value\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"STANDARD_SINGLE_VALUE\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityStandardValue\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:double\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"STANDARD_SINGLE_VALUE\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"STANDARD_SINGLE_VALUE\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"STANDARD_LOWER_VALUE\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityStandardLowerValue\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:double\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"STANDARD_LOWER_VALUE\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"STANDARD_LOWER_VALUE\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"standard_upper_value\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityStandardUpperValue\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:double\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_upper_value\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_upper_value\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"standard_relation\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasStandardRelationSymbol\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:string\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_relation\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_relation\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"toid\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasTOID\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:string\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"toid\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"toid\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"potential_duplicate\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityPotentialDuplicate\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:integer\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"potential_duplicate\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"potential_duplicate\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"standard_flag\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityStandardFlag\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:integer\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_flag\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_flag\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"standard_type\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityStandardType\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:string\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_type\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_type\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"standard_units\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityStandardUnit\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:string\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_units\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_units\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"UOUNITS\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityUOUnits\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:string\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"UOUNITS\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"UOUNITS\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetMetaPropertyCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"BAO_URI\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"metaPropertyName\",
+                \"type\": \"other\",
+                \"value\": \"isUriOfClass\"
+            },
+            {
+                \"name\": \"metaPropertyUri\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/BAOConcept\"
+            },
+            {
+                \"name\": \"metaPropertyId\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/BAOConcept1\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/BAOConcept\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/BAOConcept1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"http://isi.edu/integration/karma/dev#classLink\",
+                    \"DomainLabel\": \"chembl:BAOConcept1 (add)\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"BAO_URI\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"BAO_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"type\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityType\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:string\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"type\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"type\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetMetaPropertyCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"DOCUMENT_URI\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"metaPropertyName\",
+                \"type\": \"other\",
+                \"value\": \"isUriOfClass\"
+            },
+            {
+                \"name\": \"metaPropertyUri\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/Document\"
+            },
+            {
+                \"name\": \"metaPropertyId\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/Document1\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Document\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Document1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"http://isi.edu/integration/karma/dev#classLink\",
+                    \"DomainLabel\": \"chembl:Document1 (add)\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"DOCUMENT_URI\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"DOCUMENT_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetMetaPropertyCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"SOURCE_ID\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"metaPropertyName\",
+                \"type\": \"other\",
+                \"value\": \"isUriOfClass\"
+            },
+            {
+                \"name\": \"metaPropertyUri\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/Source\"
+            },
+            {
+                \"name\": \"metaPropertyId\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/Source1\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Source\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Source1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"http://isi.edu/integration/karma/dev#classLink\",
+                    \"DomainLabel\": \"chembl:Source1 (add)\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"SOURCE_ID\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"SOURCE_ID\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"standard_text_value\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityStandardTextValue\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:string\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_text_value\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"standard_text_value\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"activity_comment\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityComment\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:string\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"en\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"activity_comment\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"activity_comment\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"data_validity_comment\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasDataValidityComment\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:string\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"en\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"data_validity_comment\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"data_validity_comment\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"relation\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasRelationSymbol\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:string\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"relation\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"relation\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetMetaPropertyCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"COMPOUND_REC_URI\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"metaPropertyName\",
+                \"type\": \"other\",
+                \"value\": \"isUriOfClass\"
+            },
+            {
+                \"name\": \"metaPropertyUri\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/CompoundRecord\"
+            },
+            {
+                \"name\": \"metaPropertyId\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/CompoundRecord1\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/CompoundRecord\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/CompoundRecord1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"http://isi.edu/integration/karma/dev#classLink\",
+                    \"DomainLabel\": \"chembl:CompoundRecord1 (add)\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"COMPOUND_REC_URI\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"COMPOUND_REC_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetMetaPropertyCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"TCOMPOUND_URI\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"metaPropertyName\",
+                \"type\": \"other\",
+                \"value\": \"isUriOfClass\"
+            },
+            {
+                \"name\": \"metaPropertyUri\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/Compound\"
+            },
+            {
+                \"name\": \"metaPropertyId\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/Compound1\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Compound\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Compound1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"http://isi.edu/integration/karma/dev#classLink\",
+                    \"DomainLabel\": \"chembl:Compound1 (add)\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"TCOMPOUND_URI\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"TCOMPOUND_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetMetaPropertyCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [
+                    {\"columnName\": \"as_ids\"},
+                    {\"columnName\": \"ACTIVITY_SUPPORTING_DATA_URI\"}
+                ]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"metaPropertyName\",
+                \"type\": \"other\",
+                \"value\": \"isUriOfClass\"
+            },
+            {
+                \"name\": \"metaPropertyUri\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/ActivitySupportingData\"
+            },
+            {
+                \"name\": \"metaPropertyId\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/ActivitySupportingData1\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/ActivitySupportingData\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/ActivitySupportingData1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"http://isi.edu/integration/karma/dev#classLink\",
+                    \"DomainLabel\": \"chembl:ActivitySupportingData1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"as_ids\\\"},{\\\"columnName\\\":\\\"ACTIVITY_SUPPORTING_DATA_URI\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"as_ids\\\"},{\\\"columnName\\\":\\\"ACTIVITY_SUPPORTING_DATA_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetMetaPropertyCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [
+                    {\"columnName\": \"predbind_ids\"},
+                    {\"columnName\": \"PREDICTED_BDOMAIN_URI\"}
+                ]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"metaPropertyName\",
+                \"type\": \"other\",
+                \"value\": \"isUriOfClass\"
+            },
+            {
+                \"name\": \"metaPropertyUri\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/PredictedBindingDomain\"
+            },
+            {
+                \"name\": \"metaPropertyId\",
+                \"type\": \"other\",
+                \"value\": \"https://data.elsevier.com/lifescience/schema/chembl/PredictedBindingDomain1\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/PredictedBindingDomain\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/PredictedBindingDomain1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"http://isi.edu/integration/karma/dev#classLink\",
+                    \"DomainLabel\": \"chembl:PredictedBindingDomain1 (add)\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"predbind_ids\\\"},{\\\"columnName\\\":\\\"PREDICTED_BDOMAIN_URI\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"predbind_ids\\\"},{\\\"columnName\\\":\\\"PREDICTED_BDOMAIN_URI\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"SetSemanticTypeCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"hNodeId\",
+                \"type\": \"hNodeId\",
+                \"value\": [{\"columnName\": \"units\"}]
+            },
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"selectionName\",
+                \"type\": \"other\",
+                \"value\": \"DEFAULT_TEST\"
+            },
+            {
+                \"name\": \"SemanticTypesArray\",
+                \"type\": \"other\",
+                \"value\": [{
+                    \"DomainUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\",
+                    \"DomainId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"isPrimary\": true,
+                    \"isProvenance\": false,
+                    \"FullType\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityUnit\",
+                    \"DomainLabel\": \"chembl:Activity1\"
+                }]
+            },
+            {
+                \"name\": \"trainAndShowUpdates\",
+                \"type\": \"other\",
+                \"value\": true
+            },
+            {
+                \"name\": \"rdfLiteralType\",
+                \"type\": \"other\",
+                \"value\": \"xsd:string\"
+            },
+            {
+                \"name\": \"language\",
+                \"type\": \"other\",
+                \"value\": \"\"
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"units\\\"}]}]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[{\\\"value\\\":[{\\\"columnName\\\":\\\"units\\\"}]}]\"
+            }
+        ],
+        \"tags\": [\"SemanticType\"]
+    },
+    {
+        \"commandName\": \"AddLinkCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"edge\",
+                \"type\": \"other\",
+                \"value\": {
+                    \"edgeTargetId\": \"https://data.elsevier.com/lifescience/schema/chembl/Assay1\",
+                    \"edgeId\": \"https://data.elsevier.com/lifescience/schema/chembl/isProducedByAssay\",
+                    \"edgeTargetUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Assay\",
+                    \"edgeSourceId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"edgeSourceUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\"
+                }
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [\"Modeling\"]
+    },
+    {
+        \"commandName\": \"AddLinkCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"edge\",
+                \"type\": \"other\",
+                \"value\": {
+                    \"edgeTargetId\": \"https://data.elsevier.com/lifescience/schema/chembl/ActivityProperty1\",
+                    \"edgeId\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivityProperty\",
+                    \"edgeTargetUri\": \"https://data.elsevier.com/lifescience/schema/chembl/ActivityProperty\",
+                    \"edgeSourceId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"edgeSourceUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\"
+                }
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [\"Modeling\"]
+    },
+    {
+        \"commandName\": \"AddLinkCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"edge\",
+                \"type\": \"other\",
+                \"value\": {
+                    \"edgeTargetId\": \"https://data.elsevier.com/lifescience/schema/chembl/BAOConcept1\",
+                    \"edgeId\": \"https://data.elsevier.com/lifescience/schema/chembl/hasBAOEndpoint\",
+                    \"edgeTargetUri\": \"https://data.elsevier.com/lifescience/schema/chembl/BAOConcept\",
+                    \"edgeSourceId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"edgeSourceUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\"
+                }
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [\"Modeling\"]
+    },
+    {
+        \"commandName\": \"AddLinkCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"edge\",
+                \"type\": \"other\",
+                \"value\": {
+                    \"edgeTargetId\": \"https://data.elsevier.com/lifescience/schema/chembl/Document1\",
+                    \"edgeId\": \"https://data.elsevier.com/lifescience/schema/chembl/hasDocument\",
+                    \"edgeTargetUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Document\",
+                    \"edgeSourceId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"edgeSourceUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\"
+                }
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [\"Modeling\"]
+    },
+    {
+        \"commandName\": \"AddLinkCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"edge\",
+                \"type\": \"other\",
+                \"value\": {
+                    \"edgeTargetId\": \"https://data.elsevier.com/lifescience/schema/chembl/Source1\",
+                    \"edgeId\": \"https://data.elsevier.com/lifescience/schema/chembl/hasSource\",
+                    \"edgeTargetUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Source\",
+                    \"edgeSourceId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"edgeSourceUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\"
+                }
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [\"Modeling\"]
+    },
+    {
+        \"commandName\": \"AddLinkCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"edge\",
+                \"type\": \"other\",
+                \"value\": {
+                    \"edgeTargetId\": \"https://data.elsevier.com/lifescience/schema/chembl/CompoundRecord1\",
+                    \"edgeId\": \"https://data.elsevier.com/lifescience/schema/chembl/hasTestedCompoundRecord\",
+                    \"edgeTargetUri\": \"https://data.elsevier.com/lifescience/schema/chembl/CompoundRecord\",
+                    \"edgeSourceId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"edgeSourceUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\"
+                }
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [\"Modeling\"]
+    },
+    {
+        \"commandName\": \"AddLinkCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"edge\",
+                \"type\": \"other\",
+                \"value\": {
+                    \"edgeTargetId\": \"https://data.elsevier.com/lifescience/schema/chembl/Compound1\",
+                    \"edgeId\": \"https://data.elsevier.com/lifescience/schema/chembl/hasTestedCompound\",
+                    \"edgeTargetUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Compound\",
+                    \"edgeSourceId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"edgeSourceUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\"
+                }
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [\"Modeling\"]
+    },
+    {
+        \"commandName\": \"AddLinkCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"edge\",
+                \"type\": \"other\",
+                \"value\": {
+                    \"edgeTargetId\": \"https://data.elsevier.com/lifescience/schema/chembl/ActivitySupportingData1\",
+                    \"edgeId\": \"https://data.elsevier.com/lifescience/schema/chembl/hasActivitySupportingData\",
+                    \"edgeTargetUri\": \"https://data.elsevier.com/lifescience/schema/chembl/ActivitySupportingData\",
+                    \"edgeSourceId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"edgeSourceUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\"
+                }
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [\"Modeling\"]
+    },
+    {
+        \"commandName\": \"AddLinkCommand\",
+        \"model\": \"new\",
+        \"inputParameters\": [
+            {
+                \"name\": \"worksheetId\",
+                \"type\": \"worksheetId\",
+                \"value\": \"W\"
+            },
+            {
+                \"name\": \"edge\",
+                \"type\": \"other\",
+                \"value\": {
+                    \"edgeTargetId\": \"https://data.elsevier.com/lifescience/schema/chembl/PredictedBindingDomain1\",
+                    \"edgeId\": \"https://data.elsevier.com/lifescience/schema/chembl/hasPredictedBindingDomainForActivity\",
+                    \"edgeTargetUri\": \"https://data.elsevier.com/lifescience/schema/chembl/PredictedBindingDomain\",
+                    \"edgeSourceId\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity1\",
+                    \"edgeSourceUri\": \"https://data.elsevier.com/lifescience/schema/chembl/Activity\"
+                }
+            },
+            {
+                \"name\": \"inputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            },
+            {
+                \"name\": \"outputColumns\",
+                \"type\": \"hNodeIdList\",
+                \"value\": \"[]\"
+            }
+        ],
+        \"tags\": [\"Modeling\"]
+    }
+]""" .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 a rr:TriplesMap .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasTriplesMap km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+_:node1dvjpspj4x1 rr:tableName "elsevier-cbe-chembl-activities" ;
+	a rr:LogicalTable ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasLogicalTable _:node1dvjpspj4x1 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:logicalTable _:node1dvjpspj4x1 ;
+	rr:subjectMap _:node1dvjpspj4x2 .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasSubjectMap _:node1dvjpspj4x2 .
+
+_:node1dvjpspj4x2 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> ;
+	a rr:SubjectMap ;
+	km-dev:alignmentNodeId "https://data.elsevier.com/lifescience/schema/chembl/Activity1" ;
+	rr:class chembl:Activity ;
+	rr:template "{activity_id}" ;
+	a km-dev:steinerTreeRootNode .
+
+km-dev:PredicateObjectMap_e73062f5-b899-44b5-938c-3884c4ad3d54 rr:predicate chembl:hasActivityProperty .
+
+km-dev:RefObjectMap_8ed2c61a-4fc6-4892-bc13-3f4e83c67c21 a rr:RefObjectMap , rr:ObjectMap ;
+	rr:parentTriplesMap km-dev:TriplesMap_4e5e5feb-0b9a-4077-8d85-dcfbd9db36f6 ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap km-dev:RefObjectMap_8ed2c61a-4fc6-4892-bc13-3f4e83c67c21 .
+
+km-dev:PredicateObjectMap_e73062f5-b899-44b5-938c-3884c4ad3d54 rr:objectMap km-dev:RefObjectMap_8ed2c61a-4fc6-4892-bc13-3f4e83c67c21 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_e73062f5-b899-44b5-938c-3884c4ad3d54 .
+
+km-dev:PredicateObjectMap_e73062f5-b899-44b5-938c-3884c4ad3d54 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_e73062f5-b899-44b5-938c-3884c4ad3d54 .
+
+km-dev:PredicateObjectMap_4d30dd96-d650-4d22-aa28-b71e2423ce89 rr:predicate chembl:hasActivitySupportingData .
+
+km-dev:RefObjectMap_8d0320a9-af1d-4c71-8133-1224d62ec720 a rr:RefObjectMap , rr:ObjectMap ;
+	rr:parentTriplesMap km-dev:TriplesMap_dc4bd5b3-3937-4b62-9bf1-eeb7a19bbeff ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap km-dev:RefObjectMap_8d0320a9-af1d-4c71-8133-1224d62ec720 .
+
+km-dev:PredicateObjectMap_4d30dd96-d650-4d22-aa28-b71e2423ce89 rr:objectMap km-dev:RefObjectMap_8d0320a9-af1d-4c71-8133-1224d62ec720 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_4d30dd96-d650-4d22-aa28-b71e2423ce89 .
+
+km-dev:PredicateObjectMap_4d30dd96-d650-4d22-aa28-b71e2423ce89 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_4d30dd96-d650-4d22-aa28-b71e2423ce89 .
+
+km-dev:PredicateObjectMap_7dc9c1ab-b803-4640-aab4-0201f611cfbe rr:predicate chembl:isProducedByAssay .
+
+km-dev:RefObjectMap_51aa96fb-8d9f-4636-a0c4-618bc7771dc7 a rr:RefObjectMap , rr:ObjectMap ;
+	rr:parentTriplesMap km-dev:TriplesMap_b0c2f43f-f490-41d1-ba91-4c94e32edae3 ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap km-dev:RefObjectMap_51aa96fb-8d9f-4636-a0c4-618bc7771dc7 .
+
+km-dev:PredicateObjectMap_7dc9c1ab-b803-4640-aab4-0201f611cfbe rr:objectMap km-dev:RefObjectMap_51aa96fb-8d9f-4636-a0c4-618bc7771dc7 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_7dc9c1ab-b803-4640-aab4-0201f611cfbe .
+
+km-dev:PredicateObjectMap_7dc9c1ab-b803-4640-aab4-0201f611cfbe a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_7dc9c1ab-b803-4640-aab4-0201f611cfbe .
+
+km-dev:PredicateObjectMap_81b8ef6b-427f-4f2a-a0a7-e3ee03766f3a rr:predicate chembl:hasBAOEndpoint .
+
+km-dev:RefObjectMap_b80cb603-8f85-4050-b2de-9ce3155507d7 a rr:RefObjectMap , rr:ObjectMap ;
+	rr:parentTriplesMap km-dev:TriplesMap_3787373c-3809-4e24-8b08-e28982baf7ea ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap km-dev:RefObjectMap_b80cb603-8f85-4050-b2de-9ce3155507d7 .
+
+km-dev:PredicateObjectMap_81b8ef6b-427f-4f2a-a0a7-e3ee03766f3a rr:objectMap km-dev:RefObjectMap_b80cb603-8f85-4050-b2de-9ce3155507d7 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_81b8ef6b-427f-4f2a-a0a7-e3ee03766f3a .
+
+km-dev:PredicateObjectMap_81b8ef6b-427f-4f2a-a0a7-e3ee03766f3a a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_81b8ef6b-427f-4f2a-a0a7-e3ee03766f3a .
+
+km-dev:PredicateObjectMap_9ba0e906-86f1-4893-8058-5b8a27b8f482 rr:predicate chembl:hasTestedCompound .
+
+km-dev:RefObjectMap_288b8b13-5e58-4895-8bcb-db679333d570 a rr:RefObjectMap , rr:ObjectMap ;
+	rr:parentTriplesMap km-dev:TriplesMap_262d8b7d-5adc-4865-a526-c4907c7b4ced ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap km-dev:RefObjectMap_288b8b13-5e58-4895-8bcb-db679333d570 .
+
+km-dev:PredicateObjectMap_9ba0e906-86f1-4893-8058-5b8a27b8f482 rr:objectMap km-dev:RefObjectMap_288b8b13-5e58-4895-8bcb-db679333d570 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_9ba0e906-86f1-4893-8058-5b8a27b8f482 .
+
+km-dev:PredicateObjectMap_9ba0e906-86f1-4893-8058-5b8a27b8f482 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_9ba0e906-86f1-4893-8058-5b8a27b8f482 .
+
+km-dev:PredicateObjectMap_fead0f45-92a0-4745-9940-0ca11e998a77 rr:predicate chembl:hasTestedCompoundRecord .
+
+km-dev:RefObjectMap_42350daa-84b1-4f36-9951-54507264c608 a rr:RefObjectMap , rr:ObjectMap ;
+	rr:parentTriplesMap km-dev:TriplesMap_c654e6b7-64e9-4474-98d0-f7932fef5192 ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap km-dev:RefObjectMap_42350daa-84b1-4f36-9951-54507264c608 .
+
+km-dev:PredicateObjectMap_fead0f45-92a0-4745-9940-0ca11e998a77 rr:objectMap km-dev:RefObjectMap_42350daa-84b1-4f36-9951-54507264c608 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_fead0f45-92a0-4745-9940-0ca11e998a77 .
+
+km-dev:PredicateObjectMap_fead0f45-92a0-4745-9940-0ca11e998a77 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_fead0f45-92a0-4745-9940-0ca11e998a77 .
+
+km-dev:PredicateObjectMap_3aa53f6b-2f12-46b5-95d5-af77da031472 rr:predicate chembl:hasDocument .
+
+km-dev:RefObjectMap_1dbb676d-e2cb-4712-846d-e8f91db6da4b a rr:RefObjectMap , rr:ObjectMap ;
+	rr:parentTriplesMap km-dev:TriplesMap_b6d95d08-7e42-4c17-bcdc-a9cd2083ee70 ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap km-dev:RefObjectMap_1dbb676d-e2cb-4712-846d-e8f91db6da4b .
+
+km-dev:PredicateObjectMap_3aa53f6b-2f12-46b5-95d5-af77da031472 rr:objectMap km-dev:RefObjectMap_1dbb676d-e2cb-4712-846d-e8f91db6da4b .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_3aa53f6b-2f12-46b5-95d5-af77da031472 .
+
+km-dev:PredicateObjectMap_3aa53f6b-2f12-46b5-95d5-af77da031472 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_3aa53f6b-2f12-46b5-95d5-af77da031472 .
+
+km-dev:PredicateObjectMap_39f75518-cf62-456e-a523-f0eaba74fe84 rr:predicate chembl:hasPredictedBindingDomainForActivity .
+
+km-dev:RefObjectMap_d300d7a2-f66d-4f74-94f7-a519e214ef37 a rr:RefObjectMap , rr:ObjectMap ;
+	rr:parentTriplesMap km-dev:TriplesMap_eb66e1c6-23be-496f-a691-ecd2d8b5fd37 ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap km-dev:RefObjectMap_d300d7a2-f66d-4f74-94f7-a519e214ef37 .
+
+km-dev:PredicateObjectMap_39f75518-cf62-456e-a523-f0eaba74fe84 rr:objectMap km-dev:RefObjectMap_d300d7a2-f66d-4f74-94f7-a519e214ef37 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_39f75518-cf62-456e-a523-f0eaba74fe84 .
+
+km-dev:PredicateObjectMap_39f75518-cf62-456e-a523-f0eaba74fe84 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_39f75518-cf62-456e-a523-f0eaba74fe84 .
+
+km-dev:PredicateObjectMap_fe075972-7d08-4f31-8165-c6336df03dd7 rr:predicate chembl:hasSource .
+
+km-dev:RefObjectMap_689336e4-7beb-4be7-97a5-57f06beb1720 a rr:RefObjectMap , rr:ObjectMap ;
+	rr:parentTriplesMap km-dev:TriplesMap_f485b441-2441-4909-bc58-bee8b170fecd ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap km-dev:RefObjectMap_689336e4-7beb-4be7-97a5-57f06beb1720 .
+
+km-dev:PredicateObjectMap_fe075972-7d08-4f31-8165-c6336df03dd7 rr:objectMap km-dev:RefObjectMap_689336e4-7beb-4be7-97a5-57f06beb1720 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_fe075972-7d08-4f31-8165-c6336df03dd7 .
+
+km-dev:PredicateObjectMap_fe075972-7d08-4f31-8165-c6336df03dd7 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_fe075972-7d08-4f31-8165-c6336df03dd7 .
+
+km-dev:PredicateObjectMap_ae0e1849-212d-40d2-ac86-e6c6b8077959 rr:predicate chembl:hasActivityValue .
+
+_:node1dvjpspj4x3 rr:column "SINGLE_VALUE" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#double" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x3 .
+
+km-dev:PredicateObjectMap_ae0e1849-212d-40d2-ac86-e6c6b8077959 rr:objectMap _:node1dvjpspj4x3 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_ae0e1849-212d-40d2-ac86-e6c6b8077959 .
+
+km-dev:PredicateObjectMap_ae0e1849-212d-40d2-ac86-e6c6b8077959 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_ae0e1849-212d-40d2-ac86-e6c6b8077959 .
+
+km-dev:PredicateObjectMap_b35dcca6-4cf5-4584-be8c-7d09f11dc3f4 rr:predicate chembl:hasActivityStandardFlag .
+
+_:node1dvjpspj4x4 rr:column "standard_flag" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#integer" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x4 .
+
+km-dev:PredicateObjectMap_b35dcca6-4cf5-4584-be8c-7d09f11dc3f4 rr:objectMap _:node1dvjpspj4x4 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_b35dcca6-4cf5-4584-be8c-7d09f11dc3f4 .
+
+km-dev:PredicateObjectMap_b35dcca6-4cf5-4584-be8c-7d09f11dc3f4 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_b35dcca6-4cf5-4584-be8c-7d09f11dc3f4 .
+
+km-dev:PredicateObjectMap_981e5b0a-836b-4e9d-be98-674d31ee55d1 rr:predicate chembl:hasActivityPCHEMBLValue .
+
+_:node1dvjpspj4x5 rr:column "pchembl_value" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#double" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x5 .
+
+km-dev:PredicateObjectMap_981e5b0a-836b-4e9d-be98-674d31ee55d1 rr:objectMap _:node1dvjpspj4x5 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_981e5b0a-836b-4e9d-be98-674d31ee55d1 .
+
+km-dev:PredicateObjectMap_981e5b0a-836b-4e9d-be98-674d31ee55d1 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_981e5b0a-836b-4e9d-be98-674d31ee55d1 .
+
+km-dev:PredicateObjectMap_2e86aae4-f554-43bd-a65e-ab769d55dcdc rr:predicate chembl:hasActivityStandardLowerValue .
+
+_:node1dvjpspj4x6 rr:column "STANDARD_LOWER_VALUE" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#double" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x6 .
+
+km-dev:PredicateObjectMap_2e86aae4-f554-43bd-a65e-ab769d55dcdc rr:objectMap _:node1dvjpspj4x6 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_2e86aae4-f554-43bd-a65e-ab769d55dcdc .
+
+km-dev:PredicateObjectMap_2e86aae4-f554-43bd-a65e-ab769d55dcdc a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_2e86aae4-f554-43bd-a65e-ab769d55dcdc .
+
+km-dev:PredicateObjectMap_194e2f61-30fe-4007-9ab1-6ee67e224a73 rr:predicate chembl:hasStandardRelationSymbol .
+
+_:node1dvjpspj4x7 rr:column "standard_relation" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#string" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x7 .
+
+km-dev:PredicateObjectMap_194e2f61-30fe-4007-9ab1-6ee67e224a73 rr:objectMap _:node1dvjpspj4x7 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_194e2f61-30fe-4007-9ab1-6ee67e224a73 .
+
+km-dev:PredicateObjectMap_194e2f61-30fe-4007-9ab1-6ee67e224a73 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_194e2f61-30fe-4007-9ab1-6ee67e224a73 .
+
+km-dev:PredicateObjectMap_675396b7-2512-4fa9-8189-6d4b05cf828b rr:predicate chembl:hasActivityPotentialDuplicate .
+
+_:node1dvjpspj4x8 rr:column "potential_duplicate" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#integer" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x8 .
+
+km-dev:PredicateObjectMap_675396b7-2512-4fa9-8189-6d4b05cf828b rr:objectMap _:node1dvjpspj4x8 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_675396b7-2512-4fa9-8189-6d4b05cf828b .
+
+km-dev:PredicateObjectMap_675396b7-2512-4fa9-8189-6d4b05cf828b a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_675396b7-2512-4fa9-8189-6d4b05cf828b .
+
+km-dev:PredicateObjectMap_214b5795-1bc5-4f6e-9978-b98d46c0482b rr:predicate chembl:hasActivityUnit .
+
+_:node1dvjpspj4x9 rr:column "units" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#string" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x9 .
+
+km-dev:PredicateObjectMap_214b5795-1bc5-4f6e-9978-b98d46c0482b rr:objectMap _:node1dvjpspj4x9 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_214b5795-1bc5-4f6e-9978-b98d46c0482b .
+
+km-dev:PredicateObjectMap_214b5795-1bc5-4f6e-9978-b98d46c0482b a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_214b5795-1bc5-4f6e-9978-b98d46c0482b .
+
+km-dev:PredicateObjectMap_455307d2-1daa-41c9-9705-1baa270df007 rr:predicate chembl:hasActivityTextValue .
+
+_:node1dvjpspj4x10 rr:column "text_value" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#string" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x10 .
+
+km-dev:PredicateObjectMap_455307d2-1daa-41c9-9705-1baa270df007 rr:objectMap _:node1dvjpspj4x10 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_455307d2-1daa-41c9-9705-1baa270df007 .
+
+km-dev:PredicateObjectMap_455307d2-1daa-41c9-9705-1baa270df007 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_455307d2-1daa-41c9-9705-1baa270df007 .
+
+km-dev:PredicateObjectMap_d99cf027-ea29-455a-8473-521002fe7f30 rr:predicate chembl:hasActivityType .
+
+_:node1dvjpspj4x11 rr:column "type" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#string" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x11 .
+
+km-dev:PredicateObjectMap_d99cf027-ea29-455a-8473-521002fe7f30 rr:objectMap _:node1dvjpspj4x11 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_d99cf027-ea29-455a-8473-521002fe7f30 .
+
+km-dev:PredicateObjectMap_d99cf027-ea29-455a-8473-521002fe7f30 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_d99cf027-ea29-455a-8473-521002fe7f30 .
+
+km-dev:PredicateObjectMap_dfe8bac7-052c-42a2-8a32-5e8aa10daa21 rr:predicate chembl:hasTOID .
+
+_:node1dvjpspj4x12 rr:column "toid" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#string" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x12 .
+
+km-dev:PredicateObjectMap_dfe8bac7-052c-42a2-8a32-5e8aa10daa21 rr:objectMap _:node1dvjpspj4x12 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_dfe8bac7-052c-42a2-8a32-5e8aa10daa21 .
+
+km-dev:PredicateObjectMap_dfe8bac7-052c-42a2-8a32-5e8aa10daa21 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_dfe8bac7-052c-42a2-8a32-5e8aa10daa21 .
+
+km-dev:PredicateObjectMap_a90907a3-4ac6-4607-bef1-6bd0a6c62a0a rr:predicate chembl:hasActivityStandardValue .
+
+_:node1dvjpspj4x13 rr:column "STANDARD_SINGLE_VALUE" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#double" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x13 .
+
+km-dev:PredicateObjectMap_a90907a3-4ac6-4607-bef1-6bd0a6c62a0a rr:objectMap _:node1dvjpspj4x13 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_a90907a3-4ac6-4607-bef1-6bd0a6c62a0a .
+
+km-dev:PredicateObjectMap_a90907a3-4ac6-4607-bef1-6bd0a6c62a0a a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_a90907a3-4ac6-4607-bef1-6bd0a6c62a0a .
+
+km-dev:PredicateObjectMap_600d3756-0936-4f28-91ea-28c2154691ee rr:predicate chembl:hasDataValidityComment .
+
+_:node1dvjpspj4x14 rr:column "data_validity_comment" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#string" ;
+	rr:language "en" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x14 .
+
+km-dev:PredicateObjectMap_600d3756-0936-4f28-91ea-28c2154691ee rr:objectMap _:node1dvjpspj4x14 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_600d3756-0936-4f28-91ea-28c2154691ee .
+
+km-dev:PredicateObjectMap_600d3756-0936-4f28-91ea-28c2154691ee a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_600d3756-0936-4f28-91ea-28c2154691ee .
+
+km-dev:PredicateObjectMap_6fd03bc3-2eff-4742-83db-d22d63495b5c rr:predicate chembl:hasActivityLowerValue .
+
+_:node1dvjpspj4x15 rr:column "LOWER_VALUE" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#double" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x15 .
+
+km-dev:PredicateObjectMap_6fd03bc3-2eff-4742-83db-d22d63495b5c rr:objectMap _:node1dvjpspj4x15 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_6fd03bc3-2eff-4742-83db-d22d63495b5c .
+
+km-dev:PredicateObjectMap_6fd03bc3-2eff-4742-83db-d22d63495b5c a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_6fd03bc3-2eff-4742-83db-d22d63495b5c .
+
+km-dev:PredicateObjectMap_a5c132ca-5f26-40a1-ba3c-9e8a6e7d716d rr:predicate chembl:hasRelationSymbol .
+
+_:node1dvjpspj4x16 rr:column "relation" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#string" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x16 .
+
+km-dev:PredicateObjectMap_a5c132ca-5f26-40a1-ba3c-9e8a6e7d716d rr:objectMap _:node1dvjpspj4x16 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_a5c132ca-5f26-40a1-ba3c-9e8a6e7d716d .
+
+km-dev:PredicateObjectMap_a5c132ca-5f26-40a1-ba3c-9e8a6e7d716d a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_a5c132ca-5f26-40a1-ba3c-9e8a6e7d716d .
+
+km-dev:PredicateObjectMap_e47bed1e-4bd0-433f-83e2-f2b444141623 rr:predicate chembl:hasActivityUOUnits .
+
+_:node1dvjpspj4x17 rr:column "UOUNITS" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#string" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x17 .
+
+km-dev:PredicateObjectMap_e47bed1e-4bd0-433f-83e2-f2b444141623 rr:objectMap _:node1dvjpspj4x17 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_e47bed1e-4bd0-433f-83e2-f2b444141623 .
+
+km-dev:PredicateObjectMap_e47bed1e-4bd0-433f-83e2-f2b444141623 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_e47bed1e-4bd0-433f-83e2-f2b444141623 .
+
+km-dev:PredicateObjectMap_be482dcc-c49f-4cdd-a233-1543be839f2b rr:predicate chembl:hasActivityStandardUpperValue .
+
+_:node1dvjpspj4x18 rr:column "standard_upper_value" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#double" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x18 .
+
+km-dev:PredicateObjectMap_be482dcc-c49f-4cdd-a233-1543be839f2b rr:objectMap _:node1dvjpspj4x18 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_be482dcc-c49f-4cdd-a233-1543be839f2b .
+
+km-dev:PredicateObjectMap_be482dcc-c49f-4cdd-a233-1543be839f2b a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_be482dcc-c49f-4cdd-a233-1543be839f2b .
+
+km-dev:PredicateObjectMap_00cadfe8-c29c-46d5-9c0c-75bd3aa576aa rr:predicate chembl:hasActivityStandardUnit .
+
+_:node1dvjpspj4x19 rr:column "standard_units" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#string" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x19 .
+
+km-dev:PredicateObjectMap_00cadfe8-c29c-46d5-9c0c-75bd3aa576aa rr:objectMap _:node1dvjpspj4x19 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_00cadfe8-c29c-46d5-9c0c-75bd3aa576aa .
+
+km-dev:PredicateObjectMap_00cadfe8-c29c-46d5-9c0c-75bd3aa576aa a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_00cadfe8-c29c-46d5-9c0c-75bd3aa576aa .
+
+km-dev:PredicateObjectMap_cc75c68f-ee7f-4baa-9805-44850b35037a rr:predicate chembl:hasActivityUpperValue .
+
+_:node1dvjpspj4x20 rr:column "upper_value" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#double" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x20 .
+
+km-dev:PredicateObjectMap_cc75c68f-ee7f-4baa-9805-44850b35037a rr:objectMap _:node1dvjpspj4x20 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_cc75c68f-ee7f-4baa-9805-44850b35037a .
+
+km-dev:PredicateObjectMap_cc75c68f-ee7f-4baa-9805-44850b35037a a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_cc75c68f-ee7f-4baa-9805-44850b35037a .
+
+km-dev:PredicateObjectMap_d8fec19a-94a8-4df5-a783-b5698869e815 rr:predicate chembl:hasActivityComment .
+
+_:node1dvjpspj4x21 rr:column "activity_comment" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#string" ;
+	rr:language "en" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x21 .
+
+km-dev:PredicateObjectMap_d8fec19a-94a8-4df5-a783-b5698869e815 rr:objectMap _:node1dvjpspj4x21 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_d8fec19a-94a8-4df5-a783-b5698869e815 .
+
+km-dev:PredicateObjectMap_d8fec19a-94a8-4df5-a783-b5698869e815 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_d8fec19a-94a8-4df5-a783-b5698869e815 .
+
+km-dev:PredicateObjectMap_f3d2f0af-6472-4f3b-9311-86fb70d2d908 rr:predicate chembl:hasActivityStandardType .
+
+_:node1dvjpspj4x22 rr:column "standard_type" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#string" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x22 .
+
+km-dev:PredicateObjectMap_f3d2f0af-6472-4f3b-9311-86fb70d2d908 rr:objectMap _:node1dvjpspj4x22 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_f3d2f0af-6472-4f3b-9311-86fb70d2d908 .
+
+km-dev:PredicateObjectMap_f3d2f0af-6472-4f3b-9311-86fb70d2d908 a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_f3d2f0af-6472-4f3b-9311-86fb70d2d908 .
+
+km-dev:PredicateObjectMap_40057b84-84ab-4aeb-b251-6f62bfaa278a rr:predicate chembl:hasActivityStandardTextValue .
+
+_:node1dvjpspj4x23 rr:column "standard_text_value" ;
+	a rr:ObjectMap ;
+	rr:datatype "http://www.w3.org/2001/XMLSchema#string" ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasObjectMap _:node1dvjpspj4x23 .
+
+km-dev:PredicateObjectMap_40057b84-84ab-4aeb-b251-6f62bfaa278a rr:objectMap _:node1dvjpspj4x23 .
+
+km-dev:TriplesMap_3d48fbfa-83c4-437b-9340-725f67573771 rr:predicateObjectMap km-dev:PredicateObjectMap_40057b84-84ab-4aeb-b251-6f62bfaa278a .
+
+km-dev:PredicateObjectMap_40057b84-84ab-4aeb-b251-6f62bfaa278a a rr:PredicateObjectMap ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasPredicateObjectMap km-dev:PredicateObjectMap_40057b84-84ab-4aeb-b251-6f62bfaa278a .
+
+km-dev:TriplesMap_4e5e5feb-0b9a-4077-8d85-dcfbd9db36f6 a rr:TriplesMap .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasTriplesMap km-dev:TriplesMap_4e5e5feb-0b9a-4077-8d85-dcfbd9db36f6 .
+
+km-dev:TriplesMap_4e5e5feb-0b9a-4077-8d85-dcfbd9db36f6 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+_:node1dvjpspj4x24 rr:tableName "elsevier-cbe-chembl-activities" ;
+	a rr:LogicalTable ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasLogicalTable _:node1dvjpspj4x24 .
+
+km-dev:TriplesMap_4e5e5feb-0b9a-4077-8d85-dcfbd9db36f6 rr:logicalTable _:node1dvjpspj4x24 ;
+	rr:subjectMap _:node1dvjpspj4x25 .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasSubjectMap _:node1dvjpspj4x25 .
+
+_:node1dvjpspj4x25 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> ;
+	a rr:SubjectMap ;
+	km-dev:alignmentNodeId "https://data.elsevier.com/lifescience/schema/chembl/ActivityProperty1" ;
+	rr:class chembl:ActivityProperty ;
+	rr:template "{[\"ap_ids\",\"AP_URI\"]}" .
+
+km-dev:TriplesMap_dc4bd5b3-3937-4b62-9bf1-eeb7a19bbeff a rr:TriplesMap .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasTriplesMap km-dev:TriplesMap_dc4bd5b3-3937-4b62-9bf1-eeb7a19bbeff .
+
+km-dev:TriplesMap_dc4bd5b3-3937-4b62-9bf1-eeb7a19bbeff km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+_:node1dvjpspj4x26 rr:tableName "elsevier-cbe-chembl-activities" ;
+	a rr:LogicalTable ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasLogicalTable _:node1dvjpspj4x26 .
+
+km-dev:TriplesMap_dc4bd5b3-3937-4b62-9bf1-eeb7a19bbeff rr:logicalTable _:node1dvjpspj4x26 ;
+	rr:subjectMap _:node1dvjpspj4x27 .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasSubjectMap _:node1dvjpspj4x27 .
+
+_:node1dvjpspj4x27 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> ;
+	a rr:SubjectMap ;
+	km-dev:alignmentNodeId "https://data.elsevier.com/lifescience/schema/chembl/ActivitySupportingData1" ;
+	rr:class chembl:ActivitySupportingData ;
+	rr:template "{[\"as_ids\",\"ACTIVITY_SUPPORTING_DATA_URI\"]}" .
+
+km-dev:TriplesMap_b0c2f43f-f490-41d1-ba91-4c94e32edae3 a rr:TriplesMap .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasTriplesMap km-dev:TriplesMap_b0c2f43f-f490-41d1-ba91-4c94e32edae3 .
+
+km-dev:TriplesMap_b0c2f43f-f490-41d1-ba91-4c94e32edae3 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+_:node1dvjpspj4x28 rr:tableName "elsevier-cbe-chembl-activities" ;
+	a rr:LogicalTable ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasLogicalTable _:node1dvjpspj4x28 .
+
+km-dev:TriplesMap_b0c2f43f-f490-41d1-ba91-4c94e32edae3 rr:logicalTable _:node1dvjpspj4x28 ;
+	rr:subjectMap _:node1dvjpspj4x29 .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasSubjectMap _:node1dvjpspj4x29 .
+
+_:node1dvjpspj4x29 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> ;
+	a rr:SubjectMap ;
+	km-dev:alignmentNodeId "https://data.elsevier.com/lifescience/schema/chembl/Assay1" ;
+	rr:class chembl:Assay ;
+	rr:template "{ASSAY_URI}" .
+
+km-dev:TriplesMap_3787373c-3809-4e24-8b08-e28982baf7ea a rr:TriplesMap .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasTriplesMap km-dev:TriplesMap_3787373c-3809-4e24-8b08-e28982baf7ea .
+
+km-dev:TriplesMap_3787373c-3809-4e24-8b08-e28982baf7ea km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+_:node1dvjpspj4x30 rr:tableName "elsevier-cbe-chembl-activities" ;
+	a rr:LogicalTable ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasLogicalTable _:node1dvjpspj4x30 .
+
+km-dev:TriplesMap_3787373c-3809-4e24-8b08-e28982baf7ea rr:logicalTable _:node1dvjpspj4x30 ;
+	rr:subjectMap _:node1dvjpspj4x31 .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasSubjectMap _:node1dvjpspj4x31 .
+
+_:node1dvjpspj4x31 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> ;
+	a rr:SubjectMap ;
+	km-dev:alignmentNodeId "https://data.elsevier.com/lifescience/schema/chembl/BAOConcept1" ;
+	rr:class chembl:BAOConcept ;
+	rr:template "{BAO_URI}" .
+
+km-dev:TriplesMap_262d8b7d-5adc-4865-a526-c4907c7b4ced a rr:TriplesMap .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasTriplesMap km-dev:TriplesMap_262d8b7d-5adc-4865-a526-c4907c7b4ced .
+
+km-dev:TriplesMap_262d8b7d-5adc-4865-a526-c4907c7b4ced km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+_:node1dvjpspj4x32 rr:tableName "elsevier-cbe-chembl-activities" ;
+	a rr:LogicalTable ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasLogicalTable _:node1dvjpspj4x32 .
+
+km-dev:TriplesMap_262d8b7d-5adc-4865-a526-c4907c7b4ced rr:logicalTable _:node1dvjpspj4x32 ;
+	rr:subjectMap _:node1dvjpspj4x33 .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasSubjectMap _:node1dvjpspj4x33 .
+
+_:node1dvjpspj4x33 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> ;
+	a rr:SubjectMap ;
+	km-dev:alignmentNodeId "https://data.elsevier.com/lifescience/schema/chembl/Compound1" ;
+	rr:class chembl:Compound ;
+	rr:template "{TCOMPOUND_URI}" .
+
+km-dev:TriplesMap_c654e6b7-64e9-4474-98d0-f7932fef5192 a rr:TriplesMap .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasTriplesMap km-dev:TriplesMap_c654e6b7-64e9-4474-98d0-f7932fef5192 .
+
+km-dev:TriplesMap_c654e6b7-64e9-4474-98d0-f7932fef5192 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+_:node1dvjpspj4x34 rr:tableName "elsevier-cbe-chembl-activities" ;
+	a rr:LogicalTable ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasLogicalTable _:node1dvjpspj4x34 .
+
+km-dev:TriplesMap_c654e6b7-64e9-4474-98d0-f7932fef5192 rr:logicalTable _:node1dvjpspj4x34 ;
+	rr:subjectMap _:node1dvjpspj4x35 .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasSubjectMap _:node1dvjpspj4x35 .
+
+_:node1dvjpspj4x35 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> ;
+	a rr:SubjectMap ;
+	km-dev:alignmentNodeId "https://data.elsevier.com/lifescience/schema/chembl/CompoundRecord1" ;
+	rr:class chembl:CompoundRecord ;
+	rr:template "{COMPOUND_REC_URI}" .
+
+km-dev:TriplesMap_b6d95d08-7e42-4c17-bcdc-a9cd2083ee70 a rr:TriplesMap .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasTriplesMap km-dev:TriplesMap_b6d95d08-7e42-4c17-bcdc-a9cd2083ee70 .
+
+km-dev:TriplesMap_b6d95d08-7e42-4c17-bcdc-a9cd2083ee70 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+_:node1dvjpspj4x36 rr:tableName "elsevier-cbe-chembl-activities" ;
+	a rr:LogicalTable ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasLogicalTable _:node1dvjpspj4x36 .
+
+km-dev:TriplesMap_b6d95d08-7e42-4c17-bcdc-a9cd2083ee70 rr:logicalTable _:node1dvjpspj4x36 ;
+	rr:subjectMap _:node1dvjpspj4x37 .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasSubjectMap _:node1dvjpspj4x37 .
+
+_:node1dvjpspj4x37 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> ;
+	a rr:SubjectMap ;
+	km-dev:alignmentNodeId "https://data.elsevier.com/lifescience/schema/chembl/Document1" ;
+	rr:class chembl:Document ;
+	rr:template "{DOCUMENT_URI}" .
+
+km-dev:TriplesMap_eb66e1c6-23be-496f-a691-ecd2d8b5fd37 a rr:TriplesMap .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasTriplesMap km-dev:TriplesMap_eb66e1c6-23be-496f-a691-ecd2d8b5fd37 .
+
+km-dev:TriplesMap_eb66e1c6-23be-496f-a691-ecd2d8b5fd37 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+_:node1dvjpspj4x38 rr:tableName "elsevier-cbe-chembl-activities" ;
+	a rr:LogicalTable ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasLogicalTable _:node1dvjpspj4x38 .
+
+km-dev:TriplesMap_eb66e1c6-23be-496f-a691-ecd2d8b5fd37 rr:logicalTable _:node1dvjpspj4x38 ;
+	rr:subjectMap _:node1dvjpspj4x39 .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasSubjectMap _:node1dvjpspj4x39 .
+
+_:node1dvjpspj4x39 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> ;
+	a rr:SubjectMap ;
+	km-dev:alignmentNodeId "https://data.elsevier.com/lifescience/schema/chembl/PredictedBindingDomain1" ;
+	rr:class chembl:PredictedBindingDomain ;
+	rr:template "{[\"predbind_ids\",\"PREDICTED_BDOMAIN_URI\"]}" .
+
+km-dev:TriplesMap_f485b441-2441-4909-bc58-bee8b170fecd a rr:TriplesMap .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasTriplesMap km-dev:TriplesMap_f485b441-2441-4909-bc58-bee8b170fecd .
+
+km-dev:TriplesMap_f485b441-2441-4909-bc58-bee8b170fecd km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+_:node1dvjpspj4x40 rr:tableName "elsevier-cbe-chembl-activities" ;
+	a rr:LogicalTable ;
+	km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasLogicalTable _:node1dvjpspj4x40 .
+
+km-dev:TriplesMap_f485b441-2441-4909-bc58-bee8b170fecd rr:logicalTable _:node1dvjpspj4x40 ;
+	rr:subjectMap _:node1dvjpspj4x41 .
+
+<https://data.elsevier.com/lifescience/extraction/chembl/activity> km-dev:hasSubjectMap _:node1dvjpspj4x41 .
+
+_:node1dvjpspj4x41 km-dev:isPartOfMapping <https://data.elsevier.com/lifescience/extraction/chembl/activity> ;
+	a rr:SubjectMap ;
+	km-dev:alignmentNodeId "https://data.elsevier.com/lifescience/schema/chembl/Source1" ;
+	rr:class chembl:Source ;
+	rr:template "{SOURCE_ID}" .
