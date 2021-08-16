@@ -243,6 +243,13 @@ def badSumPar(l: List[Int]): Int = l match {
  *  Whatever data structure we use to store this description, it’ll likely occupy more space than the original list itself!
  *  It would be nice if our descriptions were more lightweight.
  *
+ *  === Conclusion: Needs clarification ===
+ *
+ *  '''It seems we should make map2 lazy and have it begin immediate execution of both sides in parallel.
+ *  This also addresses the problem of giving neither side priority over the other.'''
+ *
+ *  I suspect this means, upon interpretation of the result of map 2.
+ *
  */
 def sumPar(l: List[Int]): Par[Int] = l match {
 
