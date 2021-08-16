@@ -103,6 +103,85 @@ object Par {
 
 }
 
+
+/**
+ *  == BadSumPar: What's wrong with it ? ==
+ *
+ *  We have a choice about the meaning of '''unit''' and '''get'''.
+ *
+ *  -- (1) '''unit''' could begin evaluating its argument immediately in a separate (logical) thread
+ *
+ *  -- (2) unit could simply hold onto its argument until '''get''' is called and begin evaluation then.
+ *
+ *
+ *  === (2) Unit hold onto its arguments -> Sequentialization due to Scala eager parameter evaluation Order ===
+ *
+ *  Function arguments in Scala are strictly evaluated from left to right,
+ *  so if unit delays execution until get is called,
+ *  we will both spawn the parallel computation and wait for it to finish before spawning the second parallel computation.
+ *  This means the computation is effectively sequential!
+ *
+ *  === (1) unit evaluates its argument immediately -> it breaks referential transparency  ===
+ *
+ *  If unit evaluates its argument concurrently, then calling get arguably breaks referential transparency.
+ *  We can see this by replacing sumL and sumR with their definitions
+ *
+ *  {{{Par.get(Par.unit(sum(l))) + par.get(Par.unit(sum(r)))}}}
+
+ *
+ *  if we do so, we still get the same result, but our program is no longer '''parallel'''
+ *
+ *
+ *  In other words if we replace SumR or SumL by their values i.e. Par.get(par.unit(sum(x))) the meaning of the program changes.
+ *  We go back to be sequential.
+ *
+ *  `The key here is to understand that with eager evaluation at unit, the expression change the state of the world.
+ *  So depending on where you put that expression the meaning of the program changes. In this case the consequence is big,
+ *  as we go back to sequentiality. What we need is a description of the action that change the state of the  world, and evaluate it
+ *  ourself when ready.`
+ *
+ *  If unit starts evaluating its argument right away,
+ *  the next thing to happen is that get will wait for that evaluation to complete.
+ *  So the two sides of the + sign won’t run in parallel if we simply inline the sumL and sumR variables.
+ *
+ *   === (1) and (2) do not handle side effecting code well ===
+ *
+ *  We can see that unit has a definite side effect, but only with regard to get.
+ *  That is, unit simply returns a Par[Int] in this case, representing an asynchronous computation.
+ *  But as soon as we pass that Par to get, we explicitly wait for it, exposing the side effect.
+ *
+ *  'The key point in all and all with both solution, is that they do not handle structurally the fact that a parallel computation
+ *  is an IO Action or a side effectful Action, that is, an Action that affect the state of the world.
+ *  It is not a mere calculus of value, it changes the state of the word, where here, it changes the state of the computation'
+ *
+ *
+ *  === Conclusion: What is needed ===
+ *
+ *  So it seems that we want to avoid calling get, or at least delay calling it until the very end.
+ *  We want to be able to combine asynchronous computations without waiting for them to finish.
+ *
+ */
+
+def badSumPar(l: List[Int]): Int = l match {
+
+  case l if l.size <= 1 => l.headOption getOrElse 0
+
+  case _           =>
+
+    val (ll, lr) = l.splitAt(l.size /  2)
+
+    val sumL = Par.unit(badSumPar(ll))
+
+    val sumR = Par.unit(badSumPar(lr))
+
+    Par.get(sumL) + Par.get(sumR)
+
+}
+
+
+/**
+ *  == SumPar: What's right about it ? ==
+ */
 def sumPar(l: List[Int]): Par[Int] = l match {
 
   case l if l.size <= 1 => Par.unit ( l.headOption getOrElse 0 )
