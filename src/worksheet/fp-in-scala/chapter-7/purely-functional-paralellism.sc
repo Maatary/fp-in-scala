@@ -212,7 +212,36 @@ def badSumPar(l: List[Int]): Int = l match {
  *
  *  }}}
  *
+ *  Because map2 is strict, and Scala evaluates arguments left to right,
+ *  whenever we encounter map2(sum(x),sum(y))(_ + _), we have to then evaluate sum(x) and so on recursively.
+ *  This has the rather unfortunate consequence that we’ll strictly construct the entire left half of the tree of summations first
+ *  before moving on to (strictly) constructing the right half.
+ *  Here sum(IndexedSeq(1,2)) gets fully expanded before we consider sum(IndexedSeq(3,4)).
  *
+ *  ''The  tree of summation is a list of stacked lambda calls''
+ *
+ *  And if map2 evaluates its arguments in parallel (using whatever resource is being used to implement the parallelism,
+ *  like a thread pool), that implies the left half of our computation will start executing
+ *  before we even begin constructing the right half of our computation.
+ *
+ *  ''This option is a no go, why would map2 start evaluating to then return a parallel computation at the end ??''
+ *
+ *  If map2 doesn’t begin evaluation immediately, this implies a Par value is merely constructing a
+ *  description of what needs to be computed in parallel.
+ *  Nothing actually occurs until we evaluate this description, perhaps using a get-like function.
+ *
+ *  The problem is that if we construct our descriptions strictly, they’ll be rather heavyweight objects.
+ *  Looking back at our trace, our description will have to contain the '''full tree ( i.e. stack of lambda) '''of operations to be performed
+ *
+ *  {{{
+ *    map2(
+ *         map2( unit(1), unit(2))(_+_),
+ *         map2( unit(3), unit(4))(_+_)
+ *        )(_+_)
+ *  }}}
+ *
+ *  Whatever data structure we use to store this description, it’ll likely occupy more space than the original list itself!
+ *  It would be nice if our descriptions were more lightweight.
  *
  */
 def sumPar(l: List[Int]): Par[Int] = l match {
