@@ -181,6 +181,39 @@ def badSumPar(l: List[Int]): Int = l match {
 
 /**
  *  == SumPar: What's right about it ? ==
+ *
+ *  Here our function is referentially transparent. No side effect are executed i.e. Par is not executed.
+ *  Indeed our function returns a Par i.e. a computation, not the result of the computation  i.e. Int here.
+ *
+ *  However now the problem is shifted to map2. It all comes down to how map2 will combine the 2 parallel computations.
+ *
+ *  === If map2 argument are strict - stack trace ===
+ *
+ *  {{{
+ *
+ *    sum(IndexedSeq(1,2,3,4))
+ *
+ *    map2(sum(IndexedSeq(1,2)), sum(IndexedSeq(3,4)))(_+_)
+ *
+ *    map2(
+ *         map2(sum(IndexedSeq(1)), sum(IndexedSeq(2)))(_+_),
+ *         sum(IndexedSeq(3,4))
+ *         ) (_+_)
+ *
+ *    map2(
+ *         map2( unit(1), unit(2))(_+_),
+ *         sum(IndexedSeq(3,4))
+ *        )(_+_)
+ *
+ *   map2(
+ *        map2( unit(1), unit(2))(_+_),
+ *        map2( sum(IndexedSeq(3)), sum(IndexedSeq(4)))(_+_)
+ *        )(_+_)
+ *
+ *  }}}
+ *
+ *
+ *
  */
 def sumPar(l: List[Int]): Par[Int] = l match {
 
