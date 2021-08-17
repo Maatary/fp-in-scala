@@ -93,13 +93,21 @@ object Par {
    * We call it unit because in a sense it creates a unit of parallelism that just wraps a single value.
    */
   def unit[A](a: => A): Par[A] = ???
-
+  
   /**
    * Extract the resulting value from a parallel computation.
    */
   def get[A](par: Par[A]): A = ???
 
+  /**
+   * Combines the results of two parallel computations with a binary function.
+   */
   def map2[A, B, C](parA: Par[A], parB: Par[B])(f: (A, B) => C): Par[C] = ???
+
+
+
+
+
 
 }
 
