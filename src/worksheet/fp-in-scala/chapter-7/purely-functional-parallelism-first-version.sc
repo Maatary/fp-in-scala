@@ -1,8 +1,12 @@
+import scala.concurrent.{ExecutionContextExecutorService, Future}
+import scala.util.Success
 
 
-trait Par[A]
 
 object Par {
+
+  // Type Function like f(x) = power(x) i.e Par[A] evaluate to a Type
+  type Par[A] = ExecutionContextExecutorService => Future[A]
 
 
   /**
@@ -15,7 +19,7 @@ object Par {
    *
    * Promotes a constant value to a parallel computation.
    */
-  def unit[A](a: A): Par[A] = ???
+  def unit[A](a: A): Par[A] = _ => Future.fromTry(Success(a))
 
 
   /**
@@ -34,10 +38,30 @@ object Par {
    */
   def map2[A, B, C](parA: Par[A], parB: Par[B])(f: (A, B) => C): Par[C] = ???
 
+
+  /**
+   *  Convert any function A => B to one that evaluates its result asynchronously.
+   */
+  def asyncFRaw[A, B](f: A => B): A => Par[B] = (a: A) => (es: ExecutionContextExecutorService) => {
+
+    Future(f(a))(es)
+  }
+
+  /**
+   *  Convert any function A => B to one that evaluates its result asynchronously.
+   */
+  def asyncF[A, B](f: A => B): A => Par[B] = (a: A) => lazyUnit(f(a))
+
   /**
    * Extracts a value from a Par by actually performing the computation.
    */
-  def run[A](a: Par[A]): A = ???
+  def run[A](es: ExecutionContextExecutorService)(a: Par[A]): Future[A] = a(es)
 
 
 }
+
+import cats.Parallel
+/*
+import cats.ParallelArityFunctions
+import cats.ParallelArityFunctions2
+import cats.NonEmptyParallel*/
