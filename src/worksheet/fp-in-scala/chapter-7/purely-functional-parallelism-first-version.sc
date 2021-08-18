@@ -2,10 +2,11 @@
 
 import org.apache.jena.ext.com.google.common.base.Supplier
 
-import java.util.concurrent.{Callable, CompletableFuture}
+import java.util.concurrent.{Callable, CompletableFuture, Executors}
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContextExecutorService, Future}
+import scala.concurrent.{Await, ExecutionContext, ExecutionContextExecutorService, Future}
 import scala.util.Success
+import scala.util.chaining.scalaUtilChainingOps
 
 /**
  *  == Book Notes ==
@@ -153,7 +154,70 @@ object Par {
   def run[A](es: ExecutionContextExecutorService)(a: Par[A]): Future[A] = a(es)
 
 
+  /**
+   * A Function that take an asynchronous computation that returns a list,
+   * and returns an asynchronous computation that returns that same list sorted.
+   *
+   * What we will do is build/return the description of an a computation that,
+   * when ran asynchronously will run the first computation asynchronously, take its result and
+   * launch a  second asynchronous computation that  will sort it, and return  it.
+   *
+   * This is what map2 does, so we will use it.
+   */
+  def _parSort[A: Ordering](l: Par[List[A]]): Par[List[A]] = es =>  {
+    map2(l, unit (  )  ) {(a, _) =>  a.sorted}(es)
+  }
+
+  /**
+   * This is not parMap which in fact is  a ParTraverse (e.g. in cats)
+   */
+
+  def map[A, B](parA: Par[A])(f: A => B): Par[B] = es => {
+    map2(parA,  unit()) {(a, _) => f(a)}(es)
+  }
+
+  /**
+   * partSort becomes as simple as
+   */
+  def parSort[A: Ordering](l: Par[List[A]]): Par[List[A]] = map(l)(_.sorted)
+
+
+
+  def parSequence[A](l: List[Par[A]]): Par[List[A]] = es => {
+    l.foldRight(unit(List.empty[A])){(a,  b) => fork(map2(a, b){(e, l) => e::l}) }(es)
+  }
+
+  def _parSequence[A](l: List[Par[A]]): Par[List[A]] = es => {
+    l.foldRight(unit(List.empty[A])){(a,  b) => map2(a, b){(e, l) => e::l} }(es)
+  }
+
+  def parMap[A, B](l: List[A])(f: A => B): Par[List[B]] = es => {
+    parSequence(l.map(asyncF(f)))(es)
+  }
+
+  def _parMap[A, B](l: List[A])(f: A => B): Par[List[B]] = es => {
+    _parSequence(l.map(asyncF(f)))(es)
+  }
+
 }
+
+
+def timed[A](program: => Future[A]):  A =  {
+
+  val start = System.currentTimeMillis()
+
+  Await.result(program, Duration.apply("20s")) tap {_ => println(s"program took ${System.currentTimeMillis() - start} ms") }
+
+}
+
+import Par._
+
+
+val es  = ExecutionContext.fromExecutorService(Executors.newWorkStealingPool(8))
+
+//val forked = timed(  parMap(List.fill(100)(10)) (_ * 2)(es) )
+
+val notforked = timed(  _parMap(List.fill(100)(10)) (_ * 2)(es) )
 
 
 
