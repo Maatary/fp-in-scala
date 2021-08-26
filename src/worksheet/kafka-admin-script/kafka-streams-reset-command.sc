@@ -2,7 +2,7 @@ import cats.syntax.all._
 import cats.effect.unsafe.implicits.global
 import cats.effect.IO
 
-val topics = """elsevier-raw-resnet-annotations
+/*val topics = """elsevier-raw-resnet-annotations
   |elsevier-raw-resnet-controlprops
   |elsevier-raw-resnet-controls
   |elsevier-raw-resnet-dict
@@ -20,11 +20,22 @@ val topics = """elsevier-raw-resnet-annotations
   |elsevier-raw-resnet-objecttypes
   |elsevier-raw-resnet-proptypes
   |elsevier-raw-resnet-strcontrolprops
-  |elsevier-raw-resnet-strnodeprops""".stripMargin
+  |elsevier-raw-resnet-strnodeprops""".stripMargin*/
+
+val topics = """elsevier-dup-tmp-resnet-controlprops-with-types
+               |elsevier-dup-tmp-resnet-controls-with-types-with-memberships
+               |elsevier-dup-tmp-resnet-dictcontrolprops-by-sources
+               |elsevier-dup-tmp-resnet-dictcontrolprops-with-types-with-idobjects
+               |elsevier-dup-tmp-resnet-intcontrolprops-by-sources
+               |elsevier-dup-tmp-resnet-intcontrolprops-with-types-with-idobjects
+               |elsevier-dup-tmp-resnet-memocontrolprops-by-sources
+               |elsevier-dup-tmp-resnet-memocontrolprops-with-types-with-idobjects
+               |elsevier-dup-tmp-resnet-strcontrolprops-by-sources
+               |elsevier-dup-tmp-resnet-strcontrolprops-with-types-with-idobjects""".stripMargin
 
 
  def buildCommand = (e:String) =>
-   s"kafka-streams-application-reset --bootstrap-servers localhost:9092 --application-id _entellect-cbe-builder-resnet-0 --input-topics $e  --dry-run --force"
+   s"kafka-topics  --bootstrap-server localhost:9092 --delete  --topic $e  --force"
 
 val resetCommand = for {
 
