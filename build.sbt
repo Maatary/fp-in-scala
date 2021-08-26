@@ -22,7 +22,14 @@ libraryDependencies ++= Seq (
   "org.http4s"      %% "http4s-blaze-client" % "1.0.0-M23",
 
 
-  "com.oracle.database.jdbc" % "ojdbc8"      % "12.2.0.1",
+  "com.oracle.database.jdbc"  % "ojdbc8"      % "12.2.0.1",
+
+
+  "org.scalacheck"            %% "scalacheck"        % "1.15.4",
+
+  "com.github.imrafaelmerino" %% "json-scala-values" % "4.0.0",
+
+  "org.json" % "json" % "20210307"
 
 
   )
