@@ -20,6 +20,50 @@ import org.http4s.client.Client
 //import org.http4s.dsl.impl._
 
 
+/**
+ *  = http4 High Level Principle =
+ *
+ * A Server is basically a function
+ * {{{ HttpApp : Request[IO] => IO [Response[IO]]  }}}
+ *
+ * A Route of the Server is basically a function
+ * {{{  HttpRoutes : Request[IO] => IO [Option[Response[IO]] ] }}}
+ *
+ *  == Why the difference ==
+ *
+ *  -- A Server always returns a Response
+ *
+ *  -- A Route might note return a Response.
+ *
+ *  -- So as we supply routes to the server we can add a catch all function  at the end that map
+ *  over the Response. If not Return NotFound else Leave the response unchanged
+ *
+ *  -- See function .orNotFound
+ *
+ *  -- Because we are describing function it is actually implemented as a kleisli flatMap
+ *
+ *  == Expressing it with Kleisli for Monadic Function composition ==
+ *
+ *  {{{ HttpApp: Kleisli[IO, Request[IO], Response[IO]] }}}
+ *
+ *  {{{ HttpRoutes: Kleisli[OptionT[IO, *], Request[IO], Response[IO]] }}}
+ *
+ *  -- We use '''OptionT[IO, *]''' to easily compose with   '''IO[ Option[ Response[IO] ]  ] '''
+ *
+ *  -- '''OptionT[IO, *]'''  let us compose IO[Option] as if  it was just an Option, it stacks it for us: It is a monad Transformer.
+ *
+ *  == Abstracting over the Effect type we get http4s Signature ==
+ *
+ *  {{{ HttpApp[F[_]]: Kleisli[F, Request[F], Response[F]] }}}
+ *
+ *  {{{ HttpRoutes[F[_]]: Kleisli[OptionT[IO, *], Request[F], Response[F]] }}}
+ *
+ *
+ *  == Understanding the IO in Request[IO] & Response[IO] ==
+ *
+ *
+ *
+ */
 val helloWorldService = HttpRoutes.of[IO] {
 
   case areq@ GET -> Root / "hello" =>
