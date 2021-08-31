@@ -1,0 +1,1671 @@
+@prefix rr:    <http://www.w3.org/ns/r2rml#> .
+@prefix resnet: <https://data.elsevier.com/lifescience/schema/resnet/> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix km-dev: <http://isi.edu/integration/karma/dev#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://data.elsevier.com/lifescience/extraction/resnet/CellProcess>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+        <http://www.w3.org/2002/07/owl#Ontology> , <http://isi.edu/integration/karma/dev#R2RMLMapping> ;
+    <http://isi.edu/integration/karma/dev#hasBaseURI>
+        <https://data.elsevier.com/lifescience/entity/resnet/CellProcess/> ;
+    <http://isi.edu/integration/karma/dev#hasModelLabel>
+        "elsevier-cbe-resnet-CellProcess" ;
+    <http://isi.edu/integration/karma/dev#hasWorksheetHistory>
+        '''
+[
+{
+"commandName" : "SetWorksheetPropertiesCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "properties",
+"type" : "other",
+"value" : {
+  "graphLabel" : "",
+  "hasBaseURI" : true,
+  "baseURI" : "https://data.elsevier.com/lifescience/entity/resnet/CellProcess/",
+  "hasPrefix" : false,
+  "hasServiceProperties" : false
+}
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[]"
+}
+],
+"tags" : [
+"Transformation"
+]
+},
+{
+"commandName" : "SetMetaPropertyCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "ID"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "metaPropertyName",
+"type" : "other",
+"value" : "isUriOfClass"
+},
+{
+"name" : "metaPropertyUri",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess"
+},
+{
+"name" : "metaPropertyId",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : {
+  "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+  "DomainLabel" : "resnet:CellProcess1 (add)",
+  "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+  "FullType" : "http://isi.edu/integration/karma/dev#classLink",
+  "isPrimary" : true,
+  "isProvenance" : false
+}
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"ID\\"]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"ID\\"]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "URN"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/urn",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/STRING"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"URN\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"URN\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "sPropertyValues_CellProcess"
+  },
+  {
+    "columnName" : "values"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/cellProcess",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/STRING"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_CellProcess\\"},{\\"columnName\\":\\"values\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_CellProcess\\"},{\\"columnName\\":\\"values\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "idObjectClass"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/idObjectClass",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/INT"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"idObjectClass\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"idObjectClass\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "nodeType"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/nodeType",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/STRING"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"nodeType\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"nodeType\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "idOwner"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/idOwner",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/INT"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"idOwner\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"idOwner\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "sPropertyValues_GO ID"
+  },
+  {
+    "columnName" : "values"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/goId",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/STRING"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_GO ID\\"},{\\"columnName\\":\\"values\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_GO ID\\"},{\\"columnName\\":\\"values\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "dateModified"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/dateModified",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/STRING"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"dateModified\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"dateModified\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "sName"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/sName",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/STRING"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sName\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sName\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "sPropertyValues_Alias"
+  },
+  {
+    "columnName" : "values"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/alias",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/STRING"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_Alias\\"},{\\"columnName\\":\\"values\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_Alias\\"},{\\"columnName\\":\\"values\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "dateCreated"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/dateCreated",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/STRING"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"dateCreated\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"dateCreated\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "sPropertyValues_MeSH ID"
+  },
+  {
+    "columnName" : "values"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/meShId",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/STRING"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_MeSH ID\\"},{\\"columnName\\":\\"values\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_MeSH ID\\"},{\\"columnName\\":\\"values\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "idObjectType"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/idObjectType",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/INT"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"idObjectType\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"idObjectType\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "sPropertyValues_MedScan ID"
+  },
+  {
+    "columnName" : "values"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/medScanId",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/STRING"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_MedScan ID\\"},{\\"columnName\\":\\"values\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_MedScan ID\\"},{\\"columnName\\":\\"values\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "idPrototype"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/idPrototype",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/INT"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"idPrototype\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"idPrototype\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "sPropertyValues_MeSH Heading"
+  },
+  {
+    "columnName" : "values"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/meShHeading",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/STRING"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_MeSH Heading\\"},{\\"columnName\\":\\"values\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_MeSH Heading\\"},{\\"columnName\\":\\"values\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "flags"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/flags",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/INT"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"flags\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"flags\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SetSemanticTypeCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "sPropertyValues_CellType"
+  },
+  {
+    "columnName" : "values"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : [
+  {
+    "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+    "DomainLabel" : "resnet:CellProcess1",
+    "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+    "FullType" : "https://data.elsevier.com/lifescience/schema/resnet/cellType",
+    "isPrimary" : true,
+    "isProvenance" : false
+  }
+]
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/rdbs/STRING"
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_CellType\\"},{\\"columnName\\":\\"values\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"sPropertyValues_CellType\\"},{\\"columnName\\":\\"values\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "SubmitPythonTransformationCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "isMemberOf_Group"
+  },
+  {
+    "columnName" : "values"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "newColumnName",
+"type" : "other",
+"value" : "URI"
+},
+{
+"name" : "transformationCode",
+"type" : "other",
+"value" : "import urllib;\\n \\ndataset = \\"resnet\\"\\nentity = \\"group\\"\\nfield = \\"values\\"\\neort = \\"entity\\"\\n \\nif getValue(field):\\n    return \\"https://data.elsevier.com/lifescience/\\" + eort +\\"/\\" +dataset + \\"/\\" + entity + \\"/\\" + urllib.quote_plus(getValue(field))\\nelse:\\n    return \\"\\""
+},
+{
+"name" : "errorDefaultValue",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "isJSONOutput",
+"type" : "other",
+"value" : "false"
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"isMemberOf_Group\\"},{\\"columnName\\":\\"values\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"URI\\"}]}]"
+}
+],
+"tags" : [
+"Transformation"
+]
+},
+{
+"commandName" : "SetMetaPropertyCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "isMemberOf_Group"
+  },
+  {
+    "columnName" : "URI"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "metaPropertyName",
+"type" : "other",
+"value" : "isUriOfClass"
+},
+{
+"name" : "metaPropertyUri",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/resnet/Group"
+},
+{
+"name" : "metaPropertyId",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/resnet/Group1"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : {
+  "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/Group1",
+  "DomainLabel" : "resnet:Group1 (add)",
+  "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/Group",
+  "FullType" : "http://isi.edu/integration/karma/dev#classLink",
+  "isPrimary" : true,
+  "isProvenance" : false
+}
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"URI\\"},{\\"columnName\\":\\"values\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"URI\\"},{\\"columnName\\":\\"values\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "AddLinkCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "edge",
+"type" : "other",
+"value" : {
+  "edgeTargetId" : "https://data.elsevier.com/lifescience/schema/resnet/Group1",
+  "edgeId" : "https://data.elsevier.com/lifescience/schema/resnet/isMemberOf",
+  "edgeTargetUri" : "https://data.elsevier.com/lifescience/schema/resnet/Group",
+  "edgeSourceId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+  "edgeSourceUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+  "isProvenance" : false
+}
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[]"
+}
+],
+"tags" : [
+"Modeling"
+]
+},
+{
+"commandName" : "SubmitPythonTransformationCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "isMemberOf_Pathway"
+  },
+  {
+    "columnName" : "values"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "newColumnName",
+"type" : "other",
+"value" : "URI"
+},
+{
+"name" : "transformationCode",
+"type" : "other",
+"value" : "import urllib;\\n \\ndataset = \\"resnet\\"\\nentity = \\"pathway\\"\\nfield = \\"values\\"\\neort = \\"entity\\"\\n \\nif getValue(field):\\n    return \\"https://data.elsevier.com/lifescience/\\" + eort +\\"/\\" +dataset + \\"/\\" + entity + \\"/\\" + urllib.quote_plus(getValue(field))\\nelse:\\n    return \\"\\""
+},
+{
+"name" : "errorDefaultValue",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "isJSONOutput",
+"type" : "other",
+"value" : "false"
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"isMemberOf_Pathway\\"},{\\"columnName\\":\\"values\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"URI\\"}]}]"
+}
+],
+"tags" : [
+"Transformation"
+]
+},
+{
+"commandName" : "SetMetaPropertyCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "hNodeId",
+"type" : "hNodeId",
+"value" : [
+  {
+    "columnName" : "isMemberOf_Pathway"
+  },
+  {
+    "columnName" : "URI"
+  }
+]
+},
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "selectionName",
+"type" : "other",
+"value" : "DEFAULT_TEST"
+},
+{
+"name" : "metaPropertyName",
+"type" : "other",
+"value" : "isUriOfClass"
+},
+{
+"name" : "metaPropertyUri",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/resnet/Pathway"
+},
+{
+"name" : "metaPropertyId",
+"type" : "other",
+"value" : "https://data.elsevier.com/lifescience/schema/resnet/Pathway1"
+},
+{
+"name" : "SemanticTypesArray",
+"type" : "other",
+"value" : {
+  "DomainId" : "https://data.elsevier.com/lifescience/schema/resnet/Pathway1",
+  "DomainLabel" : "resnet:Pathway1 (add)",
+  "DomainUri" : "https://data.elsevier.com/lifescience/schema/resnet/Pathway",
+  "FullType" : "http://isi.edu/integration/karma/dev#classLink",
+  "isPrimary" : true,
+  "isProvenance" : false
+}
+},
+{
+"name" : "trainAndShowUpdates",
+"type" : "other",
+"value" : true
+},
+{
+"name" : "rdfLiteralType",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "language",
+"type" : "other",
+"value" : ""
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"URI\\"},{\\"columnName\\":\\"values\\"}]}]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[{\\"value\\":[{\\"columnName\\":\\"URI\\"},{\\"columnName\\":\\"values\\"}]}]"
+}
+],
+"tags" : [
+"SemanticType"
+]
+},
+{
+"commandName" : "AddLinkCommand",
+"model" : "new",
+"inputParameters" : [
+{
+"name" : "worksheetId",
+"type" : "worksheetId",
+"value" : "W"
+},
+{
+"name" : "edge",
+"type" : "other",
+"value" : {
+  "edgeTargetId" : "https://data.elsevier.com/lifescience/schema/resnet/Pathway1",
+  "edgeId" : "https://data.elsevier.com/lifescience/schema/resnet/isMemberOf",
+  "edgeTargetUri" : "https://data.elsevier.com/lifescience/schema/resnet/Pathway",
+  "edgeSourceId" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess1",
+  "edgeSourceUri" : "https://data.elsevier.com/lifescience/schema/resnet/CellProcess",
+  "isProvenance" : false
+}
+},
+{
+"name" : "inputColumns",
+"type" : "hNodeIdList",
+"value" : "[]"
+},
+{
+"name" : "outputColumns",
+"type" : "hNodeIdList",
+"value" : "[]"
+}
+],
+"tags" : [
+"Modeling"
+]
+}
+]
+'''      ;
+    <http://isi.edu/integration/karma/dev#modelPublicationTime>
+        "1629794018"^^<http://www.w3.org/2001/XMLSchema#long> ;
+    <http://isi.edu/integration/karma/dev#modelVersion>
+        "1.7" ;
+    <http://isi.edu/integration/karma/dev#sourceName>
+        "elsevier-cbe-resnet-CellProcess" .
+
+
+

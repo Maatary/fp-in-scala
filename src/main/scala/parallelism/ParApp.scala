@@ -169,7 +169,7 @@ object ParApp extends App {
      * This is what map2 does, so we will use it.
      */
     def _parSort[A: Ordering](l: Par[List[A]]): Par[List[A]] = es =>  {
-      map2(l, unit (  )  ) {(a, _) =>  a.sorted}(es)
+      map2(l, unit ( ()  )  ) {(a, _) =>  a.sorted}(es)
     }
 
     /**
@@ -177,7 +177,7 @@ object ParApp extends App {
      */
 
     def map[A, B](parA: Par[A])(f: A => B): Par[B] = es => {
-      map2(parA,  unit()) {(a, _) => f(a)}(es)
+      map2(parA,  unit(())  ) {(a, _) => f(a)}(es)
     }
 
     /**
