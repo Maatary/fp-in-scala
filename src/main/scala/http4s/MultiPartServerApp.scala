@@ -68,15 +68,19 @@ object MultiPartServerApp extends App {
     case req @ POST -> Root / "enrichGraph" =>
 
 
-      val response = loadEnrichedAsByteArray(enrichedWithDynamic).flatMap { bArray =>
+     /* val response = loadEnrichedAsByteArray(enrichedWithDynamic).flatMap { bArray =>
         Ok(bArray) map { _.withContentType(`Content-Type`(MediaType.text.turtle, DefaultCharset)) } //utf-8 is default
-      }
+      }*/
 
       req.decodeWith(multipart[IO], strict = true) { multipart : Multipart[IO] =>
 
         multipart.parts.find(_.name === Some("basic_with_tag"))
-          .fold { BadRequest("missing basic_with_tag file") } { part =>
-            part.as[String].flatTap{ _ => IO { info("Received basic_with_tag content") } }.flatMap{_ => Ok("ok got basic_with_tag")}
+          .fold
+          { BadRequest("missing basic_with_tag file") }
+          { part =>
+            part.as[String]
+              .flatTap{ _ => IO { info("Received basic_with_tag content") } }
+              .flatMap{_ => Ok("ok got basic_with_tag")}
           }
       }
 
