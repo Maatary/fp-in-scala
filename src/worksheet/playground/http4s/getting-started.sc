@@ -59,7 +59,37 @@ import org.http4s.client.Client
  *  {{{ HttpRoutes[F[_]]: Kleisli[OptionT[IO, *], Request[F], Response[F]] }}}
  *
  *
+ *  == The httpRoutes.Of  constructor ==
+ *
+ * Takes a partial function '''PartialFunction[Request[F], F[Response[F] ] ]'''
+ * and automatically lift it in '''Kleisli[OptionT[IO, *], Request[F], Response[F] ]''' for your behind the scene.
+ *
+ * see  [[ org.http4s.HttpRoutes#of(scala.PartialFunction, cats.Monad)  ]]
+ * {{{
+     def of[F[_]: Monad](pf: PartialFunction[Request[F], F[Response[F]]]): HttpRoutes[F] =
+        Kleisli(req => OptionT(Applicative[F].unit >> pf.lift(req).sequence))
+ *
+ * }}}
+ *
  *  == Understanding the IO in Request[IO] & Response[IO] ==
+ *
+ *  === From Gitter ===
+ *
+ *  -- I don't really think of a Request as a Request[F, A]. The request always holds a method, a uri, and a stream of bytes.
+ *
+ *  -- You might use an EntityDecoder to turn that stream of bytes into an A. But there's not really a parameteric A in the request.
+ *  Just F[_], or what kind of effect produces the bytes.
+ *
+ *  -- >> I meant Request[F, Byte] Indeed. It is implicit. But yeah, got the point. There is no parameter, it is always Byte.
+ *
+ *  -- Response[F] means the body happens in F, but you already have a Status and Headers in a pure context. F[Response[F]] means the Status and Headers also happen in effect type F.
+ *
+ *  -- So yeah, you go to a database. The database call might return a result set. It might not. It might one time and not the next. It might raise a network error. These are all effects that can happen when processing a given request.
+ *
+ *  --> Got it.
+ *
+ *  -- F[Request[F]] does happen in the backends: reading an incoming request off the socket is an effect.
+ *  -- A backend has an F[Request[F]] and needs an F[Response[F]] to render. How do we get there? Well, if F is a monad, flatMap(F[A])(A => F[B]): F[B].
  *
  *
  *
