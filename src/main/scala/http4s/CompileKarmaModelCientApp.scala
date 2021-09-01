@@ -7,7 +7,6 @@ import cats.syntax.all._
 import cats.effect._
 import cats.effect.unsafe.IORuntime
 import cats.effect.unsafe.implicits.global
-
 import org.http4s._
 import org.http4s.headers._
 import org.http4s.dsl.io._
@@ -19,13 +18,10 @@ import org.http4s.syntax.all._
 import org.http4s.implicits._
 
 import scala.util.chaining.scalaUtilChainingOps
-
-
-
-
-
 import org.http4s.client.dsl.Http4sClientDsl
 import org.http4s.blaze.client.BlazeClientBuilder
+
+import java.io.{ByteArrayInputStream, InputStream}
 //import org.http4s.client.Client
 
 
@@ -37,10 +33,18 @@ object CompileKarmaModelCientApp extends App {
 
 
   type Ontology           = String
-  type PreMapping         = String
+  type Mapping            = String
   type SyntheticMessage   = String
-  type PreMappingModelURI = String
+  type MappingModelURI    = String
   type TopicName          = String
+  type DatasetName        = String
+  type EntityType         = String
+  type IsCBE              = Boolean
+  type CompiledMapping    = String
+
+  type MappingInfo        = (Mapping, SyntheticMessage, EntityType, IsCBE)
+  type MappingParams      = (Ontology, Mapping, SyntheticMessage, MappingModelURI, TopicName)
+
 
 
   /**
@@ -68,8 +72,8 @@ object CompileKarmaModelCientApp extends App {
    *
    */
 
-   def toRequests(preMappingsParams: List[(Ontology, PreMapping, SyntheticMessage, PreMappingModelURI, TopicName)]): List[Request[IO]] = {
-      preMappingsParams map toRequest
+   def toRequests(mappingsParams: List[(Ontology, Mapping, SyntheticMessage, MappingModelURI, TopicName)]): List[Request[IO]] = {
+      mappingsParams map toRequest
    }
 
 
@@ -92,17 +96,17 @@ object CompileKarmaModelCientApp extends App {
    *
    */
 
-   def toRequest(preMappingParams: (Ontology, PreMapping, SyntheticMessage, PreMappingModelURI, TopicName)): Request[IO] = {
+   def toRequest(mappingParams: (Ontology, Mapping, SyntheticMessage, MappingModelURI, TopicName)): Request[IO] = {
 
      import org.http4s.implicits._
 
      Multipart[IO] (
        Vector (
-         Part.formData("ontology"        , preMappingParams._1),
-         Part.formData("model"           , preMappingParams._2),
-         Part.formData("syntheticMessage", preMappingParams._3),
-         Part.formData("modelURI"        , preMappingParams._4),
-         Part.formData("topicName"       , preMappingParams._5),
+         Part.formData("ontology"        , mappingParams._1),
+         Part.formData("model"           , mappingParams._2),
+         Part.formData("syntheticMessage", mappingParams._3),
+         Part.formData("modelURI"        , mappingParams._4),
+         Part.formData("topicName"       , mappingParams._5),
          Part.formData("ontologyType"    , "true"),
          Part.formData("hostname"        , "100.67.219.44")
        )
@@ -110,30 +114,66 @@ object CompileKarmaModelCientApp extends App {
 
    }
 
+  def makeExtractionUri(datasetName: DatasetName, entityType: EntityType): MappingModelURI =  {
+    s"https://data.elsevier.com/lifescience/extraction/$datasetName/${entityType.toLowerCase}"
+  }
+
+  def makeTopicName(datasetName: DatasetName, entityType: EntityType,  isCbe:  IsCBE): TopicName  = {
+    s"elsevier-${if (isCbe) "cbe" else "raw"}-$datasetName-$entityType"
+  }
+
   import fs2.io.file.Files
   import fs2.io.file.Path
 
 
+  def compileKarmaMappingModel(pOntology: Ontology, datasetName: DatasetName, mappingsInfo: List[MappingInfo]): IO[List[(CompiledMapping, EntityType)]] = {
 
-  (for {
+    for {
+
+      mappingsParams <- IO.pure{ mappingsInfo.map { e => ( pOntology, e._1, e._2, makeExtractionUri(datasetName, e._3), makeTopicName(datasetName, e._3, e._4) )  } }
+      compileRequests   = toRequests(mappingsParams)
+
+      lResponse        <- BlazeClientBuilder[IO](IORuntime.global.compute).resource.use { runKarmaCompilationRequests(_, compileRequests) }
+
+      res              <- lResponse.traverse(pairWithEntityType(_))
+
+    } yield res
+  }
+
+  def pairWithEntityType(modelAsString: String):IO[(CompiledMapping, EntityType)] = {
+
+    for {
+      model        <- IO { ModelFactory.createDefaultModel().read(new ByteArrayInputStream(modelAsString.getBytes), null, Lang.TTL.getName) }
+
+      sourceTopic  <- IO { model.listStatements(null, ResourceFactory.createProperty("http://isi.edu/integration/karma/dev#sourceName"), null).nextStatement().getString}
+
+      entityType   <- IO.pure{ sourceTopic.split("-").last}
 
 
+    } yield (modelAsString, entityType)
+
+  }
+
+
+ val program = for {
 
     ontology         <- Files[IO].readAll(Path(getClass.getResource("/proxyInferenceModel.ttl").getPath)).compile.to(Array).map(new String(_))
     model            <- Files[IO].readAll(Path(getClass.getResource("/premapping-cellprocess.ttl").getPath)).compile.to(Array).map(new String(_))
     syntheticMessage <- Files[IO].readAll(Path(getClass.getResource("/premapping-cellprocess-sample-message.json").getPath)).compile.to(Array).map(new String(_))
-    modelURI         <- IO.pure{"https://data.elsevier.com/lifescience/extraction/resnet/CellProcess"}
-    topicName        <- IO.pure{"elsevier-cbe-resnet-CellProcess"}
-    preMappingsParams = List[(Ontology, PreMapping, SyntheticMessage, PreMappingModelURI, TopicName)]((ontology,  model, syntheticMessage, modelURI, topicName))
-    compileRequests   = toRequests(preMappingsParams)
+    //modelURI         <- IO.pure{"https://data.elsevier.com/lifescience/extraction/resnet/CellProcess"}
+    //topicName        <- IO.pure{"elsevier-cbe-resnet-CellProcess"}
 
-    lResponse        <- BlazeClientBuilder[IO](IORuntime.global.compute).resource.use { runKarmaCompilationRequests(_, compileRequests) }
+    compiledMapping  <- compileKarmaMappingModel(ontology, "resnet",  List( (model, syntheticMessage, "CellProcess", true ) ) )
 
-    _                <- IO.println(lResponse)
+  } yield compiledMapping
 
-
-  } yield ()).unsafeRunSync()
+  program.flatMap(list => list.traverse(IO.println(_))).unsafeRunSync()
 
 
+
+
+
+  //import fs2._
+  //Stream.emits("hello".getBytes).through(Files[IO].writeAll(Path("test.txt"))).compile.drain.unsafeRunSync()
 
 }
