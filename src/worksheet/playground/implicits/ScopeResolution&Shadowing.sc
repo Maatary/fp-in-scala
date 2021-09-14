@@ -1,4 +1,20 @@
 
+/**
+ * https://eed3si9n.com/revisiting-implicits-without-import-tax
+ * https://eed3si9n.com/implicit-parameter-precedence-again
+ * https://eed3si9n.com/herding-cats/import-guide.html
+ * https://meta.plasm.us/posts/2019/09/30/implicit-scope-and-cats/
+ *
+ * https://stackoverflow.com/questions/5598085/where-does-scala-look-for-implicits/5598107#5598107
+ *
+ * https://stackoverflow.com/questions/63993620/implicit-categories-in-type-class-resolution
+ *
+ * https://scalac.io/blog/typeclasses-in-scala/ *****
+ */
+
+
+
+
 import cats.Show
 
 //If you remove this definition
