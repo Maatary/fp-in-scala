@@ -120,11 +120,11 @@ object JenaShacl extends App {
 
     for {
       semanticLinkType <- IO.pure  { ShaclPaths.pathToString(connectionShape.getPath) }
-      vType            <- getVertexType(connectionShape)
+      vType            <- getConnectionVertexType(connectionShape)
     } yield From(vType, semanticLinkType.some)
   }
 
-  def getVertexType(connectionShape: PropertyShape): IO [String] = {
+  def getConnectionVertexType(connectionShape: PropertyShape): IO [String] = {
 
     for {
 
