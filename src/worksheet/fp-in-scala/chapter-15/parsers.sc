@@ -12,11 +12,13 @@ trait Parsers[Parser[+_]] { self =>
 
   def string(s:  String): Parser[String]
 
+  def regex(s: Regex): Parser[String]
+
 
   /**
    *  We expect that or(string("abra"),string("cadabra")) will succeed whenever either string parser succeeds
    */
-  def or[A](pa: Parser[A],  pb: Parser[A]): Parser[A]
+  def or[A](pa: Parser[A],  pb: => Parser[A]): Parser[A]
 
   /**
    * '''map''' Combinator . It simply transform the result of the parsing.
@@ -138,6 +140,27 @@ trait Parsers[Parser[+_]] { self =>
     case _ => map2(p, listOfN(n -1, p)) (_::_)
   }
 
+  def flatMap[A, B](pa: Parser[A])(f: A => Parser[B]): Parser[B]
 
+
+  def digitThatManyCharacter(c: Char) = {
+    flatMap { regex("[0-9]".r) } { digit  => listOfN[Char](digit.toInt, char(c)) }
+  }
+
+  def product_[A,B](pa: Parser[A], pb: => Parser[B]): Parser[(A,B)] = {
+    flatMap(pa){a => map(pb)(b => (a,b))}
+  }
+
+  def map2_[A,B,C](pa: Parser[A], pb: => Parser[B])(f: (A, B) => C): Parser[C] = {
+    flatMap(pa){a => map(pb)(b => f(a,b))}
+  }
+
+  def map_[A, B](pa: Parser[A])(f: A => B): Parser[B] = {
+
+    flatMap(pa){a => succeed(f(a))}
+
+  }
 
 }
+
+
