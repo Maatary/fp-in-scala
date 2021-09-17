@@ -1,0 +1,117 @@
+# baseURI: https://data.elsevier.com/lifescience/schema/foundation
+# imports: http://datashapes.org/dash
+
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix efdn: <https://data.elsevier.com/lifescience/schema/foundation/> .
+@prefix graphql: <http://datashapes.org/graphql#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix swa: <http://topbraid.org/swa#> .
+@prefix tosh: <http://topbraid.org/tosh#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://data.elsevier.com/lifescience/schema/foundation>
+  a owl:Ontology ;
+  owl:imports <http://datashapes.org/dash> ;
+  owl:versionInfo "Created with TopBraid Composer" ;
+  sh:declare [
+      sh:namespace "https://data.elsevier.com/lifescience/schema/foundation/"^^xsd:anyURI ;
+      sh:prefix "efdn" ;
+    ] ;
+.
+efdn:Entity
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Entity"@en ;
+  rdfs:subClassOf owl:Thing ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path efdn:composedOf ;
+      sh:description "The relation represents a composition as in UML, in Entellect context it is what has been referred to as a subEntity. In a Property Graph (e.g. TG), it represent an Object Attribute of a Vertice."@en ;
+      sh:name "composedOf" ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+.
+efdn:Relation
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment """The Concept represents a reified Relation and its Directionality.
+The constrainsts state that a Reified Relation can be either non-direction, directional, or bi-directional. 
+Note that it is implicit that when we talked about  reified relation we talked about binary relation that have properties
+
+To Represent a Reified Relation with its directionality we represent how it links to the the 2 entities involves to the Relation using 2 object properties which goes from the Relation to the connected Entities. 
+The links can  be directional or nondirectional, which when taken together give the directionbality of the Relation. E.g. If one of the Link is directional and the other non-directional, we have  a Directional relation. 
+
+Note that as of now it is by intent that we do not add sh:Class edfn:Entity, that is, expressinng that a Link must connect to an efdn:Entity. This is not critical at this point as of the use of this Onotlogy, but can be added anytime the information is exploited. So for now it is to be understood as implicit"""@en ;
+  rdfs:label "Relation"@en ;
+  rdfs:subClassOf owl:Thing ;
+  sh:or (
+      [
+        sh:property [
+            sh:path efdn:nondirectionalLinkWith ;
+            sh:NodeKind sh:IRI ;
+            sh:class efdn:Entity ;
+            sh:maxCount 2 ;
+            sh:minCount 2 ;
+          ] ;
+      ]
+      [
+        sh:property [
+            sh:path efdn:directionalLinkWith ;
+            sh:NodeKind sh:IRI ;
+            sh:class efdn:Entity ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+          ] ;
+        sh:property [
+            sh:path efdn:nondirectionalLinkWith ;
+            sh:NodeKind sh:IRI ;
+            sh:class efdn:Entity ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+          ] ;
+      ]
+      [
+        sh:property [
+            sh:path efdn:directionalLinkWith ;
+            sh:NodeKind sh:IRI ;
+            sh:class efdn:Entity ;
+            sh:maxCount 2 ;
+            sh:minCount 2 ;
+          ] ;
+      ]
+    ) ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path efdn:associatedTo ;
+      sh:name "associatedTo"@en ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path efdn:composedOf ;
+      sh:description "The relation represents a composition as in UML, in Entellect context it is what has been referred to as a subEntity. In a Property Graph (e.g. TG), it represent an Object Attribute of a Vertice."@en ;
+      sh:name "composedOf" ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+.
+efdn:associatedTo
+  a owl:ObjectProperty ;
+  rdfs:comment "It represents a association as in UML. In the context of Entellect it represents a sub-entity (conceptually) of an Edge, where the sub-entity has his own vertex type, and theforefore the edge hold a list of reference (URI) to those sub-entities" ;
+  rdfs:label "associatedTo"@en ;
+.
+efdn:composedOf
+  a owl:ObjectProperty ;
+  rdfs:comment "The relation represents a composition as in UML, in Entellect context it is what has been referred to as a subEntity. In a Property Graph (e.g. TG), it represent an Object Attribute of a Vertice."@en ;
+  rdfs:label "composedOf"@en ;
+.
+efdn:directionalLinkWith
+  a owl:ObjectProperty ;
+  rdfs:label "directionalLinkWith"@en ;
+.
+efdn:nondirectionalLinkWith
+  a owl:ObjectProperty ;
+  rdfs:label "nondirectionalLinkWith"@en ;
+.

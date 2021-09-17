@@ -257,18 +257,18 @@ object JenaOntModelApp extends App {
   import scala.jdk.CollectionConverters._
   import scribe._
 
-  scribe.Logger.root
+  /*scribe.Logger.root
         .clearHandlers()
         .clearModifiers()
         .withHandler(minimumLevel = Some(Level.Trace))
-        .replace()
+        .replace()*/
 
   //JenaSystem.init() Not needed done, in factory of any submodule e.g. ModelFactory
   //JenaSystem.DEBUG_INIT = true Won't be needed will use Logging unless initialization issue
   //Logger(classOf[org.apache.jena.util.FileManager].getName).withMinimumLevel(Level.Error).replace()
 
 
-  val prog = for {
+  val basicProg = for {
 
     //_          <- IO {JenaSystem.init()} // Not Needed but leave it here to remember to better understand it.
     ontDoc       <- IO { OntDocumentManager.getInstance() } // Set your global Ontology Manager without any LocationMapper, so the reliance on the StreamMndgr is ensured. The process is broken
@@ -284,9 +284,34 @@ object JenaOntModelApp extends App {
 
  //OntDocumentManager.getInstance().setProcessImports(false)
 
-  prog.attempt.unsafeRunSync() match {
+/*  basicProg.attempt.unsafeRunSync() match {
     case Left(value) => error("Program failed - Model not processed properly", value)
     case Right(_) => info("Program Succeed - Model processed properly")
-  }
+  }*/
+
+  import org.topbraid.jenax.util.JenaUtil._
+
+  val infProg = for {
+
+    ontDoc          <- IO { OntDocumentManager.getInstance() } // Set your global Ontology Manager without any LocationMapper, so the reliance on the StreamMndgr is ensured. The process is broken
+    _               <- IO { ontDoc.setProcessImports(false) }
+
+    fdnModel        <- IO { ModelFactory.createDefaultModel().read("elsevier_entellect_foundation_schema.ttl") }
+    schemaModel     <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_TRANS_INF) }
+    _               <- IO { schemaModel.read("proxyInferenceModel.ttl") }
+    _               <- IO { schemaModel.addSubModel(fdnModel) }
+
+    _               <- IO { schemaModel.getOntClass("https://data.elsevier.com/lifescience/schema/resnet/PartOf").listSuperClasses().asScala.toList.foreach( e => println(e.toString)) }
+
+    _               <- IO { getAllSuperClasses(schemaModel.getOntClass("https://data.elsevier.com/lifescience/schema/resnet/PartOf")).asScala.toList.foreach( e => println(e.toString)) }
+
+
+
+
+
+  } yield ()
+
+
+  infProg.unsafeRunSync()
 
 }
