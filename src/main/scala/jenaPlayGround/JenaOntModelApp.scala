@@ -170,6 +170,9 @@ import org.apache.jena.vocabulary.RDF
  *
  * == Creating Ontology and Inference Implication ==
  *
+ * First see section '''Ontologies and reasoning''' [[https://jena.apache.org/documentation/ontology/#general-concepts]]
+ * It explains how an Ontology model stack a base jena model, an inf model, and the Ontology API to run on it.
+ *
  * The definitions from both the base ontology and all of the imports will be visible to the reasoner.
  * model.rebind() to ensure that the reasoner gets to see the updated axioms
  *
@@ -208,6 +211,41 @@ import org.apache.jena.vocabulary.RDF
  * (But no need to touch it, the default is good, just initialize it before any StreamMngr config see above)
  *
  * More details in [[https://jena.apache.org/documentation/ontology/#creating-ontology-models Creating ontology models]]
+ *
+ * == Ontology Profile ==
+ *
+ * -- The Jena Ontology API is language-neutral: the Java class names are not specific to the underlying language.
+ *
+ * -- For example, the OntClass Java class can represent an OWL class or RDFS class.
+ *    To represent the differences between the various representations, each of the ontology languages has a profile,
+ *    which lists the permitted constructs and the names of the classes and properties.
+ *
+ * -- Thus in the OWL profile is it owl:ObjectProperty (short for http://www.w3.org/2002/07/owl#ObjectProperty) and
+ *    in the RDFS profile it is null since RDFS does not define object properties.
+ *
+ * -- The profile is bound to an ontology model, which is an extended version of Jena’s Model class.
+ *    The base Model allows access to the statements in a collection of RDF data.
+ *    OntModel extends this by adding support for the kinds of constructs expected to be in an ontology: classes (in a class hierarchy), properties (in a property hierarchy) and individuals.
+ *
+ * -- When you’re working with an ontology in Jena, all of the state information remains encoded as RDF triples (accessed as Jena Statements) stored in the RDF model.
+ *    The ontology API doesn’t change the RDF representation of ontologies.
+ *    What it does do is add a set of convenience classes and methods that make it easier for you to write programs that manipulate the underlying RDF triples.
+ *    The predicate names defined in the ontology language correspond to the accessor methods on the Java classes in the API.
+ *    For example, an OntClass has a method to list its super-classes, which corresponds to the values of the subClassOf property in the RDF representation.
+ *    This point is worth re-emphasising: no information is stored in the OntClass object itself.
+ *    When you call the OntClass listSuperClasses() method, Jena will retrieve the information from the underlying RDF triples.
+ *    Similarly, adding a subclass to an OntClass asserts an additional RDF triple, typically with predicate rdfs:subClassOf into the model.
+ *
+ * == RDF Polymorphism and how Jena API deals with it ==
+ * e.g.
+ *
+ * {{{
+ *   import org.apache.jena.ontology.OntClass
+ *   val r: Resource = myModel.getResource(myNS + "DigitalCamera")
+ *   val cls: OntClass = r.as(classOf[OntClass])
+ * }}}
+ *
+ * see section '''RDF-level polymorphism and Java'''in [[https://jena.apache.org/documentation/ontology/#creating-ontology-models Creating ontology models]]
  *
  **/
 object JenaOntModelApp extends App {
