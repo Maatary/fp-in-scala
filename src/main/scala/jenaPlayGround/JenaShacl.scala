@@ -1,11 +1,12 @@
 package jenaPlayGround
 
-import cats.effect.IO
+import cats.effect.{IO, Resource}
 import cats.effect.unsafe.implicits.global
 import cats.syntax.all._
-import org.apache.jena.rdf.model.ModelFactory
+import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.apache.jena.atlas.logging.LogCtl
 import org.apache.jena.graph.Graph
+import org.apache.jena.ontology.{OntDocumentManager, OntModel, OntModelSpec}
 import org.apache.jena.riot.Lang
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.out.NodeFormatterTTL_MultiLine
@@ -17,10 +18,17 @@ import org.apache.jena.shacl.engine.ShaclPaths
 import org.apache.jena.shacl.engine.constraint.{ClassConstraint, QualifiedValueShape, ShOr}
 import org.apache.jena.shacl.lib.ShLib
 import org.apache.jena.shacl.parser.{NodeShape, PropertyShape, Shape}
+import org.apache.jena.sparql.path.P_Link
 
 import scala.jdk.CollectionConverters._
 
+
+
 object JenaShacl extends App {
+
+
+  type Schema            = OntModel
+  type SchemaWithImports = OntModel
 
 
   sealed trait GraphElmt
@@ -37,21 +45,26 @@ object JenaShacl extends App {
 
   val program = for {
 
-    model       <- IO { ModelFactory.createDefaultModel().read("proxyInferenceModel.ttl") }
+    _                    <- setGlobalDocManagerProperties()
 
-    shapes      <- IO { Shapes.parse( model.getGraph) }
+    schemaPair           <- loadSchema("elsevier_entellect_foundation_schema.ttl", "proxyInferenceModel.ttl")
 
-    nodeshapes  <- IO { shapes.iteratorAll().asScala.toList.filter(_.isNodeShape)  }
-
-    bindingShape = nodeshapes.filter(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/PromoterBinding").head
+    (schema, schemaWithImports) = schemaPair
 
 
-    _           <- parseEdgeNodeShape(bindingShape.asInstanceOf[NodeShape]) flatMap { IO.println(_) }
+    shapes               <- IO { Shapes.parse(schema.getGraph) }
+
+    nodeShapes           <- IO { shapes.iteratorAll().asScala.toList.filter(_.isNodeShape)  }
+
+    bindingShape = nodeShapes.filter(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/PromoterBinding").head
+
+
+    _                    <- parseEdgeNodeShape(bindingShape.asInstanceOf[NodeShape], schemaWithImports) flatMap { IO.println(_) }
 
 
 
 
-    bindingConstraints <- IO {bindingShape.getConstraints.asScala.toList}
+    /*bindingConstraints <- IO {bindingShape.getConstraints.asScala.toList}
 
     orAnonNodeShapes   <- bindingConstraints traverse { constraint => IO { constraint.asInstanceOf[ShOr].getOthers.asScala.toList.asInstanceOf[List[NodeShape]] } } map (_.flatten)
 
@@ -65,7 +78,7 @@ object JenaShacl extends App {
                                                       aNon._2.foreach { _.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model))) }
 
                                                     }
-                                        )
+                                        )*/
 
     //_                  <- nodeshapes traverse(shape => IO {shape.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model))) })
 
@@ -78,13 +91,33 @@ object JenaShacl extends App {
   program.unsafeRunSync()
 
 
+  def setGlobalDocManagerProperties(): IO[Unit] = {
+    for {
+      ontDoc       <- IO { OntDocumentManager.getInstance() } // Set your global Ontology Manager without any LocationMapper, so the reliance on the StreamMndgr is ensured.
+      _            <- IO { ontDoc.setProcessImports(false) }
+    } yield ()
+  }
+
+  def loadSchema(fdnOntology: String, schemaOntology: String) : IO[(Schema, SchemaWithImports)] = {
+    for {
+      fdnModel               <- IO { ModelFactory.createDefaultModel().read(fdnOntology) }
+
+      schemaModel            <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
+      _                      <- IO { schemaModel.read(schemaOntology) }
+
+      schemaWithImportsModel <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_TRANS_INF, schemaModel) }
+      _                      <- IO { schemaWithImportsModel.addSubModel(fdnModel) }
+
+    } yield (schemaModel, schemaWithImportsModel)
+  }
+
 
 
   def parseEntityNodeShape(eShape: NodeShape): IO[Vertex] = {
     ???
   }
 
-  def parseEdgeNodeShape(eShape: NodeShape):  IO[Edge] = {
+  def parseEdgeNodeShape(eShape: NodeShape, schemaWithImports: SchemaWithImports):  IO[Edge] = {
 
     for {
 
@@ -92,7 +125,7 @@ object JenaShacl extends App {
 
       aNonConnectionPairNodeShapes     <- IO  { maybeConnectionsOrConstraint.map(_.getOthers.asScala.toList.asInstanceOf[List[NodeShape]]).fold{List[NodeShape]()}{ identity }}
 
-      connectionPairs                  <- aNonConnectionPairNodeShapes traverse toConnectionPair
+      connectionPairs                  <- aNonConnectionPairNodeShapes traverse toConnectionPair(schemaWithImports)
 
       vType                            <- IO.pure(eShape.getShapeNode.getURI)
 
@@ -100,7 +133,7 @@ object JenaShacl extends App {
 
   }
 
-  def toConnectionPair(connectionPairNodeShape: NodeShape): IO[ConnectionPair] = {
+  def toConnectionPair(schemaWithImports: SchemaWithImports) (connectionPairNodeShape: NodeShape): IO[ConnectionPair] = {
 
     for {
 
@@ -108,20 +141,28 @@ object JenaShacl extends App {
 
       s0::s1::Nil         = connectionShapes
 
-      connectionA         <- toConnection(s0)
+      connectionA         <- toConnection(s0, schemaWithImports)
 
-      connectionB         <- toConnection(s1)
+      connectionB         <- toConnection(s1, schemaWithImports)
 
     } yield ConnectionPair(connectionA, connectionB)
 
   }
 
-  def toConnection(connectionShape: PropertyShape): IO[Connection] = {
+  def toConnection(connectionShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[Connection] = {
 
     for {
-      semanticLinkType <- IO.pure  { ShaclPaths.pathToString(connectionShape.getPath) }
+      semanticLinkType <- IO { connectionShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+      directionalLinkWith    = "https://data.elsevier.com/lifescience/schema/foundation/directionalLinkWith"
+      nondirectionalLinkWith = "https://data.elsevier.com/lifescience/schema/foundation/nondirectionalLinkWith"
+
+      linkDirection    <- IO { schemaWithImports.getOntProperty(semanticLinkType).listSuperProperties().asScala.toList.filter(ontProp => ontProp.getURI == directionalLinkWith || ontProp.getURI == nondirectionalLinkWith ).head.getURI}
+
       vType            <- getConnectionVertexType(connectionShape)
-    } yield From(vType, semanticLinkType.some)
+
+      connection       <- IO.pure( if (linkDirection ==  directionalLinkWith) To(vType, semanticLinkType.some)  else  From(vType, semanticLinkType.some) )
+
+    } yield connection
   }
 
   def getConnectionVertexType(connectionShape: PropertyShape): IO [String] = {
