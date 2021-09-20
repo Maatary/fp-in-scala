@@ -64,10 +64,10 @@ object JenaShacl extends App {
 
     nodeShapes           <- IO { shapes.iteratorAll().asScala.toList.filter(_.isNodeShape)  }
 
-    bindingShape = nodeShapes.filter(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/PromoterBinding").head
+    bindingShape = nodeShapes.filter(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/IsA").head
 
 
-    _                    <- parseEdgeNodeShape(bindingShape.asInstanceOf[NodeShape], schemaWithImports) flatMap { IO.println(_) }
+    _                    <- parseRelationNodeShape(bindingShape.asInstanceOf[NodeShape], schemaWithImports) flatMap { IO.println(_) }
 
 
   } yield ()
@@ -101,7 +101,7 @@ object JenaShacl extends App {
     ???
   }
 
-  def parseEdgeNodeShape(rShape: NodeShape, schemaWithImports: SchemaWithImports):  IO[RelationType] = {
+  def parseRelationNodeShape(rShape: NodeShape, schemaWithImports: SchemaWithImports):  IO[RelationType] = {
 
     for {
 
@@ -111,7 +111,7 @@ object JenaShacl extends App {
 
       linkProperties                   <- IO { directProperties.collect { case lp: LinkProperty => lp} }
 
-      linkPropertyPairs                <- if (linkPropertyPairs.isEmpty) toLinkPropertyPairFromLinkProperties(linkProperties) map (List(_)) else IO.pure(linkPropertyPairs)
+      linkPropertyPairs                <- if (linkPropertyPairs.isEmpty) toLinkPropertyPair(linkProperties) map (List(_)) else IO.pure(linkPropertyPairs)
 
       rType                            <- IO.pure(rShape.getShapeNode.getURI)
 
@@ -119,6 +119,9 @@ object JenaShacl extends App {
 
   }
 
+  /**
+   * Build the List of LinkPropertyPair from a Relation NodeShape OrConstraint.
+   */
   def getOrConstraintsLinkPropertyPairsFromRelationShape(rShape: NodeShape, schemaWithImports: SchemaWithImports): IO[List[LinkPropertyPair]]  = {
 
     for {
@@ -127,14 +130,21 @@ object JenaShacl extends App {
 
       aNonLinkPropertyPairNodeShapes   <- IO  { maybeLinkPropertyOrConstraint.map(_.getOthers.asScala.toList.asInstanceOf[List[NodeShape]]).fold{List[NodeShape]()}{ identity }}
 
-      linkPropertyPairs                <- aNonLinkPropertyPairNodeShapes map {_.getPropertyShapes.asScala.toList} traverse toLinkPropertyPair(schemaWithImports)
+      aNonShapesDirectProperties       <- aNonLinkPropertyPairNodeShapes traverse ( _.getPropertyShapes.asScala.toList traverse toProperty (schemaWithImports) )
+
+      aNonShapesLinkProperties         <- IO { aNonShapesDirectProperties map { _.collect { case lp: LinkProperty => lp} } }
+
+      linkPropertyPairs                <-  aNonShapesLinkProperties traverse toLinkPropertyPair
 
     } yield linkPropertyPairs
 
   }
 
 
-
+  /**
+   *  Take a PropertyShape and convert to its corresponding Property i.e.
+   *  LinkProperty, DataProperty, AssociationProperty, RelationProperty, SchemeProperty
+   */
   def toProperty(schemaWithImports: SchemaWithImports)(propertyShape: PropertyShape): IO[Property] = {
 
     for {
@@ -171,45 +181,42 @@ object JenaShacl extends App {
 
   }
 
-  def makeLinkProperty(linkPropertyShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[LinkProperty] = toLinkProperty(linkPropertyShape, schemaWithImports)
+  /**
+   * Make a LinkProperty from a LinkPropertyShape i.e. a PropertyShape that holds a Link i.e.
+   *
+   * DirectionalLinkProperty, NonDirectionalLinkProperty
+   *
+   */
+  def makeLinkProperty(linkPropertyShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[LinkProperty] = {
+
+    for {
+      linkType         <- IO { linkPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+
+      directionalLinkWith    = "https://data.elsevier.com/lifescience/schema/foundation/directionalLinkWith"
+      nondirectionalLinkWith = "https://data.elsevier.com/lifescience/schema/foundation/nondirectionalLinkWith"
+
+      linkDirection    <- IO { schemaWithImports.getOntProperty(linkType).listSuperProperties().asScala.toList.filter(ontProp => ontProp.getURI == directionalLinkWith || ontProp.getURI == nondirectionalLinkWith ).head.getURI}
+
+      vType            <- getLinkPropertyEntityType(linkPropertyShape)
+
+      linkProperty     <- IO.pure { if (linkDirection ==  directionalLinkWith) DirectionalLinkProperty(linkType, vType)  else  NonDirectionalLinkProperty(linkType, vType) }
+
+    } yield linkProperty
+  }
   def makeDataProperty(): IO[DataProperty] = IO.pure(DataProperty())
   def makeCompositionProperty(): IO[CompositionProperty] = IO.pure(CompositionProperty())
   def makeAssociationProperty(): IO[AssociationProperty] = IO.pure(AssociationProperty())
   def makeRelationProperty(): IO[RelationProperty] = IO.pure(RelationProperty())
 
 
-  def getDirectLinkPropertyPairFromRelationShape(rShape: NodeShape, schemaWithImports: SchemaWithImports): IO[LinkPropertyPair] = {
-
-    for {
-      linkPropertyShapes   <- IO {rShape.getPropertyShapes.asScala.toList.filter(isLinkPropertyShape(_, schemaWithImports).unsafeRunSync()) } //TODO Change the fuck that !!!!
-
-      linkPropertyPair     <- toLinkPropertyPair(schemaWithImports)(linkPropertyShapes) // TODO if linkPropertyShapes are instead Link Property then the all logic need to change
-
-    } yield linkPropertyPair
-  }
-
-
-  def isLinkPropertyShape(linkPropertyShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[Boolean]  = { //TODO Change the fuck That
-
-    for {
-
-      directionalLinkWith    <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/directionalLinkWith") }
-
-      nonDirectionalLinkWith <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/nondirectionalLinkWith") }
-
-      linkType               <- IO { linkPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
-
-      linkTypeObjectProperty <- IO { schemaWithImports.getOntProperty(linkType) }
-
-
-    } yield linkTypeObjectProperty.hasSuperProperty(directionalLinkWith, false) || linkTypeObjectProperty.hasSuperProperty(nonDirectionalLinkWith, false)
-
-  }
-
-
-
-
-  def toLinkPropertyPairFromLinkProperties(linkProperties: List[LinkProperty]): IO[LinkPropertyPair] = {
+  /**
+   * Take a list of LinkProperty of expected Size 2 (not checked yet) and convert it into a LinkPropertyPair where:
+   *
+   *  --  LinkPropertyA is always NonDirectional
+   *
+   *  --  LinkPropertyB can either be Directional or NonDirectional
+   */
+  def toLinkPropertyPair(linkProperties: List[LinkProperty]): IO[LinkPropertyPair] = {
 
     for {
 
@@ -226,47 +233,6 @@ object JenaShacl extends App {
     } yield linkPropertyPair
 
   }
-
-
-  def toLinkPropertyPair(schemaWithImports: SchemaWithImports)(linkPropertyShapes:  List[PropertyShape]): IO[LinkPropertyPair] = {
-
-    for {
-
-      linkPropertyShapes  <-  IO.pure { linkPropertyShapes }
-
-      s0::s1::Nil         = linkPropertyShapes
-
-      linkProperty0       <- toLinkProperty(s0, schemaWithImports)
-
-      linkProperty1       <- toLinkProperty(s1, schemaWithImports)
-
-      linkPropertyPair                  <- (linkProperty0, linkProperty1) match {
-                                              case (linkProperty0: NonDirectionalLinkProperty, _) => IO.pure { LinkPropertyPair(linkProperty0, linkProperty1) }
-                                              case (_, linkProperty1: NonDirectionalLinkProperty) => IO.pure { LinkPropertyPair(linkProperty1, linkProperty0) }
-                                              case  _                                             => IO.raiseError(new Throwable(s"Got forbidden bidirectional relation  with ${linkProperty0.toString} and ${linkProperty1.toString}") )
-                                            }
-    } yield linkPropertyPair
-
-  }
-
-
-  def toLinkProperty(linkPropertyShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[LinkProperty] = {
-
-    for {
-      linkType         <- IO { linkPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
-
-      directionalLinkWith    = "https://data.elsevier.com/lifescience/schema/foundation/directionalLinkWith"
-      nondirectionalLinkWith = "https://data.elsevier.com/lifescience/schema/foundation/nondirectionalLinkWith"
-
-      linkDirection    <- IO { schemaWithImports.getOntProperty(linkType).listSuperProperties().asScala.toList.filter(ontProp => ontProp.getURI == directionalLinkWith || ontProp.getURI == nondirectionalLinkWith ).head.getURI}
-
-      vType            <- getLinkPropertyEntityType(linkPropertyShape)
-
-      linkProperty     <- IO.pure { if (linkDirection ==  directionalLinkWith) DirectionalLinkProperty(linkType, vType)  else  NonDirectionalLinkProperty(linkType, vType) }
-
-    } yield linkProperty
-  }
-
 
   /**
    * A LinkPropertyShape can have Its linked EntityType expressed as an sh:class directly or an sh:class in a QualifiedValueShape.
@@ -296,6 +262,57 @@ object JenaShacl extends App {
 }
 
 
+
+
+/*  def toLinkPropertyPair(schemaWithImports: SchemaWithImports)(linkPropertyShapes:  List[PropertyShape]): IO[LinkPropertyPair] = {
+
+    for {
+
+      linkPropertyShapes  <-  IO.pure { linkPropertyShapes }
+
+      s0::s1::Nil         = linkPropertyShapes
+
+      linkProperty0       <- toLinkProperty(s0, schemaWithImports)
+
+      linkProperty1       <- toLinkProperty(s1, schemaWithImports)
+
+      linkPropertyPair                  <- (linkProperty0, linkProperty1) match {
+                                              case (linkProperty0: NonDirectionalLinkProperty, _) => IO.pure { LinkPropertyPair(linkProperty0, linkProperty1) }
+                                              case (_, linkProperty1: NonDirectionalLinkProperty) => IO.pure { LinkPropertyPair(linkProperty1, linkProperty0) }
+                                              case  _                                             => IO.raiseError(new Throwable(s"Got forbidden bidirectional relation  with ${linkProperty0.toString} and ${linkProperty1.toString}") )
+                                            }
+    } yield linkPropertyPair
+
+  }*/
+
+
+
+/*  def isLinkPropertyShape(linkPropertyShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[Boolean]  = { //TODO Change the fuck That
+
+    for {
+
+      directionalLinkWith    <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/directionalLinkWith") }
+
+      nonDirectionalLinkWith <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/nondirectionalLinkWith") }
+
+      linkType               <- IO { linkPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+
+      linkTypeObjectProperty <- IO { schemaWithImports.getOntProperty(linkType) }
+
+
+    } yield linkTypeObjectProperty.hasSuperProperty(directionalLinkWith, false) || linkTypeObjectProperty.hasSuperProperty(nonDirectionalLinkWith, false)
+
+  }*/
+
+/*def getDirectLinkPropertyPairFromRelationShape(rShape: NodeShape, schemaWithImports: SchemaWithImports): IO[LinkPropertyPair] = {
+
+  for {
+    linkPropertyShapes   <- IO {rShape.getPropertyShapes.asScala.toList.filter(isLinkPropertyShape(_, schemaWithImports).unsafeRunSync()) } //TODO Change the fuck that !!!!
+
+    linkPropertyPair     <- toLinkPropertyPair(schemaWithImports)(linkPropertyShapes) // TODO if linkPropertyShapes are instead Link Property then the all logic need to change
+
+  } yield linkPropertyPair
+}*/
 
 /*  def getQVShapesVShapesFromAnonNodeShape(nShape: NodeShape): IO[List[Shape]] = {
 
