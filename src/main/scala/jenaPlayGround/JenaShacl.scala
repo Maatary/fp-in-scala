@@ -63,17 +63,20 @@ object JenaShacl extends App {
 
     shapes               <- IO { Shapes.parse(schema.getGraph) }
 
-    nodeShapes           <- IO { shapes.iteratorAll().asScala.toList.filter(_.isNodeShape)  }
+    nodeShapes           <- IO { shapes.iteratorAll().asScala.toList.collect { case shape: NodeShape => shape }  }
 
-    bindingShape = nodeShapes.filter(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/PromoterBinding").head
+    relationShapes       <- getRelationNodeShapes(nodeShapes, schemaWithImports)
+
+    filteredShapes       = relationShapes.filterNot(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/ClinicalTrial")
+                                         .filterNot(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/GeneticChange")
+                                         .filterNot(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/ProtModification")
+
+    relTypes             <- filteredShapes traverse parseRelationNodeShape(schemaWithImports)
 
 
-    _                    <- parseRelationNodeShape(bindingShape.asInstanceOf[NodeShape], schemaWithImports) flatMap { IO.println(_) }
+  } yield relTypes
 
-
-  } yield ()
-
-  program.unsafeRunSync().show
+  println(program.unsafeRunSync())
 
 
   def setGlobalDocManagerProperties(): IO[Unit] = {
@@ -82,7 +85,6 @@ object JenaShacl extends App {
       _            <- IO { ontDoc.setProcessImports(false) }
     } yield ()
   }
-
   def loadSchema(fdnOntology: String, schemaOntology: String) : IO[(Schema, SchemaWithImports)] = {
     for {
       fdnModel               <- IO { ModelFactory.createDefaultModel().read(fdnOntology) }
@@ -97,14 +99,29 @@ object JenaShacl extends App {
   }
 
 
+  def getRelationNodeShapes(nodeShapes: List[NodeShape], schemaWithImports: SchemaWithImports): IO[List[NodeShape]] = {
+
+    for {
+
+      relation           <- IO { schemaWithImports.getOntClass("https://data.elsevier.com/lifescience/schema/foundation/Relation") }
+
+      relationShapes     <- IO {  nodeShapes.filter { ns => schemaWithImports.getOntClass(ns.getShapeNode.getURI).hasSuperClass(relation)} }
+
+      nonEmptyRelShapes  = relationShapes.filterNot(_.getPropertyShapes.asScala.toList.isEmpty)
+
+    } yield nonEmptyRelShapes
+
+  }
 
   def parseEntityNodeShape(eShape: NodeShape): IO[EntityType] = {
     ???
   }
 
-  def parseRelationNodeShape(rShape: NodeShape, schemaWithImports: SchemaWithImports):  IO[RelationType] = {
+  def parseRelationNodeShape(schemaWithImports: SchemaWithImports)(rShape: NodeShape):  IO[RelationType] = {
 
     for {
+
+      //_                                <- IO {println(rShape)}
 
       directProperties                 <- rShape.getPropertyShapes.asScala.toList traverse makeProperty(schemaWithImports)
 
@@ -236,9 +253,9 @@ object JenaShacl extends App {
 
     for {
 
-      linkType <- IO { DataPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI tap {println(_)}}
+      linkType <- IO { DataPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
 
-      dataType <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: DatatypeConstraint => dc}.map(_.getDatatypeURI tap {println(_)} ).head } //TODO handle missing datatype constraint or fix ontology
+      dataType <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: DatatypeConstraint => dc}.map(_.getDatatypeURI ).head } //TODO handle missing datatype constraint or fix ontology
 
       min <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: MinCount => dc}.map(_.getMinCount).headOption }
 
