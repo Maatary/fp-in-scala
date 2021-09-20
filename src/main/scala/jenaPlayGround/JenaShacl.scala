@@ -14,13 +14,14 @@ import org.apache.jena.riot.system.PrefixMapAdapter
 import org.apache.jena.shacl.ShaclValidator
 import org.apache.jena.shacl.Shapes
 import org.apache.jena.shacl.ValidationReport
-import org.apache.jena.shacl.engine.ShaclPaths
-import org.apache.jena.shacl.engine.constraint.{ClassConstraint, QualifiedValueShape, ShOr}
+import org.apache.jena.shacl.engine.{ShaclPaths, constraint}
+import org.apache.jena.shacl.engine.constraint.{ClassConstraint, DatatypeConstraint, MaxCount, MinCount, QualifiedValueShape, ShOr}
 import org.apache.jena.shacl.lib.ShLib
 import org.apache.jena.shacl.parser.{NodeShape, PropertyShape, Shape}
 import org.apache.jena.sparql.path.P_Link
 
 import scala.jdk.CollectionConverters._
+import scala.util.chaining.scalaUtilChainingOps
 
 
 
@@ -35,12 +36,12 @@ object JenaShacl extends App {
 
   sealed trait FdnGraphSchemaElt
   final case class EntityType() extends FdnGraphSchemaElt
-  final case class RelationType(edgeType: String, linkPropertyPairs: List[LinkPropertyPair]) extends FdnGraphSchemaElt
+  final case class RelationType(edgeType: String, linkPropertyPairs: List[LinkPropertyPair], dataProperties: List[DataProperty], associationProperties: List[AssociationProperty]) extends FdnGraphSchemaElt
 
   sealed trait Property extends FdnGraphSchemaElt
-  final case class DataProperty() extends Property
+  final case class DataProperty(linkType: String, dataType: String, min: Option[Int], Max: Option[Int]) extends Property
   final case class CompositionProperty() extends Property
-  final case class AssociationProperty() extends Property
+  final case class AssociationProperty(linkType: String, dataType: String, min: Option[Int], Max: Option[Int]) extends Property
   final case class RelationProperty() extends Property
   final case class SchemeProperty() extends Property
 
@@ -64,7 +65,7 @@ object JenaShacl extends App {
 
     nodeShapes           <- IO { shapes.iteratorAll().asScala.toList.filter(_.isNodeShape)  }
 
-    bindingShape = nodeShapes.filter(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/IsA").head
+    bindingShape = nodeShapes.filter(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/PromoterBinding").head
 
 
     _                    <- parseRelationNodeShape(bindingShape.asInstanceOf[NodeShape], schemaWithImports) flatMap { IO.println(_) }
@@ -72,7 +73,7 @@ object JenaShacl extends App {
 
   } yield ()
 
-  program.unsafeRunSync()
+  program.unsafeRunSync().show
 
 
   def setGlobalDocManagerProperties(): IO[Unit] = {
@@ -105,17 +106,21 @@ object JenaShacl extends App {
 
     for {
 
-      linkPropertyPairs                <- getOrConstraintsLinkPropertyPairsFromRelationShape(rShape, schemaWithImports) // TODO should be maybe linkPropertyPairs
+      directProperties                 <- rShape.getPropertyShapes.asScala.toList traverse makeProperty(schemaWithImports)
 
-      directProperties                 <- rShape.getPropertyShapes.asScala.toList traverse toProperty(schemaWithImports)
+      linkPropertyPairs                <- getOrConstraintsLinkPropertyPairsFromRelationShape(rShape, schemaWithImports) //To Change
 
-      linkProperties                   <- IO { directProperties.collect { case lp: LinkProperty => lp} }
+      directLinkProperties             <- getLinkProperties(directProperties) //To Change
 
-      linkPropertyPairs                <- if (linkPropertyPairs.isEmpty) toLinkPropertyPair(linkProperties) map (List(_)) else IO.pure(linkPropertyPairs)
+      linkPropertyPairs                <- if (linkPropertyPairs.isEmpty) toLinkPropertyPair(directLinkProperties) map (List(_)) else IO.pure(linkPropertyPairs)
+
+      dataProperties                   <- getDataProperties(directProperties)
+
+      associationProperties            <- getAssociationProperties(directProperties)
 
       rType                            <- IO.pure(rShape.getShapeNode.getURI)
 
-    } yield RelationType(rType, linkPropertyPairs)
+    } yield RelationType(rType, linkPropertyPairs, dataProperties, associationProperties)
 
   }
 
@@ -130,7 +135,7 @@ object JenaShacl extends App {
 
       aNonLinkPropertyPairNodeShapes   <- IO  { maybeLinkPropertyOrConstraint.map(_.getOthers.asScala.toList.asInstanceOf[List[NodeShape]]).fold{List[NodeShape]()}{ identity }}
 
-      aNonShapesDirectProperties       <- aNonLinkPropertyPairNodeShapes traverse ( _.getPropertyShapes.asScala.toList traverse toProperty (schemaWithImports) )
+      aNonShapesDirectProperties       <- aNonLinkPropertyPairNodeShapes traverse ( _.getPropertyShapes.asScala.toList traverse makeProperty (schemaWithImports) )
 
       aNonShapesLinkProperties         <- IO { aNonShapesDirectProperties map { _.collect { case lp: LinkProperty => lp} } }
 
@@ -144,8 +149,12 @@ object JenaShacl extends App {
   /**
    *  Take a PropertyShape and convert to its corresponding Property i.e.
    *  LinkProperty, DataProperty, AssociationProperty, RelationProperty, SchemeProperty
+   *
+   *  TODO - BUG in Resnet Ontology, source is generated as both a DataProp and an ObjectProp, because there is a field in Edge Table sProperty_Values source.
+   *  TODO - Cheating here by catching source as Association before it makes it to DataProperty
+   *
    */
-  def toProperty(schemaWithImports: SchemaWithImports)(propertyShape: PropertyShape): IO[Property] = {
+  def makeProperty(schemaWithImports: SchemaWithImports)(propertyShape: PropertyShape): IO[Property] = {
 
     for {
 
@@ -165,13 +174,13 @@ object JenaShacl extends App {
 
                                   case prop if prop.hasSuperProperty(directionalLinkWith, false) || prop.hasSuperProperty(nonDirectionalLinkWith, false) => makeLinkProperty(propertyShape, schemaWithImports)
 
-                                  case prop if prop.isDatatypeProperty                                                                                   => makeDataProperty()
+                                  case prop if prop.hasSuperProperty(associatedTo, false)                                                                => makeAssociationProperty(propertyShape)
+
+                                  case prop if prop.isDatatypeProperty                                                                                   => makeDataProperty(propertyShape)
 
                                   case prop if prop.hasSuperProperty(composedOf, false)                                                                  => makeCompositionProperty()
 
-                                  case prop if prop.hasSuperProperty(associatedTo, false )                                                               => makeAssociationProperty()
-
-                                  case _                                                                                                                 => makeRelationProperty()
+                                  case _                                                                                                                 => makeRelationProperty() //Must be the last case, just an object property
 
                                  // case _                               => throw new Throwable(s"linkTypeObjectProperty ${linkTypeObjectProperty.toString} not a foundation Ontology Property")
 
@@ -203,10 +212,42 @@ object JenaShacl extends App {
 
     } yield linkProperty
   }
-  def makeDataProperty(): IO[DataProperty] = IO.pure(DataProperty())
-  def makeCompositionProperty(): IO[CompositionProperty] = IO.pure(CompositionProperty())
-  def makeAssociationProperty(): IO[AssociationProperty] = IO.pure(AssociationProperty())
+
+  def makeAssociationProperty(associationPropertyShape: PropertyShape): IO[AssociationProperty] = {
+
+    for {
+
+      linkType         <- IO { associationPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+
+      vType            <- IO { associationPropertyShape.getConstraints.asScala.toList.collect { case cc: ClassConstraint => cc }.map(_.getExpectedClass.getURI).head }
+
+      min              <- IO { associationPropertyShape.getConstraints.asScala.toList.collect { case dc: MinCount => dc }.map(_.getMinCount).headOption }
+
+      max              <- IO { associationPropertyShape.getConstraints.asScala.toList.collect { case dc: MaxCount => dc }.map(_.getMaxCount).headOption }
+
+    } yield AssociationProperty(linkType, vType, min, max)
+  }
+
   def makeRelationProperty(): IO[RelationProperty] = IO.pure(RelationProperty())
+
+  def makeCompositionProperty(): IO[CompositionProperty] = IO.pure(CompositionProperty())
+
+  def makeDataProperty(DataPropertyShape: PropertyShape): IO[DataProperty] = {
+
+    for {
+
+      linkType <- IO { DataPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI tap {println(_)}}
+
+      dataType <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: DatatypeConstraint => dc}.map(_.getDatatypeURI tap {println(_)} ).head } //TODO handle missing datatype constraint or fix ontology
+
+      min <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: MinCount => dc}.map(_.getMinCount).headOption }
+
+      max <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: MaxCount => dc}.map(_.getMaxCount).headOption }
+
+    } yield DataProperty(linkType, dataType, min, max)
+
+  }
+
 
 
   /**
@@ -259,98 +300,21 @@ object JenaShacl extends App {
   }
 
 
+  def getDataProperties(properties: List[Property]): IO[List[DataProperty]] = IO {
+    properties.collect { case dp: DataProperty => dp }
+  }
+
+  def getLinkProperties(properties: List[Property]): IO[List[LinkProperty]] = IO {
+    properties.collect { case lp: LinkProperty => lp }
+  }
+
+  def getAssociationProperties(properties: List[Property]): IO[List[AssociationProperty]] = IO {
+    properties.collect { case ap: AssociationProperty => ap }
+  }
+
+
 }
 
 
 
 
-/*  def toLinkPropertyPair(schemaWithImports: SchemaWithImports)(linkPropertyShapes:  List[PropertyShape]): IO[LinkPropertyPair] = {
-
-    for {
-
-      linkPropertyShapes  <-  IO.pure { linkPropertyShapes }
-
-      s0::s1::Nil         = linkPropertyShapes
-
-      linkProperty0       <- toLinkProperty(s0, schemaWithImports)
-
-      linkProperty1       <- toLinkProperty(s1, schemaWithImports)
-
-      linkPropertyPair                  <- (linkProperty0, linkProperty1) match {
-                                              case (linkProperty0: NonDirectionalLinkProperty, _) => IO.pure { LinkPropertyPair(linkProperty0, linkProperty1) }
-                                              case (_, linkProperty1: NonDirectionalLinkProperty) => IO.pure { LinkPropertyPair(linkProperty1, linkProperty0) }
-                                              case  _                                             => IO.raiseError(new Throwable(s"Got forbidden bidirectional relation  with ${linkProperty0.toString} and ${linkProperty1.toString}") )
-                                            }
-    } yield linkPropertyPair
-
-  }*/
-
-
-
-/*  def isLinkPropertyShape(linkPropertyShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[Boolean]  = { //TODO Change the fuck That
-
-    for {
-
-      directionalLinkWith    <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/directionalLinkWith") }
-
-      nonDirectionalLinkWith <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/nondirectionalLinkWith") }
-
-      linkType               <- IO { linkPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
-
-      linkTypeObjectProperty <- IO { schemaWithImports.getOntProperty(linkType) }
-
-
-    } yield linkTypeObjectProperty.hasSuperProperty(directionalLinkWith, false) || linkTypeObjectProperty.hasSuperProperty(nonDirectionalLinkWith, false)
-
-  }*/
-
-/*def getDirectLinkPropertyPairFromRelationShape(rShape: NodeShape, schemaWithImports: SchemaWithImports): IO[LinkPropertyPair] = {
-
-  for {
-    linkPropertyShapes   <- IO {rShape.getPropertyShapes.asScala.toList.filter(isLinkPropertyShape(_, schemaWithImports).unsafeRunSync()) } //TODO Change the fuck that !!!!
-
-    linkPropertyPair     <- toLinkPropertyPair(schemaWithImports)(linkPropertyShapes) // TODO if linkPropertyShapes are instead Link Property then the all logic need to change
-
-  } yield linkPropertyPair
-}*/
-
-/*  def getQVShapesVShapesFromAnonNodeShape(nShape: NodeShape): IO[List[Shape]] = {
-
-    for {
-
-      vShapes <- nShape.getPropertyShapes.asScala.toList traverse getQVShapeVShapeFromPropertyShape
-
-    } yield vShapes
-  }
-
-  def getQVShapeVShapeFromPropertyShape(pShape: PropertyShape): IO[Shape] =  {
-    for {
-
-      qVShape <- IO { pShape.getConstraints.asScala.toList.filter(_.isInstanceOf[QualifiedValueShape]).head.asInstanceOf[QualifiedValueShape] }
-
-      vShape = qVShape.getSub
-
-    } yield vShape
-  }*/
-
-
-/*bindingConstraints <- IO {bindingShape.getConstraints.asScala.toList}
-
-orAnonNodeShapes   <- bindingConstraints traverse { constraint => IO { constraint.asInstanceOf[ShOr].getOthers.asScala.toList.asInstanceOf[List[NodeShape]] } } map (_.flatten)
-
-// _                  <- orAnonNodeShapes traverse  { shape => IO { shape.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model))) } }
-
-
- res                <- orAnonNodeShapes traverse  { shape => { IO.pure(shape) -> getQVShapesVShapesFromAnonNodeShape(shape) }.tupled }
-
- res                <-  res traverse (aNon => IO {
-                                                  aNon._1.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model)))
-                                                  aNon._2.foreach { _.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model))) }
-
-                                                }
-                                    )*/
-
-//_                  <- nodeshapes traverse(shape => IO {shape.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model))) })
-
-
-//_ <- IO {model.write(System.out, Lang.TTL.getName)}
