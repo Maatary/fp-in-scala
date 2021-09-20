@@ -31,16 +31,23 @@ object JenaShacl extends App {
   type SchemaWithImports = OntModel
 
 
-  sealed trait GraphElmt
+  case class FdnGraphSchema()
 
-  final case class Vertex() extends GraphElmt
-  final case class Edge(edgeType: String, connections: List[ConnectionPair]) extends GraphElmt
+  sealed trait FdnGraphSchemaElt
+  final case class EntityType() extends FdnGraphSchemaElt
+  final case class RelationType(edgeType: String, linkPropertyPairs: List[LinkPropertyPair]) extends FdnGraphSchemaElt
 
-  sealed trait Connection extends GraphElmt
-  final case class From(vertexType: String, withSemanticLinkType: Option[String]) extends Connection
-  final case class To(vertexType: String, withSemanticLinkType: Option[String]) extends Connection
+  sealed trait Property extends FdnGraphSchemaElt
+  final case class DataProperty() extends Property
+  final case class CompositionProperty() extends Property
+  final case class AssociationProperty() extends Property
+  final case class SchemaProperty() extends Property
 
-  final case class ConnectionPair(connectionA: Connection, connectionB: Connection) extends GraphElmt
+  sealed trait LinkProperty extends Property
+  final case class DirectionalLinkProperty(linkType: String, ObjectType: String) extends LinkProperty
+  final case class NonDirectionalLinkProperty(linkType: String, ObjectType: String) extends LinkProperty
+
+  final case class LinkPropertyPair(linkPropertyA: NonDirectionalLinkProperty, linkPropertyB: LinkProperty) extends FdnGraphSchemaElt
 
 
   val program = for {
@@ -56,34 +63,10 @@ object JenaShacl extends App {
 
     nodeShapes           <- IO { shapes.iteratorAll().asScala.toList.filter(_.isNodeShape)  }
 
-    bindingShape = nodeShapes.filter(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/PromoterBinding").head
+    bindingShape = nodeShapes.filter(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/SimilarTo").head
 
 
     _                    <- parseEdgeNodeShape(bindingShape.asInstanceOf[NodeShape], schemaWithImports) flatMap { IO.println(_) }
-
-
-
-
-    /*bindingConstraints <- IO {bindingShape.getConstraints.asScala.toList}
-
-    orAnonNodeShapes   <- bindingConstraints traverse { constraint => IO { constraint.asInstanceOf[ShOr].getOthers.asScala.toList.asInstanceOf[List[NodeShape]] } } map (_.flatten)
-
-   // _                  <- orAnonNodeShapes traverse  { shape => IO { shape.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model))) } }
-
-
-     res                <- orAnonNodeShapes traverse  { shape => { IO.pure(shape) -> getQVShapesVShapesFromAnonNodeShape(shape) }.tupled }
-
-     res                <-  res traverse (aNon => IO {
-                                                      aNon._1.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model)))
-                                                      aNon._2.foreach { _.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model))) }
-
-                                                    }
-                                        )*/
-
-    //_                  <- nodeshapes traverse(shape => IO {shape.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model))) })
-
-
-    //_ <- IO {model.write(System.out, Lang.TTL.getName)}
 
 
   } yield ()
@@ -113,75 +96,134 @@ object JenaShacl extends App {
 
 
 
-  def parseEntityNodeShape(eShape: NodeShape): IO[Vertex] = {
+  def parseEntityNodeShape(eShape: NodeShape): IO[EntityType] = {
     ???
   }
 
-  def parseEdgeNodeShape(eShape: NodeShape, schemaWithImports: SchemaWithImports):  IO[Edge] = {
+  def parseEdgeNodeShape(rShape: NodeShape, schemaWithImports: SchemaWithImports):  IO[RelationType] = {
 
     for {
 
-      maybeConnectionsOrConstraint     <- IO  { eShape.getConstraints.asScala.toList.filter(_.isInstanceOf[ShOr]).headOption.asInstanceOf[Option[ShOr]] }
+      linkPropertyPairs                <- getOrConstraintsLinkPropertyPairsFromRelationShape(rShape, schemaWithImports)
 
-      aNonConnectionPairNodeShapes     <- IO  { maybeConnectionsOrConstraint.map(_.getOthers.asScala.toList.asInstanceOf[List[NodeShape]]).fold{List[NodeShape]()}{ identity }}
+      linkPropertyPairs                <- if (linkPropertyPairs.isEmpty) getDirectLinkPropertyPairFromRelationShape(rShape, schemaWithImports) map (List(_)) else IO.pure(linkPropertyPairs)
 
-      connectionPairs                  <- aNonConnectionPairNodeShapes traverse toConnectionPair(schemaWithImports)
+      rType                            <- IO.pure(rShape.getShapeNode.getURI)
 
-      vType                            <- IO.pure(eShape.getShapeNode.getURI)
-
-    } yield Edge(vType, connectionPairs)
+    } yield RelationType(rType, linkPropertyPairs)
 
   }
 
-  def toConnectionPair(schemaWithImports: SchemaWithImports) (connectionPairNodeShape: NodeShape): IO[ConnectionPair] = {
+  def getOrConstraintsLinkPropertyPairsFromRelationShape(rShape: NodeShape, schemaWithImports: SchemaWithImports): IO[List[LinkPropertyPair]]  = {
 
     for {
 
-      connectionShapes    <-  IO { connectionPairNodeShape.getPropertyShapes.asScala.toList }
+      maybeLinkPropertyOrConstraint    <- IO  { rShape.getConstraints.asScala.toList.find(_.isInstanceOf[ShOr]).asInstanceOf[Option[ShOr]] }
 
-      s0::s1::Nil         = connectionShapes
+      aNonLinkPropertyPairNodeShapes   <- IO  { maybeLinkPropertyOrConstraint.map(_.getOthers.asScala.toList.asInstanceOf[List[NodeShape]]).fold{List[NodeShape]()}{ identity }}
 
-      connectionA         <- toConnection(s0, schemaWithImports)
+      linkPropertyPairs                <- aNonLinkPropertyPairNodeShapes map {_.getPropertyShapes.asScala.toList} traverse toLinkPropertyPair(schemaWithImports)
 
-      connectionB         <- toConnection(s1, schemaWithImports)
-
-    } yield ConnectionPair(connectionA, connectionB)
+    } yield linkPropertyPairs
 
   }
 
-  def toConnection(connectionShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[Connection] = {
+  def getDirectLinkPropertyPairFromRelationShape(rShape: NodeShape, schemaWithImports: SchemaWithImports): IO[LinkPropertyPair] = {
 
     for {
-      semanticLinkType <- IO { connectionShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+      linkPropertyShapes   <- IO {rShape.getPropertyShapes.asScala.toList.filter(isLinkPropertyShape(_, schemaWithImports).unsafeRunSync()) } //TODO Change the fuck that !!!!
+
+      linkPropertyPair     <- toLinkPropertyPair(schemaWithImports)(linkPropertyShapes) // TODO if linkPropertyShapes are instead Link Property then the all logic need to change
+
+    } yield linkPropertyPair
+  }
+
+  def isLinkPropertyShape(linkPropertyShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[Boolean]  = { //TODO Change the fuck That
+
+    for {
+
+      directionalLinkWith    <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/directionalLinkWith") }
+
+      nonDirectionalLinkWith <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/nondirectionalLinkWith") }
+
+      linkType               <- IO { linkPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+
+      linkTypeObjectProperty <- IO { schemaWithImports.getOntProperty(linkType) }
+
+
+    } yield linkTypeObjectProperty.hasSuperProperty(directionalLinkWith, false) || linkTypeObjectProperty.hasSuperProperty(nonDirectionalLinkWith, false)
+
+  }
+
+
+  def toLinkPropertyPair(schemaWithImports: SchemaWithImports)(linkPropertyShapes:  List[PropertyShape]): IO[LinkPropertyPair] = {
+
+    for {
+
+      linkPropertyShapes  <-  IO.pure { linkPropertyShapes } //TODO fix the fuck that !!!
+
+      s0::s1::Nil         = linkPropertyShapes
+
+      linkProperty0       <- toLinkProperty(s0, schemaWithImports)
+
+      linkProperty1       <- toLinkProperty(s1, schemaWithImports)
+
+      linkPropertyPair                  <- (linkProperty0, linkProperty1) match {
+                                              case (linkProperty0: NonDirectionalLinkProperty, _) => IO.pure { LinkPropertyPair(linkProperty0, linkProperty1) }
+                                              case (_, linkProperty1: NonDirectionalLinkProperty) => IO.pure { LinkPropertyPair(linkProperty1, linkProperty0) }
+                                              case  _                                             => IO.raiseError(new Throwable(s"Got forbidden bidirectional relation  with ${linkProperty0.toString} and ${linkProperty1.toString}") )
+                                            }
+
+
+    } yield linkPropertyPair
+
+  }
+
+  def toLinkProperty(linkPropertyShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[LinkProperty] = {
+
+    for {
+      semanticLinkType <- IO { linkPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
       directionalLinkWith    = "https://data.elsevier.com/lifescience/schema/foundation/directionalLinkWith"
       nondirectionalLinkWith = "https://data.elsevier.com/lifescience/schema/foundation/nondirectionalLinkWith"
 
       linkDirection    <- IO { schemaWithImports.getOntProperty(semanticLinkType).listSuperProperties().asScala.toList.filter(ontProp => ontProp.getURI == directionalLinkWith || ontProp.getURI == nondirectionalLinkWith ).head.getURI}
 
-      vType            <- getConnectionVertexType(connectionShape)
+      vType            <- getLinkPropertyObjectType(linkPropertyShape)  // TODO Add Maybe for two case, a linkProperty can be a direct sh:class or a qualifiedValueShape
 
-      connection       <- IO.pure( if (linkDirection ==  directionalLinkWith) To(vType, semanticLinkType.some)  else  From(vType, semanticLinkType.some) )
+      linkProperty     <- IO.pure { if (linkDirection ==  directionalLinkWith) DirectionalLinkProperty(semanticLinkType, vType)  else  NonDirectionalLinkProperty(semanticLinkType, vType) }
 
-    } yield connection
+    } yield linkProperty
   }
 
-  def getConnectionVertexType(connectionShape: PropertyShape): IO [String] = {
+  def getLinkPropertyObjectType(linkPropertyShape: PropertyShape): IO [String] = {
 
     for {
 
-      classShape <- IO { connectionShape.getConstraints.asScala.toList.filter(_.isInstanceOf[QualifiedValueShape]).head.asInstanceOf[QualifiedValueShape] } map (_.getSub)
+      maybeClassShape <- IO { linkPropertyShape.getConstraints.asScala.toList.find(_.isInstanceOf[QualifiedValueShape]).asInstanceOf[Option[QualifiedValueShape]]  map (_.getSub) }
 
-      vType      <- IO { classShape.getConstraints.asScala.toList.head.asInstanceOf[ClassConstraint].getExpectedClass.getURI }
+
+      vType           <- maybeClassShape
+                        .fold {
+
+                          IO.pure("")
+
+                        } { classShape =>
+
+                          classShape.getConstraints.asScala.toList.head.asInstanceOf[ClassConstraint].getExpectedClass.getURI; IO.pure("")
+
+                        }
+
 
     } yield vType
 
   }
 
 
+}
 
 
 
-  def getQVShapesVShapesFromAnonNodeShape(nShape: NodeShape): IO[List[Shape]] = {
+/*  def getQVShapesVShapesFromAnonNodeShape(nShape: NodeShape): IO[List[Shape]] = {
 
     for {
 
@@ -198,6 +240,26 @@ object JenaShacl extends App {
       vShape = qVShape.getSub
 
     } yield vShape
-  }
+  }*/
 
-}
+
+/*bindingConstraints <- IO {bindingShape.getConstraints.asScala.toList}
+
+orAnonNodeShapes   <- bindingConstraints traverse { constraint => IO { constraint.asInstanceOf[ShOr].getOthers.asScala.toList.asInstanceOf[List[NodeShape]] } } map (_.flatten)
+
+// _                  <- orAnonNodeShapes traverse  { shape => IO { shape.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model))) } }
+
+
+ res                <- orAnonNodeShapes traverse  { shape => { IO.pure(shape) -> getQVShapesVShapesFromAnonNodeShape(shape) }.tupled }
+
+ res                <-  res traverse (aNon => IO {
+                                                  aNon._1.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model)))
+                                                  aNon._2.foreach { _.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model))) }
+
+                                                }
+                                    )*/
+
+//_                  <- nodeshapes traverse(shape => IO {shape.print(System.out, new NodeFormatterTTL_MultiLine(null, new PrefixMapAdapter(model))) })
+
+
+//_ <- IO {model.write(System.out, Lang.TTL.getName)}
