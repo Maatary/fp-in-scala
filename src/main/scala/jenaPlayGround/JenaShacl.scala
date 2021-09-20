@@ -41,11 +41,12 @@ object JenaShacl extends App {
   final case class DataProperty() extends Property
   final case class CompositionProperty() extends Property
   final case class AssociationProperty() extends Property
-  final case class SchemaProperty() extends Property
+  final case class RelationProperty() extends Property
+  final case class SchemeProperty() extends Property
 
   sealed trait LinkProperty extends Property
-  final case class DirectionalLinkProperty(linkType: String, ObjectType: String) extends LinkProperty
-  final case class NonDirectionalLinkProperty(linkType: String, ObjectType: String) extends LinkProperty
+  final case class DirectionalLinkProperty(linkType: String, entityType: String) extends LinkProperty
+  final case class NonDirectionalLinkProperty(linkType: String, entityType: String) extends LinkProperty
 
   final case class LinkPropertyPair(linkPropertyA: NonDirectionalLinkProperty, linkPropertyB: LinkProperty) extends FdnGraphSchemaElt
 
@@ -63,7 +64,7 @@ object JenaShacl extends App {
 
     nodeShapes           <- IO { shapes.iteratorAll().asScala.toList.filter(_.isNodeShape)  }
 
-    bindingShape = nodeShapes.filter(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/SimilarTo").head
+    bindingShape = nodeShapes.filter(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/PromoterBinding").head
 
 
     _                    <- parseEdgeNodeShape(bindingShape.asInstanceOf[NodeShape], schemaWithImports) flatMap { IO.println(_) }
@@ -104,9 +105,13 @@ object JenaShacl extends App {
 
     for {
 
-      linkPropertyPairs                <- getOrConstraintsLinkPropertyPairsFromRelationShape(rShape, schemaWithImports)
+      linkPropertyPairs                <- getOrConstraintsLinkPropertyPairsFromRelationShape(rShape, schemaWithImports) // TODO should be maybe linkPropertyPairs
 
-      linkPropertyPairs                <- if (linkPropertyPairs.isEmpty) getDirectLinkPropertyPairFromRelationShape(rShape, schemaWithImports) map (List(_)) else IO.pure(linkPropertyPairs)
+      directProperties                 <- rShape.getPropertyShapes.asScala.toList traverse toProperty(schemaWithImports)
+
+      linkProperties                   <- IO { directProperties.collect { case lp: LinkProperty => lp} }
+
+      linkPropertyPairs                <- if (linkPropertyPairs.isEmpty) toLinkPropertyPairFromLinkProperties(linkProperties) map (List(_)) else IO.pure(linkPropertyPairs)
 
       rType                            <- IO.pure(rShape.getShapeNode.getURI)
 
@@ -128,6 +133,51 @@ object JenaShacl extends App {
 
   }
 
+
+
+  def toProperty(schemaWithImports: SchemaWithImports)(propertyShape: PropertyShape): IO[Property] = {
+
+    for {
+
+      directionalLinkWith    <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/directionalLinkWith") }
+
+      nonDirectionalLinkWith <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/nondirectionalLinkWith") }
+
+      composedOf             <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/composedOf") }
+
+      associatedTo           <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/associatedTo") }
+
+      linkType               <- IO { propertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+
+      linkTypeObjectProperty <- IO { schemaWithImports.getOntProperty(linkType) }
+
+      property               <- linkTypeObjectProperty match {
+
+                                  case prop if prop.hasSuperProperty(directionalLinkWith, false) || prop.hasSuperProperty(nonDirectionalLinkWith, false) => makeLinkProperty(propertyShape, schemaWithImports)
+
+                                  case prop if prop.isDatatypeProperty                                                                                   => makeDataProperty()
+
+                                  case prop if prop.hasSuperProperty(composedOf, false)                                                                  => makeCompositionProperty()
+
+                                  case prop if prop.hasSuperProperty(associatedTo, false )                                                               => makeAssociationProperty()
+
+                                  case _                                                                                                                 => makeRelationProperty()
+
+                                 // case _                               => throw new Throwable(s"linkTypeObjectProperty ${linkTypeObjectProperty.toString} not a foundation Ontology Property")
+
+                                }
+
+    } yield  property
+
+  }
+
+  def makeLinkProperty(linkPropertyShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[LinkProperty] = toLinkProperty(linkPropertyShape, schemaWithImports)
+  def makeDataProperty(): IO[DataProperty] = IO.pure(DataProperty())
+  def makeCompositionProperty(): IO[CompositionProperty] = IO.pure(CompositionProperty())
+  def makeAssociationProperty(): IO[AssociationProperty] = IO.pure(AssociationProperty())
+  def makeRelationProperty(): IO[RelationProperty] = IO.pure(RelationProperty())
+
+
   def getDirectLinkPropertyPairFromRelationShape(rShape: NodeShape, schemaWithImports: SchemaWithImports): IO[LinkPropertyPair] = {
 
     for {
@@ -137,6 +187,7 @@ object JenaShacl extends App {
 
     } yield linkPropertyPair
   }
+
 
   def isLinkPropertyShape(linkPropertyShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[Boolean]  = { //TODO Change the fuck That
 
@@ -156,11 +207,32 @@ object JenaShacl extends App {
   }
 
 
+
+
+  def toLinkPropertyPairFromLinkProperties(linkProperties: List[LinkProperty]): IO[LinkPropertyPair] = {
+
+    for {
+
+      linkProperty0       <- IO { linkProperties(0) }
+
+      linkProperty1       <- IO { linkProperties(1) }
+
+      linkPropertyPair    <- (linkProperty0, linkProperty1) match {
+                                case (linkProperty0: NonDirectionalLinkProperty, _) => IO.pure { LinkPropertyPair(linkProperty0, linkProperty1) }
+                                case (_, linkProperty1: NonDirectionalLinkProperty) => IO.pure { LinkPropertyPair(linkProperty1, linkProperty0) }
+                                case  _                                             => IO.raiseError(new Throwable(s"Got forbidden bidirectional relation  with ${linkProperty0.toString} and ${linkProperty1.toString}") )
+                              }
+
+    } yield linkPropertyPair
+
+  }
+
+
   def toLinkPropertyPair(schemaWithImports: SchemaWithImports)(linkPropertyShapes:  List[PropertyShape]): IO[LinkPropertyPair] = {
 
     for {
 
-      linkPropertyShapes  <-  IO.pure { linkPropertyShapes } //TODO fix the fuck that !!!
+      linkPropertyShapes  <-  IO.pure { linkPropertyShapes }
 
       s0::s1::Nil         = linkPropertyShapes
 
@@ -173,29 +245,33 @@ object JenaShacl extends App {
                                               case (_, linkProperty1: NonDirectionalLinkProperty) => IO.pure { LinkPropertyPair(linkProperty1, linkProperty0) }
                                               case  _                                             => IO.raiseError(new Throwable(s"Got forbidden bidirectional relation  with ${linkProperty0.toString} and ${linkProperty1.toString}") )
                                             }
-
-
     } yield linkPropertyPair
 
   }
 
+
   def toLinkProperty(linkPropertyShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[LinkProperty] = {
 
     for {
-      semanticLinkType <- IO { linkPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+      linkType         <- IO { linkPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+
       directionalLinkWith    = "https://data.elsevier.com/lifescience/schema/foundation/directionalLinkWith"
       nondirectionalLinkWith = "https://data.elsevier.com/lifescience/schema/foundation/nondirectionalLinkWith"
 
-      linkDirection    <- IO { schemaWithImports.getOntProperty(semanticLinkType).listSuperProperties().asScala.toList.filter(ontProp => ontProp.getURI == directionalLinkWith || ontProp.getURI == nondirectionalLinkWith ).head.getURI}
+      linkDirection    <- IO { schemaWithImports.getOntProperty(linkType).listSuperProperties().asScala.toList.filter(ontProp => ontProp.getURI == directionalLinkWith || ontProp.getURI == nondirectionalLinkWith ).head.getURI}
 
-      vType            <- getLinkPropertyObjectType(linkPropertyShape)  // TODO Add Maybe for two case, a linkProperty can be a direct sh:class or a qualifiedValueShape
+      vType            <- getLinkPropertyEntityType(linkPropertyShape)
 
-      linkProperty     <- IO.pure { if (linkDirection ==  directionalLinkWith) DirectionalLinkProperty(semanticLinkType, vType)  else  NonDirectionalLinkProperty(semanticLinkType, vType) }
+      linkProperty     <- IO.pure { if (linkDirection ==  directionalLinkWith) DirectionalLinkProperty(linkType, vType)  else  NonDirectionalLinkProperty(linkType, vType) }
 
     } yield linkProperty
   }
 
-  def getLinkPropertyObjectType(linkPropertyShape: PropertyShape): IO [String] = {
+
+  /**
+   * A LinkPropertyShape can have Its linked EntityType expressed as an sh:class directly or an sh:class in a QualifiedValueShape.
+   */
+  def getLinkPropertyEntityType(linkPropertyShape: PropertyShape): IO [String] = {
 
     for {
 
@@ -205,15 +281,13 @@ object JenaShacl extends App {
       vType           <- maybeClassShape
                         .fold {
 
-                          IO.pure("")
+                          IO { linkPropertyShape.getConstraints.asScala.toList.filter(_.isInstanceOf[ClassConstraint]).head.asInstanceOf[ClassConstraint].getExpectedClass.getURI; }
 
                         } { classShape =>
 
-                          classShape.getConstraints.asScala.toList.head.asInstanceOf[ClassConstraint].getExpectedClass.getURI; IO.pure("")
+                          IO { classShape.getConstraints.asScala.toList.head.asInstanceOf[ClassConstraint].getExpectedClass.getURI; }
 
                         }
-
-
     } yield vType
 
   }
