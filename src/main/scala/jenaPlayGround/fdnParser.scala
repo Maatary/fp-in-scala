@@ -24,7 +24,7 @@ import org.apache.jena.sparql.path.P_Link
 import scala.jdk.CollectionConverters._
 import scala.util.chaining.scalaUtilChainingOps
 
-
+import scribe._
 
 
 object DataTypes {
@@ -118,12 +118,16 @@ import DataTypes._
 
     _                    <- setGlobalDocManagerProperties()
 
-    schemaPair           <- loadSchema("elsevier_entellect_foundation_schema.ttl", "proxyInferenceModel.ttl")
+    schemaPair           <- loadSchema("elsevier_entellect_foundation_schema.ttl", "elsevier_entellect_proxy_schema_reaxys.ttl")
 
     (schema, schemaWithImports) = schemaPair
 
 
+    _                    <- IO  {info("Reading shapes start")}
+
     shapes               <- IO { Shapes.parse(schema.getGraph) }
+
+    _                    <- IO  {info("Reading shapes done")}
 
     nodeShapes           <- IO { shapes.iteratorAll().asScala.toList.collect { case shape: NodeShape => shape }  }
 
@@ -131,11 +135,6 @@ import DataTypes._
 
     entityShapes         <- getEntityNodeShapes(nodeShapes, schemaWithImports)
 
-
-    //Need Filtering because those shape have error, they miss their LinkPair
-    filteredRelShapes       = relationShapes.filterNot(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/ClinicalTrial")
-                                         .filterNot(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/GeneticChange")
-                                         .filterNot(shape => shape.getShapeNode.getURI == "https://data.elsevier.com/lifescience/schema/resnet/ProtModification")
 
     relTypes             <- relationShapes traverse parseRelationNodeShape(schemaWithImports)
 
@@ -273,7 +272,7 @@ import DataTypes._
 
       associatedTo           <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/associatedTo") }
 
-      linkType               <- IO { propertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+      linkType               <- IO { propertyShape.getPath.asInstanceOf[P_Link].getNode.getURI } flatTap { uri => IO { info(s"makeProperty: $uri") } }
 
       linkTypeObjectProperty <- IO { schemaWithImports.getOntProperty(linkType) }
 
@@ -401,6 +400,8 @@ import DataTypes._
 
     for {
 
+      _                                 <- IO.println(s"makeRelationProperty:  ${relationPropertyShape.toString}")
+
       linkType                          <- IO { relationPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
 
       min                               <- IO { relationPropertyShape.getConstraints.asScala.toList.collect { case dc: MinCount => dc }.map(_.getMinCount).headOption }
@@ -435,6 +436,8 @@ import DataTypes._
   def makeDataProperty(DataPropertyShape: PropertyShape): IO[DataProperty] = {
 
     for {
+
+      _       <- IO.println(s"makeDataProperty: ${DataPropertyShape.toString}")
 
       linkType <- IO { DataPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
 
