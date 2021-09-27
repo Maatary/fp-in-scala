@@ -40,14 +40,14 @@ object DataTypes {
   case class FdnGraphSchema(entityTypes:  List[EntityType],  relationTypes: List[RelationType])
 
   sealed trait FdnGraphSchemaElt
-  final case class EntityType(entityType: String, dataProperties: List[DataProperty], relationProperties: List[RelationProperty]) extends FdnGraphSchemaElt
+  final case class EntityType(entityType: String, dataProperties: List[DataProperty], relationProperties: List[RelationProperty], compositionProperties: List[CompositionProperty]) extends FdnGraphSchemaElt
   final case class RelationType(relationType: String, linkPropertyPairs: List[LinkPropertyPair], dataProperties: List[DataProperty], associationProperties: List[AssociationProperty]) extends FdnGraphSchemaElt
 
   sealed trait Property extends FdnGraphSchemaElt
   final case class DataProperty(linkType: String, dataType: String, min: Option[Int], max: Option[Int]) extends Property
   final case class AssociationProperty(linkType: String, entityType: String, min: Option[Int], max: Option[Int]) extends Property
   final case class RelationProperty(linkType: String, entityTypes: List[String], min: Option[Int], max: Option[Int]) extends Property
-  final case class CompositionProperty() extends Property
+  final case class CompositionProperty(linkType: String, entityType: String, min: Option[Int], max: Option[Int]) extends Property
   final case class SchemeProperty() extends Property
 
   sealed trait LinkProperty extends Property
@@ -62,6 +62,7 @@ object DataTypes {
        |EntityType: [ ${eType.entityType}
        |DataProperties: ${eType.dataProperties.map(_.show).mkString("\n", "\n", "")}
        |relationProperties: ${eType.relationProperties.map(_.show).mkString("\n", "\n", "")}
+       |compositionProperties: ${eType.compositionProperties.map(_.show).mkString("\n", "\n", "")}
        |]""".stripMargin
   }
 
@@ -80,6 +81,10 @@ object DataTypes {
 
   implicit val showRelationProperty: Show[RelationProperty] = (relProperty: RelationProperty) => {
     s"""RelationProperty: [linkType: ${relProperty.linkType}, entityTypes: [${relProperty.entityTypes.mkString(" | ")}], minCount: ${relProperty.min}, maxCount: ${relProperty.max}]""".stripMargin
+  }
+
+  implicit val showCompositionProperty: Show[CompositionProperty] = (compProperty: CompositionProperty) => {
+    s"""CompositionProperty: [linkType: ${compProperty.linkType}, entityType: ${compProperty.entityType}, minCount: ${compProperty.min}, maxCount: ${compProperty.max}]""".stripMargin
   }
 
   implicit val showAssociationProperty: Show[AssociationProperty] = (assocProperty: AssociationProperty) => {
@@ -219,15 +224,17 @@ import DataTypes._
 
       //_                                <- IO {println(rShape)}
 
-      directProperties      <- eShape.getPropertyShapes.asScala.toList traverse makeProperty(schemaWithImports)
+      directProperties       <- eShape.getPropertyShapes.asScala.toList traverse makeProperty(schemaWithImports)
 
-      dataProperties        <- getDataProperties(directProperties)
+      dataProperties         <- getDataProperties(directProperties)
 
-      relationProperties    <- getRelationProperties(directProperties)
+      compositionProperties  <- getCompositionProperties(directProperties)
 
-      eType                 <- IO.pure(eShape.getShapeNode.getURI)
+      relationProperties     <- getRelationProperties(directProperties)
 
-    } yield EntityType (eType, dataProperties, relationProperties)
+      eType                  <- IO.pure(eShape.getShapeNode.getURI)
+
+    } yield EntityType (eType, dataProperties, relationProperties, compositionProperties)
   }
 
   /**
@@ -284,7 +291,7 @@ import DataTypes._
 
                                   case prop if prop.isDatatypeProperty && isOfKind(propertyShape, SHACL.Literal)                                         => makeDataProperty(propertyShape) //TODO - to Fix at Ontology Level - isOfKind is a hack Check because resnet:source is both DataTypeProperty and ObjectProperty
 
-                                  case prop if prop.hasSuperProperty(composedOf, false)                                                                  => makeCompositionProperty()
+                                  case prop if prop.hasSuperProperty(composedOf, false)                                                                  => makeCompositionProperty(propertyShape)
 
                                   case _                                                                                                                 => makeRelationProperty(propertyShape) //Must be the last case, just an object property
 
@@ -296,16 +303,7 @@ import DataTypes._
 
   }
 
-  def isOfKind(propertyShape: PropertyShape, kind: Node): Boolean = {
 
-    propertyShape.getConstraints.asScala.toList.collectFirst{ case kind: NodeKindConstraint => kind }
-      .fold{
-        throw new Throwable(s"isOfKind: Missing Kind in propertyshape ${propertyShape.toString} while trying to compare kind")
-      } { kindConstraint =>
-        kindConstraint.getKind.equals(kind)
-      }
-
-  }
 
   /**
    * Take a list of LinkProperty of expected Size 2 (not checked yet) and convert it into a LinkPropertyPair where:
@@ -390,17 +388,55 @@ import DataTypes._
    */
   def makeAssociationProperty(associationPropertyShape: PropertyShape): IO[AssociationProperty] = {
 
-    (for {
+    for {
 
       linkType         <- IO { associationPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
 
-      vType            <- IO { associationPropertyShape.getConstraints.asScala.toList.collect { case cc: ClassConstraint => cc }.map(_.getExpectedClass.getURI).head }
+      eType            <- IO { associationPropertyShape.getConstraints.asScala.toList.collect { case cc: ClassConstraint => cc }.map(_.getExpectedClass.getURI).head }
 
       min              <- IO { associationPropertyShape.getConstraints.asScala.toList.collect { case dc: MinCount => dc }.map(_.getMinCount).headOption }
 
       max              <- IO { associationPropertyShape.getConstraints.asScala.toList.collect { case dc: MaxCount => dc }.map(_.getMaxCount).headOption }
 
-    } yield AssociationProperty(linkType, vType, min, max)).handleError(_ => AssociationProperty("Silent Error", "Silent Error", None, None ))
+    } yield AssociationProperty(linkType, eType, min, max)
+  }
+
+  def makeCompositionProperty(compositionPropertyShape: PropertyShape):  IO[CompositionProperty] = {
+
+    for {
+
+      linkType         <- IO { compositionPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+
+      eType            <- IO { compositionPropertyShape.getConstraints.asScala.toList.collect { case cc: ClassConstraint => cc }.map(_.getExpectedClass.getURI).head }
+
+      min              <- IO { compositionPropertyShape.getConstraints.asScala.toList.collect { case dc: MinCount => dc }.map(_.getMinCount).headOption }
+
+      max              <- IO { compositionPropertyShape.getConstraints.asScala.toList.collect { case dc: MaxCount => dc }.map(_.getMaxCount).headOption }
+
+    } yield CompositionProperty(linkType, eType, min, max)
+
+  }
+
+
+  /**
+   * Take a DataProperty shape and create a DataProerty
+   */
+  def makeDataProperty(DataPropertyShape: PropertyShape): IO[DataProperty] = {
+
+    for {
+
+      _       <- IO.println(s"makeDataProperty: ${DataPropertyShape.toString}")
+
+      linkType <- IO { DataPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+
+      dataType <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: DatatypeConstraint => dc}.map(_.getDatatypeURI ).head } //TODO handle missing datatype constraint or fix ontology
+
+      min <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: MinCount => dc}.map(_.getMinCount).headOption }
+
+      max <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: MaxCount => dc}.map(_.getMaxCount).headOption }
+
+    } yield DataProperty(linkType, dataType, min, max)
+
   }
 
   /**
@@ -437,30 +473,6 @@ import DataTypes._
 
   }
 
-  def makeCompositionProperty(): IO[CompositionProperty] = IO.pure(CompositionProperty())
-
-
-  /**
-   * Take a DataProperty shape and create a DataProerty
-   */
-  def makeDataProperty(DataPropertyShape: PropertyShape): IO[DataProperty] = {
-
-    for {
-
-      _       <- IO.println(s"makeDataProperty: ${DataPropertyShape.toString}")
-
-      linkType <- IO { DataPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
-
-      dataType <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: DatatypeConstraint => dc}.map(_.getDatatypeURI ).head } //TODO handle missing datatype constraint or fix ontology
-
-      min <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: MinCount => dc}.map(_.getMinCount).headOption }
-
-      max <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: MaxCount => dc}.map(_.getMaxCount).headOption }
-
-    } yield DataProperty(linkType, dataType, min, max)
-
-  }
-
 
   def getDataProperties(properties: List[Property]): IO[List[DataProperty]] = IO {
     properties.collect { case dp: DataProperty => dp }
@@ -478,6 +490,20 @@ import DataTypes._
     properties.collect { case rp: RelationProperty => rp }
   }
 
+  def getCompositionProperties(properties: List[Property]): IO[List[CompositionProperty]] = IO {
+    properties.collect { case cp: CompositionProperty => cp }
+  }
+
+  def isOfKind(propertyShape: PropertyShape, kind: Node): Boolean = {
+
+    propertyShape.getConstraints.asScala.toList.collectFirst{ case kind: NodeKindConstraint => kind }
+      .fold{
+        throw new Throwable(s"isOfKind: Missing Kind in propertyshape ${propertyShape.toString} while trying to compare kind")
+      } { kindConstraint =>
+        kindConstraint.getKind.equals(kind)
+      }
+
+  }
 
   def setGlobalDocManagerProperties(): IO[Unit] = {
     for {
