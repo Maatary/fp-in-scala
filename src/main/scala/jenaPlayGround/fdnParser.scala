@@ -21,6 +21,7 @@ import org.apache.jena.shacl.lib.ShLib
 import org.apache.jena.shacl.parser.{NodeShape, PropertyShape, Shape}
 import org.apache.jena.shacl.vocabulary.SHACL
 import org.apache.jena.sparql.path.P_Link
+import org.apache.jena.vocabulary.{RDFS, SKOS, XSD}
 
 import scala.jdk.CollectionConverters._
 import scala.util.chaining.scalaUtilChainingOps
@@ -40,7 +41,7 @@ object DataTypes {
   case class FdnGraphSchema(entityTypes:  List[EntityType],  relationTypes: List[RelationType])
 
   sealed trait FdnGraphSchemaElt
-  final case class EntityType(entityType: String, dataProperties: List[DataProperty], relationProperties: List[RelationProperty], compositionProperties: List[CompositionProperty]) extends FdnGraphSchemaElt
+  final case class EntityType(entityType: String, dataProperties: List[DataProperty], relationProperties: List[RelationProperty], compositionProperties: List[CompositionProperty], schemeProperties: List[SchemeProperty]) extends FdnGraphSchemaElt
   final case class RelationType(relationType: String, linkPropertyPairs: List[LinkPropertyPair], dataProperties: List[DataProperty], associationProperties: List[AssociationProperty]) extends FdnGraphSchemaElt
 
   sealed trait Property extends FdnGraphSchemaElt
@@ -48,14 +49,14 @@ object DataTypes {
   final case class AssociationProperty(linkType: String, entityType: String, min: Option[Int], max: Option[Int]) extends Property
   final case class RelationProperty(linkType: String, entityTypes: List[String], min: Option[Int], max: Option[Int]) extends Property
   final case class CompositionProperty(linkType: String, entityType: String, min: Option[Int], max: Option[Int]) extends Property
-  final case class SchemeProperty() extends Property
+  final case class SchemeProperty(linkType: String, dataType: String) extends Property
 
   sealed trait LinkProperty extends Property
   final case class DirectionalLinkProperty(linkType: String, entityType: String) extends LinkProperty
   final case class NonDirectionalLinkProperty(linkType: String, entityType: String) extends LinkProperty
 
-
   final case class LinkPropertyPair(linkPropertyA: NonDirectionalLinkProperty, linkPropertyB: LinkProperty) extends FdnGraphSchemaElt
+
 
   implicit val showEntityType: Show[EntityType] = (eType: EntityType) => {
     s"""
@@ -63,6 +64,7 @@ object DataTypes {
        |DataProperties: ${eType.dataProperties.map(_.show).mkString("\n", "\n", "")}
        |relationProperties: ${eType.relationProperties.map(_.show).mkString("\n", "\n", "")}
        |compositionProperties: ${eType.compositionProperties.map(_.show).mkString("\n", "\n", "")}
+       |schemeProperties: ${eType.schemeProperties.map(_.show).mkString("\n", "\n", "")}
        |]""".stripMargin
   }
 
@@ -77,6 +79,10 @@ object DataTypes {
 
   implicit val showDataProperty: Show[DataProperty] = (dataProperty: DataProperty) => {
     s"""DataProperty: [linkType: ${dataProperty.linkType}, dataType: ${dataProperty.dataType}, minCount: ${dataProperty.min}, maxCount: ${dataProperty.max}]""".stripMargin
+  }
+
+  implicit val showSchemeProperty: Show[SchemeProperty] = (schemeProperty: SchemeProperty) => {
+    s"""SchemeProperty: [linkType: ${schemeProperty.linkType}, dataType: ${schemeProperty.dataType}]""".stripMargin
   }
 
   implicit val showRelationProperty: Show[RelationProperty] = (relProperty: RelationProperty) => {
@@ -123,7 +129,7 @@ import DataTypes._
 
     _                    <- setGlobalDocManagerProperties()
 
-    schemaPair           <- loadSchema("elsevier_entellect_foundation_schema.ttl", "elsevier_entellect_proxy_schema_reaxys.ttl")
+    schemaPair           <- loadSchema("elsevier_entellect_foundation_schema.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_proxy_schema_ppplus.ttl")
 
     (schema, schemaWithImports) = schemaPair
 
@@ -232,9 +238,11 @@ import DataTypes._
 
       relationProperties     <- getRelationProperties(directProperties)
 
+      schemeProperties       <- getSchemeProperties(directProperties)
+
       eType                  <- IO.pure(eShape.getShapeNode.getURI)
 
-    } yield EntityType (eType, dataProperties, relationProperties, compositionProperties)
+    } yield EntityType (eType, dataProperties, relationProperties, compositionProperties, schemeProperties)
   }
 
   /**
@@ -291,11 +299,13 @@ import DataTypes._
 
                                   case prop if prop.isDatatypeProperty && isOfKind(propertyShape, SHACL.Literal)                                         => makeDataProperty(propertyShape) //TODO - to Fix at Ontology Level - isOfKind is a hack Check because resnet:source is both DataTypeProperty and ObjectProperty
 
+                                  case prop if prop.isAnnotationProperty && prop.hasSuperProperty(RDFS.label, false)                                     => makeDataProperty(propertyShape)
+
                                   case prop if prop.hasSuperProperty(composedOf, false)                                                                  => makeCompositionProperty(propertyShape)
 
-                                  case _                                                                                                                 => makeRelationProperty(propertyShape) //Must be the last case, just an object property
+                                  case prop if prop.equals(SKOS.inScheme)                                                                                => makeSchemeProperty(propertyShape)
 
-                                 // case _                               => throw new Throwable(s"linkTypeObjectProperty ${linkTypeObjectProperty.toString} not a foundation Ontology Property")
+                                  case _                                                                                                                 => makeRelationProperty(propertyShape) //Must be the last case, just an object property
 
                                 }
 
@@ -330,7 +340,6 @@ import DataTypes._
 
   }
 
-
   /**
    * Make a LinkProperty from a PropertyShape describing a Link i.e.
    *
@@ -353,7 +362,6 @@ import DataTypes._
 
     } yield linkProperty
   }
-
 
   /**
    * A LinkPropertyShape can have Its linked EntityType expressed as an sh:class directly or an sh:class in a QualifiedValueShape.
@@ -379,12 +387,8 @@ import DataTypes._
 
   }
 
-
   /**
    *  Make an AssociationProperty from a PropertyShape describing an Association
-   *
-   *  TODO - Need Fix - There is a structural bug in the Ontology, source is both dataProperty and ObjectProperty
-   *  TODO - When Parsing Entity, we capture an association Property (because of order in makeProperty) that does not corresponds to the property shape in the Entity where it is a dataPropertyShape.
    */
   def makeAssociationProperty(associationPropertyShape: PropertyShape): IO[AssociationProperty] = {
 
@@ -417,9 +421,8 @@ import DataTypes._
 
   }
 
-
   /**
-   * Take a DataProperty shape and create a DataProerty
+   * Take a DataProperty shape and create a DataProperty
    */
   def makeDataProperty(DataPropertyShape: PropertyShape): IO[DataProperty] = {
 
@@ -473,6 +476,9 @@ import DataTypes._
 
   }
 
+  def makeSchemeProperty(relationPropertyShape: PropertyShape): IO[SchemeProperty] = {
+    IO.pure{ SchemeProperty(SKOS.inScheme.getURI, XSD.xstring.getURI)  }
+  }
 
   def getDataProperties(properties: List[Property]): IO[List[DataProperty]] = IO {
     properties.collect { case dp: DataProperty => dp }
@@ -494,6 +500,10 @@ import DataTypes._
     properties.collect { case cp: CompositionProperty => cp }
   }
 
+  def getSchemeProperties(properties: List[Property]): IO [List[SchemeProperty]] = IO {
+    properties.collect { case sp: SchemeProperty => sp }
+  }
+
   def isOfKind(propertyShape: PropertyShape, kind: Node): Boolean = {
 
     propertyShape.getConstraints.asScala.toList.collectFirst{ case kind: NodeKindConstraint => kind }
@@ -512,15 +522,17 @@ import DataTypes._
     } yield ()
   }
 
-  def loadSchema(fdnOntology: String, schemaOntology: String) : IO[(Schema, SchemaWithImports)] = {
+  def loadSchema(fdnOntology: String, skosOntology: String, schemaOntology: String) : IO[(Schema, SchemaWithImports)] = {
     for {
       fdnModel               <- IO { ModelFactory.createDefaultModel().read(fdnOntology) }
+      skosModel              <- IO { ModelFactory.createDefaultModel().read(skosOntology) }
 
       schemaModel            <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
       _                      <- IO { schemaModel.read(schemaOntology) }
 
       schemaWithImportsModel <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_TRANS_INF, schemaModel) }
       _                      <- IO { schemaWithImportsModel.addSubModel(fdnModel) }
+      _                      <- IO { schemaWithImportsModel.addSubModel(skosModel) }
 
     } yield (schemaModel, schemaWithImportsModel)
   }

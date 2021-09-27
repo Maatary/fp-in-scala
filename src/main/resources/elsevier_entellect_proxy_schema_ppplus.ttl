@@ -1,0 +1,3891 @@
+# baseURI: https://data.elsevier.com/lifescience/schema/ppplus
+# imports: http://datashapes.org/dash
+# imports: http://topbraid.org/skos-xl.shapes
+# imports: http://topbraid.org/skos.shapes
+# imports: http://www.w3.org/2004/02/skos/core
+# imports: https://data.elsevier.com/lifescience/schema/foundation
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/activitytarget
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/activitytargetextended
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/concomitant
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/drugclass
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/effect
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/endpoint
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/indication
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/medatatype
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/meenzymetransporter
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/meyler
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/pathogen
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/pkparameter
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/source
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/species
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/studydesigntype
+# imports: https://data.elsevier.com/lifescience/taxonomy/ppplus/target
+
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix ppplus: <https://data.elsevier.com/lifescience/schema/ppplus/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+sh:Resource_1
+  a rdfs:Resource ;
+.
+<https://data.elsevier.com/lifescience/schema/ppplus>
+  a owl:Ontology ;
+  rdfs:comment "An Ontology to hold PharmaPendiumPlus"@en ;
+  rdfs:label "PharmaPendiumPlus Ontology"@en ;
+  owl:imports <http://datashapes.org/dash> ;
+  owl:imports <http://topbraid.org/skos-xl.shapes> ;
+  owl:imports <http://topbraid.org/skos.shapes> ;
+  owl:imports <http://www.w3.org/2004/02/skos/core> ;
+  owl:imports <https://data.elsevier.com/lifescience/schema/foundation> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/activitytarget> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/activitytargetextended> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/concomitant> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/drugclass> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/effect> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/endpoint> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/indication> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/medatatype> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/meenzymetransporter> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/meyler> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/pathogen> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/pkparameter> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/source> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/species> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/studydesigntype> ;
+  owl:imports <https://data.elsevier.com/lifescience/taxonomy/ppplus/target> ;
+  owl:versionInfo "Created with TopBraid Composer" ;
+.
+ppplus:ActivityTarget
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "ActivityTarget taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "ActivityTarget"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/activitytarget/ActivityTargetScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:ActivityTargetExtended
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "ActivityTargetExtended taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "ActivityTargetExtended"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/activitytargetextended/ActivityTargetExtendedScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasType ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:ActivityTargetProperty
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "ActivityTargetProperty"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasActivityTarget ;
+      sh:class ppplus:ActivityTarget ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasActivityTargetExtended ;
+      sh:class ppplus:ActivityTargetExtended ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMutationDetail ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPrimaryTarget ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPrimaryTargetType ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTargetNature ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTransfectionType ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Concomitant
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Concomitant taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "Concomitant"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/concomitant/ConcomitantScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPriority ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Document
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Document"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasChecksum ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasChemicalNames ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasContent ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasContentXML ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasCsDrug ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDateUploaded ;
+      sh:datatype xsd:dateTime ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentArticle ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentCommittee ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentCommitteeID ;
+      sh:datatype xsd:long ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentDate ;
+      sh:datatype xsd:dateTime ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentDrugName ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentFile ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentLength ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentMeeting ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentMosbyName ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentName ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentSource ;
+      sh:class ppplus:Source ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentType ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentYear ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrugHashes ;
+      sh:datatype xsd:string ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrugNames ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrugsFuzzy ;
+      sh:datatype xsd:string ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasFileLength ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasIndication ;
+      sh:class ppplus:Indication ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMolWeight ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSmiles ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSource ;
+      sh:class ppplus:Source ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStructure ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTarget ;
+      sh:class ppplus:Target ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasUserFacingFieldsHash ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isDocumentHistoric ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:DosingRegimen
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "DosingRegimen"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDisplayDose ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDose ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDoseComments ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDoseFrequency ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDoseRegimen ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDoseType ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDoseUnit ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrug ;
+      sh:class ppplus:Drug ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrugRadioLabel ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMonoCombination ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasRoute ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTreatmentDuration ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Drug
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Drug"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasBrandNames ;
+      sh:datatype rdf:langString ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasCASs ;
+      sh:datatype xsd:string ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasChemicalNames ;
+      sh:datatype rdf:langString ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrugClass ;
+      sh:class ppplus:DrugClass ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrugReference ;
+      sh:class ppplus:DrugReference ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrugsFuzzy ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasFormula ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasIndication ;
+      sh:class ppplus:Indication ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMetabolism ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMolFile ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMolWeight ;
+      sh:datatype xsd:double ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasName ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSmiles ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStructureId ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTarget ;
+      sh:class ppplus:Target ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+.
+ppplus:DrugClass
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "DrugClass taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "DrugClass"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/drugclass/DrugClassScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:DrugIndication
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "DrugIndication"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrug ;
+      sh:class ppplus:Drug ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasIndication ;
+      sh:class ppplus:Indication ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasIndicationAdjunct ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSourceShort ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSourceShortList ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSourceText ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:DrugReference
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "DrugReference"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrug ;
+      sh:class ppplus:Drug ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrugClass ;
+      sh:class ppplus:DrugClass ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+.
+ppplus:DrugTarget
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "DrugTarget"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrug ;
+      sh:class ppplus:Drug ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSource ;
+      sh:class ppplus:Source ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSourceName ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTarget ;
+      sh:class ppplus:Target ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+.
+ppplus:Effect
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Effect taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "Effect"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/effect/EffectScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPriority ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Endpoint
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Endpoint taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "Endpoint"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/endpoint/EndpointScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDescription ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:FaersAdministrativeInformation
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "FaersAdministrativeInformation"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAllAdministeredDrugsAndClassesHashes ;
+      sh:datatype xsd:string ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAuthorityNumber ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasConcomitantDrugsAndClassesHashes ;
+      sh:datatype xsd:string ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDeathDate ;
+      sh:datatype xsd:dateTime ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasEventDate ;
+      sh:datatype xsd:dateTime ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasFDAInternalNumber ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasFDAReceivedDate ;
+      sh:datatype xsd:dateTime ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasFaersCaseId ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasFaersId ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasLiteratureReference ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasLocation ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasManufacturerName ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasManufacturerNumber ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasManufacturerRecivedDate ;
+      sh:datatype xsd:dateTime ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasOtherAdministeredDrugsAndClassesHashes ;
+      sh:datatype xsd:string ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasReportEventSource ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasReportSendDate ;
+      sh:datatype xsd:dateTime ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasReportType ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasReporterOccupation ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSecondarySuspectDrugsAndClassesHashes ;
+      sh:datatype xsd:string ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSource ;
+      sh:datatype xsd:string ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isElectronicallySubmitted ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isIdentityDisclosureAllowed ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isManufactureNotified ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:FaersDrugReport
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "FaersDrugReport"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDose ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrugName ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrugNameSource ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasExpirationDate ;
+      sh:datatype xsd:dateTime ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasIndicationDescription ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasLot ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasNDANumber ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasReportId ;
+      sh:datatype xsd:long ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasReportImage ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasRole ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasRoute ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStartEndDateTherapy ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isDechallenge ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isRechallenge ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isVerbatim ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Indication
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Indication taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "Indication"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/indication/IndicationScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:MEDataType
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "MEDataType taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "MEDataType"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/medatatype/MEDataTypeScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:MEEnzymeTransporter
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "MEEnzymeTransporterget taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "MEEnzymeTransporter"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/meenzymetransporter/MEEnzymeTransporterScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Measure
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Measure"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAnalysisTechnique ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasEndpoint ;
+      sh:class ppplus:Endpoint ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasEndpointComment ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasEndpointHigh ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasEndpointLow ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasEndpointMid ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasEndpointType ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasInvitroParameter ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMEParameter ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMeasureComments ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMeasuredSubstance ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMetabolisationReaction ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMetabolitesEnantiomers ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPKAnalysis ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:name "has PKAnalysis" ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPKParameter ;
+      sh:class ppplus:PKParameter ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasParameterComment ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:name "has parameter comment" ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasParameterDisplay ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasParentMetabolite ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPathogen ;
+      sh:class ppplus:Pathogen ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasResult ;
+      sh:class ppplus:Result ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStudiedSubstance ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTimeOfMeasurment ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:name "has time of measurment" ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTimePoint ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTissueSpecific ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Meyler
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Meyler"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/meyler/MeylerScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasChecksum ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:name "has checksum" ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrug ;
+      sh:class ppplus:Drug ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasNum ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTextContentId ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasType ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:ObjectProperty_1
+  a owl:ObjectProperty ;
+  rdfs:label "Object property 1" ;
+.
+ppplus:PKParameter
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "PKParameter taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "PKParameter"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/pkparameter/PKParameterScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasBriefDefinition ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDefinition ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPriority ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Pathogen
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Pathogen taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "Pathogen"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/pathogen/PathogenScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Reference
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Reference"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDataProvider ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentArticle ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentAuthor ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentCitation ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentCodeN ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:name "has document code n" ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentCommittee ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentCommitteeID ;
+      sh:datatype xsd:long ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentDOI ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentDate ;
+      sh:datatype xsd:dateTime ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentFeature ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:name "has document feature" ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentFile ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentHeading ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentISSN ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentId ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentIssue ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentJournal ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentLength ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentMosbyName ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentName ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentPage ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentPages ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentSection ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentVolume ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentYear ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDocumentYear ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrug ;
+      sh:class ppplus:Drug ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSource ;
+      sh:class ppplus:Source ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isDocumentHistoric ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Result
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Result"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAdverseEffect ;
+      sh:class ppplus:Effect ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasBaseline ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasComparativeGroup ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDegreeQualitative ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDisplayValue ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasEffectDegree ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasErrorType ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasErrorValue ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasFaersIsSerious ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasFaersPrimarySuspectDrugs ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasNumberOfSubjects ;
+      sh:datatype xsd:double ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasOutcomes ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPlacebo ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasResultQualitative ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSharpN ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStandardDeviation ;
+      sh:datatype xsd:double ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStudyPopulation ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasUnit ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasUnitNormalized ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasValue ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasValueAverageNormalized ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasValueMaxNormalized ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasValueMinNormalized ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasValueNormalized ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:haspValue ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Source
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Source taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "Source"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/source/SourceScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPriority ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Species
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Species taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "Species"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/species/SpeciesScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPriority ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Study
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Study"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDosingRegimen ;
+      sh:class ppplus:DosingRegimen ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMeasure ;
+      sh:class ppplus:Measure ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasRecordDateCreated ;
+      sh:datatype xsd:dateTime ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasReference ;
+      sh:class ppplus:Reference ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStudyDesign ;
+      sh:class ppplus:StudyDesign ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasUserFacingFieldsHash ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:StudyDesign
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "StudyDesign"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasActTargetName ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasActionTested ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasActivityTargetProperty ;
+      sh:class ppplus:ActivityTargetProperty ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAdjunct ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAgonistAntagonist ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasComment ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasConcomitant ;
+      sh:class ppplus:DrugReference ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasConcomitantDescription ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasConcomitantDrug ;
+      sh:class ppplus:Drug ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasConcomitantHashes ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasConcomitantSubstance ;
+      sh:class ppplus:Concomitant ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasConcomitants ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasConcomitantsAndClasses ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDataType ;
+      sh:class ppplus:MEDataType ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDataTypeHashes ;
+      sh:datatype xsd:string ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDataTypes ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDrugsFuzzy ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasEFStandardIndication ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasEnzymeTransporter ;
+      sh:class ppplus:MEEnzymeTransporter ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasExperimentConditions ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasExperimentDetails ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasExperimentType ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasFaersAdministrativeInformation ;
+      sh:class ppplus:FaersAdministrativeInformation ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasFaersDrugReport ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasIndication ;
+      sh:class ppplus:Indication ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasIndicationDescription ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasInteractingDrug ;
+      sh:class ppplus:Drug ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMEConcomitantDrug ;
+      sh:class ppplus:Concomitant ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMEDrugsAndConcomitantDrugs ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMEDrugsAndConcomitants ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasMEDrugsAndConcomitantsBreadcrumbs ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasOtherAdministeredDrug ;
+      sh:class ppplus:Drug ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasOtherExpDetails ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPhase ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSecondarySuspectDrug ;
+      sh:class ppplus:Drug ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStudyDesignDetail ;
+      sh:datatype rdf:langString ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStudyDesignDetailFilter ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStudyDesignType ;
+      sh:class ppplus:StudyDesignType ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStudyName ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStudyNumber ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStudyNumberInternal ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStudyType ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSubject ;
+      sh:class ppplus:Subject ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTarget ;
+      sh:class ppplus:Target ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+.
+ppplus:StudyDesignType
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "StudyDesignType taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "StudyDesignType"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/specie/SpecieScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Subject
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Subject"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAge ;
+      sh:datatype xsd:double ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAge18 ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAge20 ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAgeCategory ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAgeGroup ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAgeUnit ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasAgeYears ;
+      sh:datatype xsd:double ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasCellOrigin ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDisplayAge ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasDisplayWeight ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSex ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSpecies ;
+      sh:class ppplus:Species ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStrainRace ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStudyGroup ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasStudyGroupType ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTestSystem ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasWeight ;
+      sh:datatype xsd:double ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasWeightNormalized ;
+      sh:datatype xsd:double ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasWeightUnit ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasWeightUnitNormalized ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Synonym
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Synonym"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasSynonym ;
+      sh:datatype rdf:langString ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Target
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:comment "Target taxonomy"@en ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "Target"@en ;
+  rdfs:subClassOf <http://www.w3.org/2004/02/skos/core#Concept> ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#inScheme> ;
+      sh:hasValue <https://data.elsevier.com/lifescience/taxonomy/ppplus/target/TargetScheme> ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path <http://www.w3.org/2004/02/skos/core#prefLabel> ;
+      sh:datatype rdf:langString ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:isLeaf ;
+      sh:datatype xsd:boolean ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:Word
+  a owl:Class ;
+  a sh:NodeShape ;
+  rdfs:label "Word"@en ;
+  rdfs:subClassOf <https://data.elsevier.com/lifescience/schema/foundation/Entity> ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasChecksum ;
+      sh:datatype xsd:string ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasFileId ;
+      sh:datatype xsd:long ;
+      sh:maxCount 1 ;
+      sh:minCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasHeight ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasLeft ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasPage ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasTop ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+  sh:property [
+      a sh:PropertyShape ;
+      sh:path ppplus:hasWidth ;
+      sh:datatype xsd:integer ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:Literal ;
+    ] ;
+.
+ppplus:hasActTargetName
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasActTargetName"@en ;
+.
+ppplus:hasActionTested
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasActionTested"@en ;
+.
+ppplus:hasActivityTarget
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasActivityTarget"@en ;
+.
+ppplus:hasActivityTargetExtended
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasActivityTargetExtended"@en ;
+.
+ppplus:hasActivityTargetProperty
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasActivityTargetProperty"@en ;
+.
+ppplus:hasAdjunct
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAdjunct"@en ;
+.
+ppplus:hasAdverseEffect
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAdverseEffect"@en ;
+.
+ppplus:hasAge
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAge"@en ;
+.
+ppplus:hasAge18
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAge18"@en ;
+.
+ppplus:hasAge20
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAge20"@en ;
+.
+ppplus:hasAgeCategory
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAgeCategory"@en ;
+.
+ppplus:hasAgeGroup
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAgeGroup"@en ;
+.
+ppplus:hasAgeUnit
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAgeUnit"@en ;
+.
+ppplus:hasAgeYears
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAgeYears"@en ;
+.
+ppplus:hasAgonistAntagonist
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAgonistAntagonist"@en ;
+.
+ppplus:hasAllAdministeredDrugsAndClassesHashes
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAllAdministeredDrugsAndClassesHashes"@en ;
+.
+ppplus:hasAnalysisTechnique
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAnalysisTechnique"@en ;
+.
+ppplus:hasAuthorityNumber
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasAuthorityNumber"@en ;
+.
+ppplus:hasBaseline
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasBaseline"@en ;
+.
+ppplus:hasBrandNames
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasBrandNames"@en ;
+.
+ppplus:hasBriefDefinition
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasBriefDefinition"@en ;
+.
+ppplus:hasCASs
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasCASs"@en ;
+.
+ppplus:hasCellOrigin
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasCellOrigin"@en ;
+.
+ppplus:hasChecksum
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasChecksum"@en ;
+.
+ppplus:hasChemicalNames
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasChemicalNames"@en ;
+.
+ppplus:hasComment
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasComment"@en ;
+.
+ppplus:hasComparativeGroup
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasComparativeGroup"@en ;
+.
+ppplus:hasConcomitant
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasConcomitant"@en ;
+.
+ppplus:hasConcomitantDescription
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasConcomitantDescription"@en ;
+.
+ppplus:hasConcomitantDrug
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasConcomitantDrug"@en ;
+.
+ppplus:hasConcomitantDrugsAndClassesHashes
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasConcomitantDrugsAndClassesHashes"@en ;
+.
+ppplus:hasConcomitantHashes
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasConcomitantHashes"@en ;
+.
+ppplus:hasConcomitantSubstance
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasConcomitantSubstance"@en ;
+.
+ppplus:hasConcomitants
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasConcomitants"@en ;
+.
+ppplus:hasConcomitantsAndClasses
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasConcomitantsAndClasses"@en ;
+.
+ppplus:hasContent
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasContent"@en ;
+.
+ppplus:hasContentXML
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasContentXML"@en ;
+.
+ppplus:hasCsDrug
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasCsDrug"@en ;
+.
+ppplus:hasDataProvider
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDataProvider"@en ;
+.
+ppplus:hasDataType
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDataType"@en ;
+.
+ppplus:hasDataTypeHashes
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDataTypeHashes"@en ;
+.
+ppplus:hasDataTypes
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDataTypes"@en ;
+.
+ppplus:hasDateUploaded
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDateUploaded"@en ;
+.
+ppplus:hasDeathDate
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDeathDate"@en ;
+.
+ppplus:hasDefinition
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDefinition"@en ;
+.
+ppplus:hasDegreeQualitative
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDegreeQualitative"@en ;
+.
+ppplus:hasDescription
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDescription"@en ;
+.
+ppplus:hasDisplayAge
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDisplayAge"@en ;
+.
+ppplus:hasDisplayDose
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDisplayDose"@en ;
+.
+ppplus:hasDisplayValue
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDisplayValue"@en ;
+.
+ppplus:hasDisplayWeight
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDisplayWeight"@en ;
+.
+ppplus:hasDocument
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocument"@en ;
+.
+ppplus:hasDocumentArticle
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentArticle"@en ;
+.
+ppplus:hasDocumentAuthor
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentAuthor"@en ;
+.
+ppplus:hasDocumentCitation
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentCitation"@en ;
+.
+ppplus:hasDocumentCodeN
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentCodeN"@en ;
+.
+ppplus:hasDocumentCommittee
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentComitee"@en ;
+.
+ppplus:hasDocumentCommitteeID
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentComiteeID"@en ;
+.
+ppplus:hasDocumentDOI
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentDOI"@en ;
+.
+ppplus:hasDocumentDate
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentDate"@en ;
+.
+ppplus:hasDocumentDrugName
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentDrugName "@en ;
+.
+ppplus:hasDocumentFeature
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentFeature"@en ;
+.
+ppplus:hasDocumentFile
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentFile"@en ;
+.
+ppplus:hasDocumentHeading
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentHeading"@en ;
+.
+ppplus:hasDocumentISSN
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentISSN"@en ;
+.
+ppplus:hasDocumentId
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentId"@en ;
+.
+ppplus:hasDocumentIssue
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentIssue"@en ;
+.
+ppplus:hasDocumentJournal
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentJournal"@en ;
+.
+ppplus:hasDocumentLength
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentLength"@en ;
+.
+ppplus:hasDocumentMeeting
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentMeeting"@en ;
+.
+ppplus:hasDocumentMosbyName
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentMosbyName"@en ;
+.
+ppplus:hasDocumentName
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentName"@en ;
+.
+ppplus:hasDocumentPage
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentPage"@en ;
+.
+ppplus:hasDocumentPages
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentPages"@en ;
+.
+ppplus:hasDocumentSection
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentSection"@en ;
+.
+ppplus:hasDocumentSource
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentSource"@en ;
+.
+ppplus:hasDocumentType
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentType"@en ;
+.
+ppplus:hasDocumentVolume
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentVolume"@en ;
+.
+ppplus:hasDocumentYear
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDocumentYear"@en ;
+.
+ppplus:hasDose
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDose"@en ;
+.
+ppplus:hasDoseComments
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDoseComments"@en ;
+.
+ppplus:hasDoseFrequency
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDoseFrequency"@en ;
+.
+ppplus:hasDoseRegimen
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDoseRegimen"@en ;
+.
+ppplus:hasDoseType
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDoseType"@en ;
+.
+ppplus:hasDoseUnit
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDoseUnit"@en ;
+.
+ppplus:hasDosingRegimen
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDosingRegimen"@en ;
+.
+ppplus:hasDrug
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDrug"@en ;
+.
+ppplus:hasDrugClass
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDrugClass"@en ;
+.
+ppplus:hasDrugHashes
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDrugHashes"@en ;
+.
+ppplus:hasDrugName
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDrugName"@en ;
+.
+ppplus:hasDrugNameSource
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDrugNameSource"@en ;
+.
+ppplus:hasDrugNames
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDrugNames"@en ;
+.
+ppplus:hasDrugRadioLabel
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDrugRadioLabel"@en ;
+.
+ppplus:hasDrugReference
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDrugReference"@en ;
+.
+ppplus:hasDrugsFuzzy
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasDrugsFuzzy"@en ;
+.
+ppplus:hasEFStandardIndication
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasEFStandardIndication"@en ;
+.
+ppplus:hasEffectDegree
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasEffectDegree"@en ;
+.
+ppplus:hasEndpoint
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasEndpoint"@en ;
+.
+ppplus:hasEndpointComment
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasEndpointComment"@en ;
+.
+ppplus:hasEndpointHigh
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasEndpointHigh"@en ;
+.
+ppplus:hasEndpointLow
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasEndpointLow"@en ;
+.
+ppplus:hasEndpointMid
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasEndpointMid"@en ;
+.
+ppplus:hasEndpointType
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasEndpointType"@en ;
+.
+ppplus:hasEnzymeTransporter
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasEnzymeTransporter"@en ;
+.
+ppplus:hasErrorType
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasErrorType"@en ;
+.
+ppplus:hasErrorValue
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasErrorValue"@en ;
+.
+ppplus:hasEventDate
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasEventDate"@en ;
+.
+ppplus:hasExperimentConditions
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasExperimentConditions"@en ;
+.
+ppplus:hasExperimentDetails
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasExperimentDetails"@en ;
+.
+ppplus:hasExperimentType
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasExperimentType"@en ;
+.
+ppplus:hasExpirationDate
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasExpirationDate"@en ;
+.
+ppplus:hasFDAInternalNumber
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasFDAInternalNumber"@en ;
+.
+ppplus:hasFDAReceivedDate
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasFDAReceivedDate"@en ;
+.
+ppplus:hasFaersAdministrativeInformation
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasFaersAdministrativeInformation"@en ;
+.
+ppplus:hasFaersCaseId
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasFaersCaseId"@en ;
+.
+ppplus:hasFaersDrugReport
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasFaersDrugReport"@en ;
+.
+ppplus:hasFaersId
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasFaersId"@en ;
+.
+ppplus:hasFaersIsSerious
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasFaersIsSerious"@en ;
+.
+ppplus:hasFaersPrimarySuspectDrugs
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasFaersPrimarySuspectDrugs"@en ;
+.
+ppplus:hasFileId
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasFileId"@en ;
+.
+ppplus:hasFileLength
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasFileLength"@en ;
+.
+ppplus:hasFormula
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasFormula"@en ;
+.
+ppplus:hasHash
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasHash"@en ;
+.
+ppplus:hasHeight
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasHeight"@en ;
+.
+ppplus:hasIndication
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasIndication"@en ;
+.
+ppplus:hasIndicationAdjunct
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasIndicationAdjunct"@en ;
+.
+ppplus:hasIndicationDescription
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasIndicationDescription"@en ;
+.
+ppplus:hasInteractingDrug
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasInteractingDrug"@en ;
+.
+ppplus:hasInvitroParameter
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasInvitroParameter"@en ;
+.
+ppplus:hasLeft
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasLeft"@en ;
+.
+ppplus:hasLiteratureReference
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasLiteratureReference"@en ;
+.
+ppplus:hasLocation
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasLocation"@en ;
+.
+ppplus:hasLot
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasLot"@en ;
+.
+ppplus:hasMEConcomitantDrug
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMEConcomitantDrug"@en ;
+.
+ppplus:hasMEDrugsAndConcomitantDrugs
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMEDrugsAndConcomitantDrugs"@en ;
+.
+ppplus:hasMEDrugsAndConcomitants
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMEDrugsAndConcomitants"@en ;
+.
+ppplus:hasMEDrugsAndConcomitantsBreadcrumbs
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMEDrugsAndConcomitantsBreadcrumbs"@en ;
+.
+ppplus:hasMEParameter
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMEParameter"@en ;
+.
+ppplus:hasManufacturerName
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasManufacturerName"@en ;
+.
+ppplus:hasManufacturerNumber
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasManufacturerNumber"@en ;
+.
+ppplus:hasManufacturerRecivedDate
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasManufacturerRecivedDate"@en ;
+.
+ppplus:hasMeasure
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMeasure"@en ;
+.
+ppplus:hasMeasureComments
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMeasureComments"@en ;
+.
+ppplus:hasMeasuredSubstance
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMeasuredSubstance"@en ;
+.
+ppplus:hasMetabolisationReaction
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMetabolisationReaction"@en ;
+.
+ppplus:hasMetabolism
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMetabolism"@en ;
+.
+ppplus:hasMetabolitesEnantiomers
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMetabolitesEnantiomers"@en ;
+.
+ppplus:hasMolFile
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMolFile"@en ;
+.
+ppplus:hasMolWeight
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMolWeight"@en ;
+.
+ppplus:hasMonoCombination
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMonoCombination"@en ;
+.
+ppplus:hasMutationDetail
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasMutationDetail"@en ;
+.
+ppplus:hasNDANumber
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasNDANumber"@en ;
+.
+ppplus:hasName
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasName"@en ;
+.
+ppplus:hasNum
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasNum"@en ;
+.
+ppplus:hasNumberOfSubjects
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasNumberOfSubjects"@en ;
+.
+ppplus:hasOffset
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasOffset"@en ;
+.
+ppplus:hasOtherAdministeredDrug
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasOtherAdministeredDrug"@en ;
+.
+ppplus:hasOtherAdministeredDrugsAndClassesHashes
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasOtherAdministeredDrugsAndClassesHashes"@en ;
+.
+ppplus:hasOtherExpDetails
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasOtherExpDetails"@en ;
+.
+ppplus:hasOutcomes
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasOutcomes"@en ;
+.
+ppplus:hasPKAnalysis
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasPKAnalysis"@en ;
+.
+ppplus:hasPKParameter
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasPKParameter"@en ;
+.
+ppplus:hasPage
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasPage"@en ;
+.
+ppplus:hasParameterComment
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasParameterComment"@en ;
+.
+ppplus:hasParameterDisplay
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasParameterDisplay"@en ;
+.
+ppplus:hasParentId
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasParentId"@en ;
+.
+ppplus:hasParentMetabolite
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasParentMetabolite"@en ;
+.
+ppplus:hasPathogen
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasPathogen"@en ;
+.
+ppplus:hasPhase
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasPhase"@en ;
+.
+ppplus:hasPlacebo
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasPlacebo"@en ;
+.
+ppplus:hasPrimaryTarget
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasPrimaryTarget"@en ;
+.
+ppplus:hasPrimaryTargetType
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasPrimaryTargetType"@en ;
+.
+ppplus:hasPriority
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasPriority"@en ;
+.
+ppplus:hasRecordDateCreated
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasRecordDateCreated"@en ;
+.
+ppplus:hasReference
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasReference"@en ;
+.
+ppplus:hasReportEventSource
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasReportEventSource"@en ;
+.
+ppplus:hasReportId
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasReportId"@en ;
+.
+ppplus:hasReportImage
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasReportImage"@en ;
+.
+ppplus:hasReportSendDate
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasReportSendDate"@en ;
+.
+ppplus:hasReportType
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasReportType"@en ;
+.
+ppplus:hasReporterOccupation
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasReporterOccupation"@en ;
+.
+ppplus:hasResult
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasResult"@en ;
+.
+ppplus:hasResultQualitative
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasResultQualitative"@en ;
+.
+ppplus:hasRole
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasRole"@en ;
+.
+ppplus:hasRoute
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasRoute"@en ;
+.
+ppplus:hasSecondarySuspectDrug
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSecondarySuspectDrug"@en ;
+.
+ppplus:hasSecondarySuspectDrugsAndClassesHashes
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSecondarySuspectDrugsAndClassesHashes"@en ;
+.
+ppplus:hasSex
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSex"@en ;
+.
+ppplus:hasSharpN
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSharpN"@en ;
+.
+ppplus:hasSmiles
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSmiles"@en ;
+.
+ppplus:hasSource
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSource"@en ;
+.
+ppplus:hasSourceName
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSourceName"@en ;
+.
+ppplus:hasSourceShort
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSourceShort"@en ;
+.
+ppplus:hasSourceShortList
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSourceShortList"@en ;
+.
+ppplus:hasSourceText
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSourceText"@en ;
+.
+ppplus:hasSpecies
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSpecies"@en ;
+.
+ppplus:hasStandardDeviation
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStandardDeviation"@en ;
+.
+ppplus:hasStartEndDateTherapy
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStartEndDateTherapy"@en ;
+.
+ppplus:hasStrainRace
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStrainRace"@en ;
+.
+ppplus:hasStringBrands
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStringBrands"@en ;
+.
+ppplus:hasStructure
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStructure"@en ;
+.
+ppplus:hasStructureId
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStructureId"@en ;
+.
+ppplus:hasStudiedSubstance
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStudiedSubstance"@en ;
+.
+ppplus:hasStudyDesign
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStudyDesign"@en ;
+.
+ppplus:hasStudyDesignDetail
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStudyDesignDetail"@en ;
+.
+ppplus:hasStudyDesignDetailFilter
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStudyDesignDetailFilter"@en ;
+.
+ppplus:hasStudyDesignType
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStudyDesignType"@en ;
+.
+ppplus:hasStudyGroup
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStudyGroup"@en ;
+.
+ppplus:hasStudyGroupType
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStudyGroupType"@en ;
+.
+ppplus:hasStudyName
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStudyName"@en ;
+.
+ppplus:hasStudyNumber
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStudyNumber"@en ;
+.
+ppplus:hasStudyNumberInternal
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStudyNumberInternal"@en ;
+.
+ppplus:hasStudyPopulation
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStudyPopulation"@en ;
+.
+ppplus:hasStudyType
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasStudyType"@en ;
+.
+ppplus:hasSubject
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSubject"@en ;
+.
+ppplus:hasSynonym
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasSynonym"@en ;
+.
+ppplus:hasTarget
+  a owl:ObjectProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasTarget"@en ;
+.
+ppplus:hasTargetNature
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasTargetNature"@en ;
+.
+ppplus:hasTestSystem
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasTestSystem"@en ;
+.
+ppplus:hasTextContentId
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasTextContentId"@en ;
+.
+ppplus:hasTimeOfMeasurment
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasTimeOfMeasurment"@en ;
+.
+ppplus:hasTimePoint
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasTimePoint"@en ;
+.
+ppplus:hasTissueSpecific
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasTissueSpecific"@en ;
+.
+ppplus:hasTop
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasTop"@en ;
+.
+ppplus:hasTransfectionType
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasTransfectionType"@en ;
+.
+ppplus:hasTreatmentDuration
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasTreatmentDuration"@en ;
+.
+ppplus:hasType
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasType"@en ;
+.
+ppplus:hasUnit
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasUnit"@en ;
+.
+ppplus:hasUnitNormalized
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasUnitNormalized"@en ;
+.
+ppplus:hasUserFacingFieldsHash
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasUserFacingFieldsHash"@en ;
+.
+ppplus:hasValue
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasValue"@en ;
+.
+ppplus:hasValueAverageNormalized
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasValueAverageNormalized"@en ;
+.
+ppplus:hasValueMaxNormalized
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasValueMaxNormalized"@en ;
+.
+ppplus:hasValueMinNormalized
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasValueMinNormalized"@en ;
+.
+ppplus:hasValueNormalized
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasValueNormalized"@en ;
+.
+ppplus:hasWeight
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasWeight"@en ;
+.
+ppplus:hasWeightNormalized
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasWeightNormalized"@en ;
+.
+ppplus:hasWeightUnit
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasWeightUnit"@en ;
+.
+ppplus:hasWeightUnitNormalized
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasWeightUnitNormalized"@en ;
+.
+ppplus:hasWidth
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "hasWidth"@en ;
+.
+ppplus:haspValue
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "haspValue"@en ;
+.
+ppplus:isDechallenge
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "isDechallenge"@en ;
+.
+ppplus:isDocumentHistoric
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "isDocumentHistoric"@en ;
+.
+ppplus:isElectronicallySubmitted
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "isElectronicallySubmitted"@en ;
+.
+ppplus:isIdentityDisclosureAllowed
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "isIdentityDisclosureAllowed"@en ;
+.
+ppplus:isLeaf
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "isLeaf"@en ;
+.
+ppplus:isManufactureNotified
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "isManufactureNotified"@en ;
+.
+ppplus:isRechallenge
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "isRechallenge"@en ;
+.
+ppplus:isVerbatim
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://data.elsevier.com/lifescience/schema/ppplus> ;
+  rdfs:label "isVerbatim"@en ;
+.
