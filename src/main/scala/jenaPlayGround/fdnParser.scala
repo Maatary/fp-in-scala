@@ -6,7 +6,7 @@ import cats.effect.unsafe.implicits.global
 import cats.syntax.all._
 import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.apache.jena.atlas.logging.LogCtl
-import org.apache.jena.graph.Graph
+import org.apache.jena.graph.{Graph, Node}
 import org.apache.jena.ontology.{OntDocumentManager, OntModel, OntModelSpec}
 import org.apache.jena.riot.Lang
 import org.apache.jena.riot.RDFDataMgr
@@ -16,14 +16,14 @@ import org.apache.jena.shacl.ShaclValidator
 import org.apache.jena.shacl.Shapes
 import org.apache.jena.shacl.ValidationReport
 import org.apache.jena.shacl.engine.{ShaclPaths, constraint}
-import org.apache.jena.shacl.engine.constraint.{ClassConstraint, ConstraintOp, DatatypeConstraint, MaxCount, MinCount, QualifiedValueShape, ShOr}
+import org.apache.jena.shacl.engine.constraint.{ClassConstraint, ConstraintOp, DatatypeConstraint, MaxCount, MinCount, NodeKindConstraint, QualifiedValueShape, ShOr}
 import org.apache.jena.shacl.lib.ShLib
 import org.apache.jena.shacl.parser.{NodeShape, PropertyShape, Shape}
+import org.apache.jena.shacl.vocabulary.SHACL
 import org.apache.jena.sparql.path.P_Link
 
 import scala.jdk.CollectionConverters._
 import scala.util.chaining.scalaUtilChainingOps
-
 import scribe._
 
 
@@ -184,7 +184,7 @@ import DataTypes._
 
 
   /**
-   * Read/Parse a NodeShape Representing a Relation make a Relation
+   * Read/Parse a NodeShape Representing a Relation to make a RelationType
    */
   def parseRelationNodeShape(schemaWithImports: SchemaWithImports)(rShape: NodeShape):  IO[RelationType] = {
 
@@ -212,7 +212,7 @@ import DataTypes._
 
 
   /**
-   * Read/Parse a NodeShape Representing a Entity make an EntityType
+   * Read/Parse a NodeShape Representing a Entity to make an EntityType
    */
   def parseEntityNodeShape(schemaWithImports: SchemaWithImports)(eShape: NodeShape): IO[EntityType] = {
     for {
@@ -256,8 +256,8 @@ import DataTypes._
    *  Take a PropertyShape and convert to its corresponding Property i.e.
    *  LinkProperty, DataProperty, AssociationProperty, RelationProperty, SchemeProperty
    *
-   *  TODO - BUG in Resnet Ontology, source is generated as both a DataProp and an ObjectProp, because there is a field in Edge Table sProperty_Values source.
-   *  TODO - Cheating here by catching source as Association before it makes it to DataProperty
+   *  TODO - BUG in Resnet Ontology, source is both a DataProp and an ObjectProp, because there is a field in Edge Table sProperty_Values source.
+   *  TODO - Fix Ontology & Remove hack check - isOfKind
    *
    */
   def makeProperty(schemaWithImports: SchemaWithImports)(propertyShape: PropertyShape): IO[Property] = {
@@ -280,9 +280,9 @@ import DataTypes._
 
                                   case prop if prop.hasSuperProperty(directionalLinkWith, false) || prop.hasSuperProperty(nonDirectionalLinkWith, false) => makeLinkProperty(propertyShape, schemaWithImports)
 
-                                  case prop if prop.hasSuperProperty(associatedTo, false)                                                                => makeAssociationProperty(propertyShape)
+                                  case prop if prop.hasSuperProperty(associatedTo, false) && isOfKind(propertyShape, SHACL.IRI)                          => makeAssociationProperty(propertyShape) //TODO - to Fix at Ontology Level - isOfKind is a hack Check because resnet:source is both DataTypeProperty and ObjectProperty
 
-                                  case prop if prop.isDatatypeProperty                                                                                   => makeDataProperty(propertyShape)
+                                  case prop if prop.isDatatypeProperty && isOfKind(propertyShape, SHACL.Literal)                                         => makeDataProperty(propertyShape) //TODO - to Fix at Ontology Level - isOfKind is a hack Check because resnet:source is both DataTypeProperty and ObjectProperty
 
                                   case prop if prop.hasSuperProperty(composedOf, false)                                                                  => makeCompositionProperty()
 
@@ -296,6 +296,16 @@ import DataTypes._
 
   }
 
+  def isOfKind(propertyShape: PropertyShape, kind: Node): Boolean = {
+
+    propertyShape.getConstraints.asScala.toList.collectFirst{ case kind: NodeKindConstraint => kind }
+      .fold{
+        throw new Throwable(s"isOfKind: Missing Kind in propertyshape ${propertyShape.toString} while trying to compare kind")
+      } { kindConstraint =>
+        kindConstraint.getKind.equals(kind)
+      }
+
+  }
 
   /**
    * Take a list of LinkProperty of expected Size 2 (not checked yet) and convert it into a LinkPropertyPair where:
@@ -410,16 +420,16 @@ import DataTypes._
 
       maybeEntityTypeOrConstraint       <- IO { relationPropertyShape.getConstraints.asScala.toList.collectFirst { case shOr: ShOr => shOr } }
 
-      maybeANonEntityTypePropertyShapes <- IO { maybeEntityTypeOrConstraint.map(_.getOthers.asScala.toList.asInstanceOf[List[NodeShape]]) }
+      maybeANonEntityTypeNodesShapes    <- IO { maybeEntityTypeOrConstraint.map(_.getOthers.asScala.toList.asInstanceOf[List[NodeShape]]) }
 
-      eTypes                            <- maybeANonEntityTypePropertyShapes
+      eTypes                            <- maybeANonEntityTypeNodesShapes
                                           .fold {
 
                                             IO { relationPropertyShape.getConstraints.asScala.toList.collect {case cc: ClassConstraint => cc}.head.getExpectedClass.getURI } map { List(_) }
 
-                                          } { aNonEntityTypePropertyShapes =>
+                                          } { aNonEntityTypeNodeShapes =>
 
-                                            IO { aNonEntityTypePropertyShapes.map(_.getConstraints.asScala.toList.collect {case cc: ClassConstraint => cc}.head.getExpectedClass.getURI) }
+                                            IO { aNonEntityTypeNodeShapes.map(_.getConstraints.asScala.toList.collect {case cc: ClassConstraint => cc}.head.getExpectedClass.getURI) }
 
                                           }
 
