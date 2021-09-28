@@ -36,9 +36,11 @@ object DataTypes {
 
   type Schema            = OntModel
   type SchemaWithImports = OntModel
+  type OntPrefix         = String
+  type OntUri            = String
 
 
-  case class FdnGraphSchema(entityTypes:  List[EntityType],  relationTypes: List[RelationType])
+  case class FdnGraphSchema(ontUri: OntUri, ontPrefix: OntPrefix, entityTypes:  List[EntityType],  relationTypes: List[RelationType])
 
   sealed trait FdnGraphSchemaElt
   final case class EntityType(entityType: String, dataProperties: List[DataProperty], relationProperties: List[RelationProperty], compositionProperties: List[CompositionProperty], schemeProperties: List[SchemeProperty]) extends FdnGraphSchemaElt
@@ -57,6 +59,14 @@ object DataTypes {
 
   final case class LinkPropertyPair(linkPropertyA: NonDirectionalLinkProperty, linkPropertyB: LinkProperty) extends FdnGraphSchemaElt
 
+
+  implicit val showFdnGraphSchema:  Show[FdnGraphSchema] = (fdnGraphSchema: FdnGraphSchema) => {
+    s"""
+       |FdnGraphSchema: Uri ${fdnGraphSchema.ontUri} Prefix ${fdnGraphSchema.ontPrefix}
+       |${fdnGraphSchema.entityTypes.show}
+       |${fdnGraphSchema.relationTypes.show}
+       |""".stripMargin
+  }
 
   implicit val showEntityType: Show[EntityType] = (eType: EntityType) => {
     s"""
@@ -129,16 +139,18 @@ import DataTypes._
 
     _                    <- setGlobalDocManagerProperties()
 
-    schemaPair           <- loadSchema("elsevier_entellect_foundation_schema.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_proxy_schema_reaxys.ttl")
+    schemaPair           <- loadSchema("elsevier_entellect_foundation_schema.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_external_schema_skosxl.ttl", "elsevier_entellect_proxy_schema_chembl.ttl")
 
     (schema, schemaWithImports) = schemaPair
 
+    prefAndUri           <- getSchemaPrefixAndUri(schema)
+    (ontPrefix, ontUri) = prefAndUri
 
-    _                    <- IO  {info("Reading shapes start")}
+    _                    <- IO { info("Reading shapes")  }
 
     shapes               <- IO { Shapes.parse(schema.getGraph) }
 
-    _                    <- IO  {info("Reading shapes done")}
+    _                    <- IO { info("Done Reading shapes")  }
 
     nodeShapes           <- IO { shapes.iteratorAll().asScala.toList.collect { case shape: NodeShape => shape }  }
 
@@ -152,7 +164,7 @@ import DataTypes._
     eTypes               <- entityShapes traverse parseEntityNodeShape(schemaWithImports)
 
 
-  } yield (relTypes, eTypes)
+  } yield FdnGraphSchema(ontUri, ontPrefix,  eTypes, relTypes)
 
   println(program.unsafeRunSync().show)
 
@@ -321,7 +333,7 @@ import DataTypes._
 
                                   case prop if prop.isDatatypeProperty && isOfKind(propertyShape, SHACL.Literal)                                         => makeDataProperty(propertyShape) //TODO - to Fix at Ontology Level - isOfKind is a hack Check because resnet:source is both DataTypeProperty and ObjectProperty
 
-                                  case prop if prop.isAnnotationProperty && prop.hasSuperProperty(RDFS.label, false)                                     => makeDataProperty(propertyShape)
+                                  case prop if prop.isAnnotationProperty /*&& prop.hasSuperProperty(RDFS.label, false) */                                => makeDataProperty(propertyShape) //TODO - to Fix at ontology level - Order matter cause we have wrongfully some dataProperty subPropertyOf Annotation Property e.g. Chembl hasPreferredName
 
                                   case prop if prop.hasSuperProperty(composedOf, false)                                                                  => makeCompositionProperty(propertyShape)
 
@@ -537,6 +549,7 @@ import DataTypes._
 
   }
 
+
   def setGlobalDocManagerProperties(): IO[Unit] = {
     for {
       ontDoc       <- IO { OntDocumentManager.getInstance() } // Set your global Ontology Manager without any LocationMapper, so the reliance on the StreamMndgr is ensured.
@@ -544,10 +557,11 @@ import DataTypes._
     } yield ()
   }
 
-  def loadSchema(fdnOntology: String, skosOntology: String, schemaOntology: String) : IO[(Schema, SchemaWithImports)] = {
+  def loadSchema(fdnOntology: String, skosOntology: String, skosXlOntology: String, schemaOntology: String) : IO[(Schema, SchemaWithImports)] = {
     for {
       fdnModel               <- IO { ModelFactory.createDefaultModel().read(fdnOntology) }
       skosModel              <- IO { ModelFactory.createDefaultModel().read(skosOntology) }
+      skosXlModel            <- IO { ModelFactory.createDefaultModel().read(skosXlOntology) }
 
       schemaModel            <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
       _                      <- IO { schemaModel.read(schemaOntology) }
@@ -555,8 +569,22 @@ import DataTypes._
       schemaWithImportsModel <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_TRANS_INF, schemaModel) }
       _                      <- IO { schemaWithImportsModel.addSubModel(fdnModel) }
       _                      <- IO { schemaWithImportsModel.addSubModel(skosModel) }
+      _                      <- IO { schemaWithImportsModel.addSubModel(skosXlModel) }
 
     } yield (schemaModel, schemaWithImportsModel)
+  }
+
+  def getSchemaPrefixAndUri(schemaModel: Schema): IO[(OntPrefix, OntUri)] = {
+
+    for {
+
+      ontology  <- IO { schemaModel.listOntologies().asScala.toList.head } flatTap { onto  => IO {info(s"Got Ontology ${onto.toString} ")} }
+
+      ontUri    <- IO.pure { ontology.getURI }
+
+      ontPrefix <- IO { schemaModel.getNsURIPrefix(s"$ontUri/") } flatTap { prefix  => IO {info(s"Got Prefix ${prefix} ")} }
+
+    } yield (ontPrefix, ontUri)
   }
 
 }
