@@ -21,7 +21,7 @@ import org.apache.jena.shacl.lib.ShLib
 import org.apache.jena.shacl.parser.{NodeShape, PropertyShape, Shape}
 import org.apache.jena.shacl.vocabulary.SHACL
 import org.apache.jena.sparql.path.P_Link
-import org.apache.jena.vocabulary.{RDFS, SKOS, XSD}
+import org.apache.jena.vocabulary.{OWL, RDFS, SKOS, XSD}
 
 import scala.jdk.CollectionConverters._
 import scala.util.chaining.scalaUtilChainingOps
@@ -129,7 +129,7 @@ import DataTypes._
 
     _                    <- setGlobalDocManagerProperties()
 
-    schemaPair           <- loadSchema("elsevier_entellect_foundation_schema.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_proxy_schema_ppplus.ttl")
+    schemaPair           <- loadSchema("elsevier_entellect_foundation_schema.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_proxy_schema_reaxys.ttl")
 
     (schema, schemaWithImports) = schemaPair
 
@@ -224,6 +224,28 @@ import DataTypes._
 
   /**
    * Read/Parse a NodeShape Representing a Entity to make an EntityType
+   *
+   *  === temp hack 1  ===
+   * We filter Relation Properties that point to an OWL:Thing as it represents a faulty modeling.
+   * That case is present is Reaxys  for  `SynampticaID  hasSynapticaConcept`.
+   *
+   * {{{
+   *   filterNot(_.entityTypes == List(OWL.Thing.getURI))
+   * }}}
+   * Generally speaking SynapticaID is badly is faulty and should be ignored at load time.
+   * Its `hasConcept` properties can point to any sub-class of concept.
+   * This does not respect the proxy standard.
+   * Moreover, in TigerGraph we need to know what pair of Vertice Type an  Edge Type Connect.
+   *
+   * === temp hack 2  ===
+   *  We do distinct on Relation Properties because of Reaxys which has modelling issues where
+   *  for a properties that comes from different fields, it duplicates the properties constraints.
+   *
+   *  {{{
+   *    map(_.distinct)
+   *  }}}
+   *
+   * TODO  - Remove those hacks by fixing Ontologies (i.e.reaxys)
    */
   def parseEntityNodeShape(schemaWithImports: SchemaWithImports)(eShape: NodeShape): IO[EntityType] = {
     for {
@@ -236,7 +258,7 @@ import DataTypes._
 
       compositionProperties  <- getCompositionProperties(directProperties)
 
-      relationProperties     <- getRelationProperties(directProperties)
+      relationProperties     <- getRelationProperties(directProperties).map(_.filterNot(_.entityTypes == List(OWL.Thing.getURI))).map(_.distinct)
 
       schemeProperties       <- getSchemeProperties(directProperties)
 
