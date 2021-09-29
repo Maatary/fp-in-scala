@@ -133,35 +133,45 @@ object fdnParser extends App {
 
 import DataTypes._
 
-
+  Logger(classOf[jenaPlayGround.fdnParser.type].getName).withMinimumLevel(Level.Info).replace()
 
   val program = for {
 
     _                    <- setGlobalDocManagerProperties()
 
-    schemaPair           <- loadSchema("elsevier_entellect_foundation_schema.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_external_schema_skosxl.ttl", "elsevier_entellect_proxy_schema_chembl.ttl")
+    schemaPair           <- loadSchema("elsevier_entellect_foundation_schema.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_external_schema_skosxl.ttl", "proxyInferenceModel.ttl")
 
     (schema, schemaWithImports) = schemaPair
 
     prefAndUri           <- getSchemaPrefixAndUri(schema)
     (ontPrefix, ontUri) = prefAndUri
 
-    _                    <- IO { info("Reading shapes")  }
+    _                    <- IO { info(s"Reading all shapes for Ontology $ontPrefix")  }
 
     shapes               <- IO { Shapes.parse(schema.getGraph) }
 
-    _                    <- IO { info("Done Reading shapes")  }
+    _                    <- IO { info(s"Reading all shapes for Ontology $ontPrefix successful")  }
 
     nodeShapes           <- IO { shapes.iteratorAll().asScala.toList.collect { case shape: NodeShape => shape }  }
 
     relationShapes       <- getRelationNodeShapes(nodeShapes, schemaWithImports)
 
+
     entityShapes         <- getEntityNodeShapes(nodeShapes, schemaWithImports)
 
+    _                    <- IO { info(s"Extracting all EntityTypes") }
+
+    eTypes               <- entityShapes traverse parseEntityNodeShape(schemaWithImports)
+
+    _                    <- IO { info(s"Successfully Extracted all ${eTypes.size} EntityTypes") }
+
+    _                    <- IO { info(s"Extracting all RelationTypes") }
 
     relTypes             <- relationShapes traverse parseRelationNodeShape(schemaWithImports)
 
-    eTypes               <- entityShapes traverse parseEntityNodeShape(schemaWithImports)
+    _                    <- IO { info(s"Successfully Extracted all ${relTypes.size} RelationTypes") }
+
+
 
 
   } yield FdnGraphSchema(ontUri, ontPrefix,  eTypes, relTypes)
@@ -313,6 +323,8 @@ import DataTypes._
 
     for {
 
+      _                      <- IO { debug(s"Making Property from : ${propertyShape.toString}") }
+
       directionalLinkWith    <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/directionalLinkWith") }
 
       nonDirectionalLinkWith <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/nondirectionalLinkWith") }
@@ -321,7 +333,7 @@ import DataTypes._
 
       associatedTo           <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/associatedTo") }
 
-      linkType               <- IO { propertyShape.getPath.asInstanceOf[P_Link].getNode.getURI } flatTap { uri => IO { info(s"makeProperty: $uri") } }
+      linkType               <- IO { propertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }.onError(t => IO {error(s"missing path in ${propertyShape.toString} for cause: ${t.getMessage}")})
 
       linkTypeObjectProperty <- IO { schemaWithImports.getOntProperty(linkType) }
 
@@ -458,19 +470,19 @@ import DataTypes._
   /**
    * Take a DataProperty shape and create a DataProperty
    */
-  def makeDataProperty(DataPropertyShape: PropertyShape): IO[DataProperty] = {
+  def makeDataProperty(dataPropertyShape: PropertyShape): IO[DataProperty] = {
 
     for {
 
-      _       <- IO.println(s"makeDataProperty: ${DataPropertyShape.toString}")
+      _        <- IO { debug(s"Making DataProperty from : ${dataPropertyShape.toString}") }
 
-      linkType <- IO { DataPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+      linkType <- IO { dataPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }.onError(t => IO {error(s"missing path in ${dataPropertyShape.toString} for cause: ${t.getMessage}")})
 
-      dataType <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: DatatypeConstraint => dc}.map(_.getDatatypeURI ).head } //TODO handle missing datatype constraint or fix ontology
+      dataType <- IO { dataPropertyShape.getConstraints.asScala.toList.collect{case dc: DatatypeConstraint => dc}.map(_.getDatatypeURI ).head }.onError { t => IO { error(parseErrorMsg("datatype", dataPropertyShape, t.getMessage)) } }
 
-      min <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: MinCount => dc}.map(_.getMinCount).headOption }
+      min <- IO { dataPropertyShape.getConstraints.asScala.toList.collect{case dc: MinCount => dc}.map(_.getMinCount).headOption }
 
-      max <- IO { DataPropertyShape.getConstraints.asScala.toList.collect{case dc: MaxCount => dc}.map(_.getMaxCount).headOption }
+      max <- IO { dataPropertyShape.getConstraints.asScala.toList.collect{case dc: MaxCount => dc}.map(_.getMaxCount).headOption }
 
     } yield DataProperty(linkType, dataType, min, max)
 
@@ -483,7 +495,7 @@ import DataTypes._
 
     for {
 
-      _                                 <- IO.println(s"makeRelationProperty:  ${relationPropertyShape.toString}")
+      _                                 <- IO { debug(s"Making RelationProperty from : ${relationPropertyShape.toString}") }
 
       linkType                          <- IO { relationPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
 
@@ -578,13 +590,19 @@ import DataTypes._
 
     for {
 
-      ontology  <- IO { schemaModel.listOntologies().asScala.toList.head } flatTap { onto  => IO {info(s"Got Ontology ${onto.toString} ")} }
+      ontology  <- IO { schemaModel.listOntologies().asScala.toList.head }
 
       ontUri    <- IO.pure { ontology.getURI }
 
-      ontPrefix <- IO { schemaModel.getNsURIPrefix(s"$ontUri/") } flatTap { prefix  => IO {info(s"Got Prefix ${prefix} ")} }
+      ontPrefix <- IO { schemaModel.getNsURIPrefix(s"$ontUri/") }
+
+      _         <- IO { info(s"Got Ontology: [$ontUri],  with Prefix [$ontPrefix]" ) }
 
     } yield (ontPrefix, ontUri)
+  }
+
+  def parseErrorMsg(missing: String, shape: Shape, cause: String) = {
+    s"Missing $missing in shape: [${shape.toString}], for cause: [$cause]"
   }
 
 }
