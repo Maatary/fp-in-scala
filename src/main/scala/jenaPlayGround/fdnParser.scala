@@ -161,13 +161,13 @@ import DataTypes._
 
     _                    <- IO { info(s"Extracting all EntityTypes") }
 
-    eTypes               <- entityShapes traverse parseEntityNodeShape(schemaWithImports)
+    eTypes               <- entityShapes traverse makeEntityType(schemaWithImports)
 
     _                    <- IO { info(s"Successfully Extracted all ${eTypes.size} EntityTypes") }
 
     _                    <- IO { info(s"Extracting all RelationTypes") }
 
-    relTypes             <- relationShapes traverse parseRelationNodeShape(schemaWithImports)
+    relTypes             <- relationShapes traverse makeRelationType(schemaWithImports)
 
     _                    <- IO { info(s"Successfully Extracted all ${relTypes.size} RelationTypes") }
 
@@ -219,7 +219,7 @@ import DataTypes._
   /**
    * Read/Parse a NodeShape Representing a Relation to make a RelationType
    */
-  def parseRelationNodeShape(schemaWithImports: SchemaWithImports)(rShape: NodeShape):  IO[RelationType] = {
+  def makeRelationType(schemaWithImports: SchemaWithImports)(rShape: NodeShape):  IO[RelationType] = {
 
     for {
 
@@ -227,9 +227,9 @@ import DataTypes._
 
       directProperties                 <- rShape.getPropertyShapes.asScala.toList traverse makeProperty(schemaWithImports)
 
-      linkPropertyPairs                <- getOrConstraintsLinkPropertyPairsFromRelationShape(rShape, schemaWithImports) //To Change
+      linkPropertyPairs                <- getOrConstraintsLinkPropertyPairsFromRelationShape(rShape, schemaWithImports)
 
-      directLinkProperties             <- getLinkProperties(directProperties) //To Change
+      directLinkProperties             <- getLinkProperties(directProperties)
 
       linkPropertyPairs                <- if (linkPropertyPairs.isEmpty) toLinkPropertyPair(directLinkProperties) map (List(_)) else IO.pure(linkPropertyPairs)
 
@@ -269,7 +269,7 @@ import DataTypes._
    *
    * TODO  - Remove those hacks by fixing Ontologies (i.e.reaxys)
    */
-  def parseEntityNodeShape(schemaWithImports: SchemaWithImports)(eShape: NodeShape): IO[EntityType] = {
+  def makeEntityType(schemaWithImports: SchemaWithImports)(eShape: NodeShape): IO[EntityType] = {
     for {
 
       //_                                <- IO {println(rShape)}
@@ -317,6 +317,7 @@ import DataTypes._
    *
    *  TODO - BUG in Resnet Ontology, source is both a DataProp and an ObjectProp, because there is a field in Edge Table sProperty_Values source.
    *  TODO - Fix Ontology & Remove hack check - isOfKind
+   *  TODO - Fix in code - AnnotationProperty are assumed to range on data Values which is not always true, but currently what we have
    *
    */
   def makeProperty(schemaWithImports: SchemaWithImports)(propertyShape: PropertyShape): IO[Property] = {
@@ -333,7 +334,7 @@ import DataTypes._
 
       associatedTo           <- IO { schemaWithImports.getObjectProperty("https://data.elsevier.com/lifescience/schema/foundation/associatedTo") }
 
-      linkType               <- IO { propertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }.onError(t => IO {error(s"missing path in ${propertyShape.toString} for cause: ${t.getMessage}")})
+      linkType               <- IO { propertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }.onError(t => IO {error(missingErrorMsg("path", propertyShape, t.getMessage)) })
 
       linkTypeObjectProperty <- IO { schemaWithImports.getOntProperty(linkType) }
 
@@ -358,8 +359,6 @@ import DataTypes._
     } yield  property
 
   }
-
-
 
   /**
    * Take a list of LinkProperty of expected Size 2 (not checked yet) and convert it into a LinkPropertyPair where:
@@ -440,7 +439,9 @@ import DataTypes._
 
     for {
 
-      linkType         <- IO { associationPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+      _                <- IO { debug(s"Making AssociationProperty from : ${associationPropertyShape.toString}") }
+
+      linkType         <- IO { associationPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }.onError(t => IO { error(missingErrorMsg("path", associationPropertyShape, t.getMessage)) })
 
       eType            <- IO { associationPropertyShape.getConstraints.asScala.toList.collect { case cc: ClassConstraint => cc }.map(_.getExpectedClass.getURI).head }
 
@@ -455,7 +456,9 @@ import DataTypes._
 
     for {
 
-      linkType         <- IO { compositionPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+      _        <- IO { debug(s"Making CompositionProperty from : ${compositionPropertyShape.toString}") }
+
+      linkType         <- IO { compositionPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }.onError(t => IO { error(missingErrorMsg("path", compositionPropertyShape, t.getMessage)) })
 
       eType            <- IO { compositionPropertyShape.getConstraints.asScala.toList.collect { case cc: ClassConstraint => cc }.map(_.getExpectedClass.getURI).head }
 
@@ -476,13 +479,13 @@ import DataTypes._
 
       _        <- IO { debug(s"Making DataProperty from : ${dataPropertyShape.toString}") }
 
-      linkType <- IO { dataPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }.onError(t => IO {error(s"missing path in ${dataPropertyShape.toString} for cause: ${t.getMessage}")})
+      linkType <- IO { dataPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }.onError(t => IO { error(missingErrorMsg("path", dataPropertyShape, t.getMessage)) })
 
-      dataType <- IO { dataPropertyShape.getConstraints.asScala.toList.collect{case dc: DatatypeConstraint => dc}.map(_.getDatatypeURI ).head }.onError { t => IO { error(parseErrorMsg("datatype", dataPropertyShape, t.getMessage)) } }
+      dataType <- IO { dataPropertyShape.getConstraints.asScala.toList.collect{case dc: DatatypeConstraint => dc}.map(_.getDatatypeURI ).head }.onError { t => IO { error(missingErrorMsg("datatype", dataPropertyShape, t.getMessage)) } }
 
-      min <- IO { dataPropertyShape.getConstraints.asScala.toList.collect{case dc: MinCount => dc}.map(_.getMinCount).headOption }
+      min      <- IO { dataPropertyShape.getConstraints.asScala.toList.collect{case dc: MinCount => dc}.map(_.getMinCount).headOption }
 
-      max <- IO { dataPropertyShape.getConstraints.asScala.toList.collect{case dc: MaxCount => dc}.map(_.getMaxCount).headOption }
+      max      <- IO { dataPropertyShape.getConstraints.asScala.toList.collect{case dc: MaxCount => dc}.map(_.getMaxCount).headOption }
 
     } yield DataProperty(linkType, dataType, min, max)
 
@@ -497,7 +500,7 @@ import DataTypes._
 
       _                                 <- IO { debug(s"Making RelationProperty from : ${relationPropertyShape.toString}") }
 
-      linkType                          <- IO { relationPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }
+      linkType                          <- IO { relationPropertyShape.getPath.asInstanceOf[P_Link].getNode.getURI }.onError(t => IO { error(missingErrorMsg("path", relationPropertyShape, t.getMessage)) })
 
       min                               <- IO { relationPropertyShape.getConstraints.asScala.toList.collect { case dc: MinCount => dc }.map(_.getMinCount).headOption }
 
@@ -554,13 +557,12 @@ import DataTypes._
 
     propertyShape.getConstraints.asScala.toList.collectFirst{ case kind: NodeKindConstraint => kind }
       .fold{
-        throw new Throwable(s"isOfKind: Missing Kind in propertyshape ${propertyShape.toString} while trying to compare kind")
+        throw new Throwable(s"isOfKind: Missing Kind in PropertyShape ${propertyShape.toString} while trying to compare kind")
       } { kindConstraint =>
         kindConstraint.getKind.equals(kind)
       }
 
   }
-
 
   def setGlobalDocManagerProperties(): IO[Unit] = {
     for {
@@ -601,7 +603,7 @@ import DataTypes._
     } yield (ontPrefix, ontUri)
   }
 
-  def parseErrorMsg(missing: String, shape: Shape, cause: String) = {
+  def missingErrorMsg(missing: String, shape: Shape, cause: String) = {
     s"Missing $missing in shape: [${shape.toString}], for cause: [$cause]"
   }
 
