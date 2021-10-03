@@ -490,11 +490,20 @@ import DataTypes._
     } yield DataProperty(linkType, dataType, min, max)
 
   }
-
   /**
    * Make an RelationProperty from a PropertyShape describing an RelationProperty (non-reified relation)
+   *
+   * '''Note that a RelationProperty can not connect to a Reified Relation''' i.e. a Relation as per the Foundation Ontology.
+   * So we filter that out.
+   *
+   * It is a use case not currently supported, however it is  present in resnet where for e.g. a PathWay may contain edges.
+   *
+   * Investigation is necessary to decide how to handle this use case if at all, as this part of the  model of resnet is not formal
+   * and therefore not loaded in TigerGraph
+   *
+   * '''The Only thing that connect Relation are LinkProperty'''
    */
-  def makeRelationProperty(relationPropertyShape: PropertyShape): IO[RelationProperty] = {
+  def makeRelationProperty(relationPropertyShape: PropertyShape, schemaWithImports: SchemaWithImports): IO[RelationProperty] = {
 
     for {
 
@@ -510,16 +519,18 @@ import DataTypes._
 
       maybeANonEntityTypeNodesShapes    <- IO { maybeEntityTypeOrConstraint.map(_.getOthers.asScala.toList.asInstanceOf[List[NodeShape]]) }
 
-      eTypes                            <- maybeANonEntityTypeNodesShapes
-                                          .fold {
+      allETypes                            <- maybeANonEntityTypeNodesShapes
+        .fold {
 
-                                            IO { relationPropertyShape.getConstraints.asScala.toList.collect {case cc: ClassConstraint => cc}.head.getExpectedClass.getURI } map { List(_) }
+          IO { relationPropertyShape.getConstraints.asScala.toList.collect {case cc: ClassConstraint => cc}.head.getExpectedClass.getURI } map { List(_) }
 
-                                          } { aNonEntityTypeNodeShapes =>
+        } { aNonEntityTypeNodeShapes =>
 
-                                            IO { aNonEntityTypeNodeShapes.map(_.getConstraints.asScala.toList.collect {case cc: ClassConstraint => cc}.head.getExpectedClass.getURI) }
+          IO { aNonEntityTypeNodeShapes.map(_.getConstraints.asScala.toList.collect {case cc: ClassConstraint => cc}.head.getExpectedClass.getURI) }
 
-                                          }
+        }
+
+      eTypes                          <- IO.pure { allETypes.filterNot(schemaWithImports.getOntClass(_).hasSuperClass(schemaWithImports.getOntClass("https://data.elsevier.com/lifescience/schema/foundation/Relation"))) }
 
     } yield RelationProperty(linkType, eTypes, min, max)
 
