@@ -139,7 +139,7 @@ import DataTypes._
 
     _                    <- setGlobalDocManagerProperties()
 
-    schemaPair           <- loadSchema("elsevier_entellect_foundation_schema.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_external_schema_skosxl.ttl", "proxyInferenceModel.ttl")
+    schemaPair           <- loadSchema("elsevier_entellect_upper_schema_foundation.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_external_schema_skosxl.ttl", "proxyInferenceModel.ttl")
 
     (schema, schemaWithImports) = schemaPair
 

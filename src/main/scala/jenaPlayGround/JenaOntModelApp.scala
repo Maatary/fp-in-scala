@@ -296,7 +296,7 @@ object JenaOntModelApp extends App {
     ontDoc          <- IO { OntDocumentManager.getInstance() } // Set your global Ontology Manager without any LocationMapper, so the reliance on the StreamMndgr is ensured. The process is broken
     _               <- IO { ontDoc.setProcessImports(false) }
 
-    fdnModel        <- IO { ModelFactory.createDefaultModel().read("elsevier_entellect_foundation_schema.ttl") }
+    fdnModel        <- IO { ModelFactory.createDefaultModel().read("elsevier_entellect_upper_schema_foundation.ttl") }
     schemaModel     <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_TRANS_INF) }
     _               <- IO { schemaModel.read("proxyInferenceModel.ttl") }
     _               <- IO { schemaModel.addSubModel(fdnModel) }
