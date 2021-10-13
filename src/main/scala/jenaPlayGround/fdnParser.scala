@@ -352,7 +352,7 @@ import DataTypes._
 
                                   case prop if prop.equals(SKOS.inScheme)                                                                                => makeSchemeProperty(propertyShape)
 
-                                  case _                                                                                                                 => makeRelationProperty(propertyShape) //Must be the last case, just an object property
+                                  case _                                                                                                                 => makeRelationProperty(propertyShape,schemaWithImports) //Must be the last case, just an object property
 
                                 }
 

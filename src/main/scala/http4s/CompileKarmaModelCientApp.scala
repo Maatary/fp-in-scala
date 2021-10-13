@@ -110,7 +110,7 @@ object CompileKarmaModelCientApp extends App {
          Part.formData("ontologyType"    , "true"),
          Part.formData("hostname"        , "100.67.219.44")
        )
-     ) pipe { multipart => Method.POST(multipart , uri"http://localhost:8080").withHeaders(multipart.headers)}
+     ) pipe { multipart => POST(multipart , uri"http://localhost:8080").withHeaders(multipart.headers)}
 
    }
 
