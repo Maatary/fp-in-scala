@@ -1,4 +1,4 @@
-import json.value.{JsArray, JsObj, JsValue}
+import json.value.{JsArray, JsInt, JsObj, JsValue}
 import json.value.Preamble._
 import json.value.gen.Preamble._
 import json.value.gen.{JsArrayGen, JsObjGen}
@@ -32,4 +32,15 @@ val myJsonObjString = JsArray(JsObjGen.apply(l2:_*).sample.get).toPrettyString
 import org.json._
 
 new JSONArray(myJsonObjString)
+
+
+val person =
+  JsObj(
+    "@type" -> "Person",
+    "age" -> 37,
+    "age" -> 38)
+
+val l = List(1,2,3) map JsInt.apply
+
+JsArray(l)
 

@@ -1,6 +1,4 @@
-import cats.effect.IO
-import cats.effect.unsafe.implicits.global
-import io.github.vigoo.prox.ProxFS2
+
 
 
 val f = (a: String) => (b: String) => (c :Int) => b match {
@@ -23,21 +21,7 @@ func("2")(_)
 
 
 
-val          prox  : ProxFS2[IO]                   = ProxFS2[IO]
-import prox._
 
-implicit val runner: ProcessRunner[JVMProcessInfo] = new JVMProcessRunner
-
-
-
-
-val proc1 = Process("ls", List("-hal"))
-
-val proc1Redirect = proc1.toFoldMonoid(fs2.text.utf8.decode)
-
-val  res: IO[prox.ProcessResult[Unit, Unit]] = proc1.run()
-
-proc1Redirect.run().unsafeRunSync()
 
 
 

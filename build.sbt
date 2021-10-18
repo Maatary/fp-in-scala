@@ -16,9 +16,12 @@ libraryDependencies ++= Seq (
   "io.github.vigoo" %% "prox-fs2-3"          % "0.7.3",
   "org.tpolecat"    %% "doobie-core"         % "1.0.0-M2",
 
-  "is.cir"          %% "ciris"                % "2.1.1",
-  "is.cir"          %% "ciris-enumeratum"     % "2.1.1",
-  "is.cir"          %% "ciris-circe"          % "2.1.1",
+  "io.circe"        %% "circe-core"          % "0.14.1",
+  "io.circe"        %% "circe-generic"       % "0.14.1",
+  "io.circe"        %% "circe-parser"        % "0.14.1",
+  "is.cir"          %% "ciris"               % "2.1.1",
+  "is.cir"          %% "ciris-enumeratum"    % "2.1.1",
+  "is.cir"          %% "ciris-circe"         % "2.1.1",
 
   "com.outr"        %% "scribe-slf4j"        % "3.5.5",
 
