@@ -61,7 +61,7 @@ object ServerApp extends App {
 
   
   // note cats.effect.unsafe.implicits.global is IORuntime.global but as implicit.
-  BlazeServerBuilder[IO](IORuntime.global.compute)
+  BlazeServerBuilder[IO]
   .bindHttp()
   .withHttpApp(enrichGraphService)
   .resource

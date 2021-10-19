@@ -133,7 +133,7 @@ object CompileKarmaModelCientApp extends App {
       mappingsParams <- IO.pure{ mappingsInfo.map { e => ( pOntology, e._1, e._2, makeExtractionUri(datasetName, e._3), makeTopicName(datasetName, e._3, e._4) )  } }
       compileRequests   = toRequests(mappingsParams)
 
-      lResponse        <- BlazeClientBuilder[IO](IORuntime.global.compute).resource.use { runKarmaCompilationRequests(_, compileRequests) }
+      lResponse        <- BlazeClientBuilder[IO].resource.use { runKarmaCompilationRequests(_, compileRequests) }
 
       res              <- lResponse.traverse(pairWithEntityType(_))
 

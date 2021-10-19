@@ -9,9 +9,10 @@ libraryDependencies ++= Seq (
   "org.typelevel"   %% "cats-effect"         % "3.2.9",
   "co.fs2"          %% "fs2-core"            % "3.1.5",
   "co.fs2"          %% "fs2-io"              % "3.1.5",
-  "org.http4s"      %% "http4s-dsl"          % "1.0.0-M23",
-  "org.http4s"      %% "http4s-blaze-server" % "1.0.0-M23",
-  "org.http4s"      %% "http4s-blaze-client" % "1.0.0-M23",
+  "org.http4s"      %% "http4s-dsl"          % "1.0.0-M29",
+  "org.http4s"      %% "http4s-blaze-server" % "1.0.0-M29",
+  "org.http4s"      %% "http4s-blaze-client" % "1.0.0-M29",
+
 
   "io.github.vigoo" %% "prox-fs2-3"          % "0.7.3",
   "org.tpolecat"    %% "doobie-core"         % "1.0.0-M2",
@@ -23,11 +24,11 @@ libraryDependencies ++= Seq (
   "is.cir"          %% "ciris-enumeratum"    % "2.1.1",
   "is.cir"          %% "ciris-circe"         % "2.1.1",
 
-  "com.outr"        %% "scribe-slf4j"        % "3.5.5",
+  "com.outr"        %% "scribe-slf4j"        % "3.6.0",
 
   "com.lihaoyi"     %% "ammonite-ops"        % "2.3.8",
 
-  "org.apache.jena" % "apache-jena-libs"     % "4.1.0" pomOnly(),
+  "org.apache.jena" % "apache-jena-libs"     % "4.2.0" pomOnly(),
   "org.topbraid"    % "shacl"                % "1.3.2",
 
   "com.github.imrafaelmerino" %% "json-scala-values" % "4.0.0",

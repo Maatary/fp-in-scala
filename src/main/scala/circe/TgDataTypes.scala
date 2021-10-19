@@ -46,7 +46,7 @@ object TgDataTypes {
   implicit val encodeSingleValuedAttribute: Encoder[SingleValuedAttribute] = new Encoder[SingleValuedAttribute] {
     override def apply(a: SingleValuedAttribute): Json = {
       obj(
-        a.aType -> obj("value" -> a.value.asJson)
+        a.aType -> obj("value" -> (if (a.dataType == NUMBER) a.value.toDouble.asJson else a.value.asJson ) )
       )
     }
   }
@@ -57,7 +57,7 @@ object TgDataTypes {
   implicit val encodeMultiValuedAttribute: Encoder[MultiValuedAttribute] = new Encoder[MultiValuedAttribute] {
     override def apply(a: MultiValuedAttribute): Json = {
       obj(
-        a.aType -> obj("value" -> a.values.asJson)
+        a.aType -> obj("value" -> (if (a.dataType == NUMBER) a.values.map(_.toDouble).asJson else a.values.asJson ) )
       )
     }
   }
@@ -151,6 +151,5 @@ object TgDataTypes {
     }
 
   }
-
 
 }

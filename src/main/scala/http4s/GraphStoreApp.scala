@@ -94,7 +94,7 @@ object GraphStoreApp extends App {
 
   (for {
 
-    clientResource <- IO { BlazeClientBuilder[IO](IORuntime.global.compute).resource }
+    clientResource <- IO { BlazeClientBuilder[IO].resource }
 
     ontoStreams    <-  clientResource.use { client =>  (getImportStreams(client, tStore), getProxyStreams(client, tStore, proxyUrls)).tupled }
 
