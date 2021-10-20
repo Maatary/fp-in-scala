@@ -36,6 +36,31 @@ object TgCirceApp extends App {
   }
 
 
+  val v0 =
+    Vertex(
+      "Reaxys_Metabolizer",
+      "Metabolizer_1",
+      List(
+        SingleValuedAttribute("hasMetabolizerNumber", "1829", STRING),
+        UserDefinedAttribute(
+          "hasMetabolizerTotalNumber",
+          List
+            (
+              SingleValuedAttribute("hasValueUnit", "2000", STRING),
+              SingleValuedAttribute("hasValue", "2000", STRING),
+              SingleValuedAttribute("hasDisplayValue", "2000yards", STRING),
+              SingleValuedAttribute("hasPlausibility", "2000", STRING),
+              SingleValuedAttribute("hasStatisticalInformation", "2000", STRING),
+              SingleValuedAttribute("hasStandardValue", "2000", STRING),
+              SingleValuedAttribute("hasValuePrecision", "2000yards", STRING)
+              //Reaxys_MetabolizerTotalNumber (hasDisplayValue STRING (1024), hasPlausibility STRING (1024), hasStandardValue STRING (1024), hasStatisticalInformation STRING (1024), hasValue STRING (1024), hasValuePrecision STRING (1024), hasValueUnit STRING (1024))
+              //Reaxys_MetabolizerTotalNumber (hasValueUnit STRING (1024), hasValue STRING (1024), hasDisplayValue STRING (1024), hasPlausibility STRING (1024), hasStatisticalInformation STRING (1024), hasStandardValue STRING (1024), hasValuePrecision STRING (1024))
+            )
+            .map(attr => attr.aType -> attr)
+        )
+      )
+    )
+
   val v1 =
     Vertex(
       "Resnet_Protein",
@@ -79,10 +104,6 @@ object TgCirceApp extends App {
 
   println(tgMsg1.asJson.spaces2)*/
 
-
-
-
-
   /*val postMsgLogic = for {
 
     tgMsg          <- IO.pure(TgMessage(List(v1, v2), List(e1,e2)))
@@ -104,10 +125,10 @@ object TgCirceApp extends App {
 
     _        <-
       Stream
-      .emits(List(TgMessage(List(v1, v2), List(e1,e2))))
-      .evalTap { msg  => IO { info(msg.asJson.spaces2) } }
+      .emits(List(TgMessage(List(v0), List())))
+      .evalTap { msg  => IO { info("Sending Request: \n" +  msg.asJson.spaces2) } }
       .evalMap { msg  => client.expect[String](makeTgRequest(msg)) }
-      .evalMap { resp => IO { info(parse(resp).getOrElse(Json.Null).spaces2) } }
+      .evalMap { resp => IO { info("Received Response: \n" + parse(resp).getOrElse(Json.Null).spaces2) } }
 
   } yield ()
 

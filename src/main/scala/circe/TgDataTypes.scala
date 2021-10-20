@@ -29,9 +29,10 @@ object TgDataTypes {
   case object STRING extends TgDataType
 
 
-  sealed trait TgAttribute
-  final case class SingleValuedAttribute(aType: String, value: String, dataType: TgDataType) extends TgAttribute
-  final case class MultiValuedAttribute(aType: String, values: List[String], dataType: TgDataType) extends TgAttribute
+  sealed abstract class TgAttribute(val aType: String)
+  final case class SingleValuedAttribute(override val aType: String, value: String, dataType: TgDataType) extends TgAttribute(aType)
+  final case class MultiValuedAttribute(override val aType: String, values: List[String], dataType: TgDataType) extends TgAttribute(aType)
+  final case class UserDefinedAttribute(override val aType: String, values: List[(String, TgAttribute)]) extends TgAttribute(aType)
 
 
   case class EdgeGroupKey(sourceVertexType: String, sourceVertexId: String, eType:String, targetVertexType: String)
@@ -62,6 +63,41 @@ object TgDataTypes {
     }
   }
 
+
+  /**
+   * UserDefinedAttribute
+   *
+   * __Note__:
+   * ''In TG the Order of the Fields of a User Define Type matter at Ingestion time, hence we sort it by default to ensure an order.
+   * The sorting is first done upstream in the schema builder, so we do it downstream when inserting data.''
+   */
+  implicit val encodeUserDefinedAttribute: Encoder[UserDefinedAttribute] = new Encoder[UserDefinedAttribute] {
+    override def apply(a: UserDefinedAttribute): Json = {
+      obj(a.aType -> obj("value" -> (encodeKeyValueArraysObject.tupled compose mapAsKeysJsonValuesPair) (a.values.sortBy(_._1)) ))
+    }
+
+    private val mapAsKeysJsonValuesPair: List[(String, TgAttribute)] => (List[String], List[Json]) = (values: List[(String, TgAttribute)]) =>  {
+
+      values
+        .unzip
+        .pipe { case (types, attributes) =>
+          types ->
+            (
+              attributes map {
+                case SingleValuedAttribute(_, value, dataType) => if (dataType == NUMBER) value.toDouble.asJson else value.asJson
+                case MultiValuedAttribute(_, values, dataType) => if (dataType == NUMBER) values.map(_.toDouble).asJson else values.asJson
+                case UserDefinedAttribute(_, _)           => "unsupported".asJson
+              }
+            )
+        }
+    }
+
+    private val encodeKeyValueArraysObject: (List[String], List[Json]) => Json = (types: List[String], values: List[Json]) => {
+      (obj("keylist" -> types.asJson), obj("valuelist" -> values.asJson)) pipe { case (a, b) => b.deepMerge(a) }
+    }
+  }
+
+
   /**
    * TgAttribute
    */
@@ -69,6 +105,7 @@ object TgDataTypes {
     override def apply(a: TgAttribute):Json = a match {
       case s@SingleValuedAttribute(_, _, _) => s.asJson
       case m@MultiValuedAttribute(_, _, _) => m.asJson
+      case uda@UserDefinedAttribute(_, _) => uda.asJson
     }
 
   }
@@ -81,6 +118,7 @@ object TgDataTypes {
       a.map(_.asJson).foldLeft(obj()){_.deepMerge(_)}
     }
   }
+
 
 
 
@@ -111,7 +149,6 @@ object TgDataTypes {
   /**
    * Edge StandAlone (not used - just for debug)
    */
-
   implicit val encodeStandAloneEdge: Encoder[Edge] = new Encoder[Edge] {
     override def apply(a: Edge): Json = {
       obj(
