@@ -135,18 +135,6 @@ object TgDataTypes {
 
 
   /**
-   * Vertex Nested
-   */
-  implicit val encodeNestedVertex: Encoder[Vertex] = new Encoder[Vertex] {
-    override def apply(a: Vertex): Json = {
-      a.attributes.asJson pipe { attributes => obj(a.id -> attributes)}
-    }
-  }
-
-
-
-
-  /**
    * Edge StandAlone (not used - just for debug)
    */
   implicit val encodeStandAloneEdge: Encoder[Edge] = new Encoder[Edge] {
@@ -158,22 +146,58 @@ object TgDataTypes {
   }
 
   /**
+   * Vertex Nested
+   */
+  /*implicit val encodeNestedVertex: Encoder[Vertex] = new Encoder[Vertex] {
+    override def apply(a: Vertex): Json = {
+      a.attributes.asJson pipe { attributes => obj(a.id -> attributes)}
+    }
+  }*/
+
+  implicit val encodeNestedVertices: Encoder[List[Vertex]] = new Encoder[List[Vertex]] {
+
+    override def apply(a: List[Vertex]): Json = {
+      a.groupMapReduce(_.vType)(_.asJson(encodeNestedVertex))(_.deepMerge(_)) pipe (_.asJson)
+    }
+
+    private def encodeNestedVertex(vertex: Vertex): Json = {
+      vertex.attributes.asJson pipe { attributes => obj(vertex.id -> attributes)}
+    }
+
+  }
+
+  implicit val encodeNestedEdges: Encoder[List[Edge]] = new Encoder[List[Edge]] {
+    override def apply(a: List[Edge]): Json = {
+      val edgeGroupMap: List[(EdgeGroupKey, Json)] =
+        a.groupMapReduce
+        { edge => EdgeGroupKey(edge.sourceVertexType, edge.sourceVertexId, edge.eType, edge.targetVertexType) }
+        { edge => obj(edge.targetVertexId -> edge.attributes.asJson ) }
+        { _.deepMerge(_) }.toList
+
+      val jsonEdgeGroupList: List[Json] =
+        edgeGroupMap map { case (egk, jsonGroup) =>
+          obj(egk.sourceVertexType -> obj(egk.sourceVertexId -> obj(egk.eType -> obj(egk.targetVertexType -> jsonGroup))))
+        }
+      jsonEdgeGroupList.foldLeft(obj())(_.deepMerge(_))
+    }
+  }
+
+  //implicit val encodeEdgesNested
+
+  /**
    * TgMessageWithNestedObjects
    */
   implicit val encodeTgMessageWithNestedObjects: Encoder[TgMessage] = new Encoder[TgMessage] {
 
     override def apply(a: TgMessage): Json = {
-      obj(
-        "vertices" -> encodeVerticesGrouped(a.vertices),
-        "edges" -> encodeEdgesGrouped(a.edges)
-      )
+      obj("vertices" -> a.vertices.asJson, "edges" -> a.edges.asJson)
     }
 
-    private def encodeVerticesGrouped(vertices: List[Vertex]): Json = {
-      vertices.groupMapReduce(_.vType)(_.asJson(encodeNestedVertex))(_.deepMerge(_)) pipe (_.asJson)
-    }
+    /*private def encodeVerticesGrouped(vertices: List[Vertex]): Json = {
+      vertices.groupMapReduce(_.vType)(_.asJson)(_.deepMerge(_)) pipe (_.asJson)
+    }*/
 
-    private def encodeEdgesGrouped(edges: List[Edge]): Json = {
+   /* private def encodeEdgesGrouped(edges: List[Edge]): Json = {
       val edgeGroupMap: List[(EdgeGroupKey, Json)] =
         edges.groupMapReduce
         { edge => EdgeGroupKey(edge.sourceVertexType, edge.sourceVertexId, edge.eType, edge.targetVertexType) }
@@ -185,7 +209,7 @@ object TgDataTypes {
           obj(egk.sourceVertexType -> obj(egk.sourceVertexId -> obj(egk.eType -> obj(egk.targetVertexType -> jsonGroup))))
         }
       jsonEdgeGroupList.foldLeft(obj())(_.deepMerge(_))
-    }
+    }*/
 
   }
 

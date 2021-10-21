@@ -125,7 +125,7 @@ object TgCirceApp extends App {
 
     _        <-
       Stream
-      .emits(List(TgMessage(List(v0), List())))
+      .emits(List(TgMessage(List(v0), List(e1,e2))))
       .evalTap { msg  => IO { info("Sending Request: \n" +  msg.asJson.spaces2) } }
       .evalMap { msg  => client.expect[String](makeTgRequest(msg)) }
       .evalMap { resp => IO { info("Received Response: \n" + parse(resp).getOrElse(Json.Null).spaces2) } }
