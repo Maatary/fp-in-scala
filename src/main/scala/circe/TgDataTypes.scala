@@ -72,34 +72,31 @@ object TgDataTypes {
    * The sorting is first done upstream in the schema builder, so we do it downstream when inserting data.''
    */
   implicit val encodeUserDefinedAttribute: Encoder[UserDefinedAttribute] = new Encoder[UserDefinedAttribute] {
+
     override def apply(a: UserDefinedAttribute): Json = {
       obj(a.aType -> obj("value" -> (encodeKeyValueArraysObject.tupled compose mapAsKeysJsonValuesPair) (a.values.sortBy(_._1)) ))
     }
 
     private val mapAsKeysJsonValuesPair: List[(String, TgAttribute)] => (List[String], List[Json]) = (values: List[(String, TgAttribute)]) =>  {
-
       values
         .unzip
-        .pipe { case (types, attributes) =>
-          types ->
-            (
-              attributes map {
-                case SingleValuedAttribute(_, value, dataType) => if (dataType == NUMBER) value.toDouble.asJson else value.asJson
-                case MultiValuedAttribute(_, values, dataType) => if (dataType == NUMBER) values.map(_.toDouble).asJson else values.asJson
-                case UserDefinedAttribute(_, _)           => "unsupported".asJson
-              }
-            )
-        }
+        .pipe { case (types, attributes) => types -> ( attributes map mapAttributeValueToJsonValue ) }
     }
 
     private val encodeKeyValueArraysObject: (List[String], List[Json]) => Json = (types: List[String], values: List[Json]) => {
       (obj("keylist" -> types.asJson), obj("valuelist" -> values.asJson)) pipe { case (a, b) => b.deepMerge(a) }
     }
+
+    private def mapAttributeValueToJsonValue(attribute: TgAttribute): Json = attribute match {
+      case SingleValuedAttribute(_, value, dataType) => if (dataType == NUMBER) value.toDouble.asJson else value.asJson
+      case MultiValuedAttribute(_, values, dataType) => if (dataType == NUMBER) values.map(_.toDouble).asJson else values.asJson
+      case UserDefinedAttribute(_, _)           => "unsupported".asJson
+    }
   }
 
 
   /**
-   * TgAttribute
+   * TgAttribute (ADT)
    */
   implicit val encodeTgAttribute: Encoder[TgAttribute] = new Encoder[TgAttribute] {
     override def apply(a: TgAttribute):Json = a match {
@@ -107,7 +104,6 @@ object TgDataTypes {
       case m@MultiValuedAttribute(_, _, _) => m.asJson
       case uda@UserDefinedAttribute(_, _) => uda.asJson
     }
-
   }
 
   /**
@@ -122,10 +118,8 @@ object TgDataTypes {
 
 
 
-
-
   /**
-   * Vertex Standalone (not used - need to be shadowed)
+   * Vertex Standalone (not used)
    */
   implicit val encodeStandAloneVertex: Encoder[Vertex] = new Encoder[Vertex] {
     override def apply(a: Vertex): Json = {
@@ -135,7 +129,7 @@ object TgDataTypes {
 
 
   /**
-   * Edge StandAlone (not used - just for debug)
+   * Edge StandAlone (not used)
    */
   implicit val encodeStandAloneEdge: Encoder[Edge] = new Encoder[Edge] {
     override def apply(a: Edge): Json = {
@@ -145,14 +139,6 @@ object TgDataTypes {
     }
   }
 
-  /**
-   * Vertex Nested
-   */
-  /*implicit val encodeNestedVertex: Encoder[Vertex] = new Encoder[Vertex] {
-    override def apply(a: Vertex): Json = {
-      a.attributes.asJson pipe { attributes => obj(a.id -> attributes)}
-    }
-  }*/
 
   implicit val encodeNestedVertices: Encoder[List[Vertex]] = new Encoder[List[Vertex]] {
 
@@ -182,35 +168,14 @@ object TgDataTypes {
     }
   }
 
-  //implicit val encodeEdgesNested
 
   /**
    * TgMessageWithNestedObjects
    */
   implicit val encodeTgMessageWithNestedObjects: Encoder[TgMessage] = new Encoder[TgMessage] {
-
     override def apply(a: TgMessage): Json = {
       obj("vertices" -> a.vertices.asJson, "edges" -> a.edges.asJson)
     }
-
-    /*private def encodeVerticesGrouped(vertices: List[Vertex]): Json = {
-      vertices.groupMapReduce(_.vType)(_.asJson)(_.deepMerge(_)) pipe (_.asJson)
-    }*/
-
-   /* private def encodeEdgesGrouped(edges: List[Edge]): Json = {
-      val edgeGroupMap: List[(EdgeGroupKey, Json)] =
-        edges.groupMapReduce
-        { edge => EdgeGroupKey(edge.sourceVertexType, edge.sourceVertexId, edge.eType, edge.targetVertexType) }
-        { edge => obj(edge.targetVertexId -> edge.attributes.asJson ) }
-        { _.deepMerge(_) }.toList
-
-      val jsonEdgeGroupList: List[Json] =
-        edgeGroupMap map { case (egk, jsonGroup) =>
-          obj(egk.sourceVertexType -> obj(egk.sourceVertexId -> obj(egk.eType -> obj(egk.targetVertexType -> jsonGroup))))
-        }
-      jsonEdgeGroupList.foldLeft(obj())(_.deepMerge(_))
-    }*/
-
   }
 
 }
