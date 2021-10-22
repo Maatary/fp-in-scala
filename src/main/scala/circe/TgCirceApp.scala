@@ -88,9 +88,11 @@ object TgCirceApp extends App {
 
   val edgeAttributes1: List[TgAttribute] = List(SingleValuedAttribute("dateCreated", "10-18-2021", STRING), SingleValuedAttribute("effect", "positive", STRING), SingleValuedAttribute("mechanism", "direct interaction", STRING))
   val edgeAttributes2: List[TgAttribute] = List(SingleValuedAttribute("dateCreated", "10-16-2021", STRING), SingleValuedAttribute("effect", "negative", STRING), SingleValuedAttribute("mechanism", "cleavage", STRING))
+  val edgeAttributes3: List[TgAttribute] = List(SingleValuedAttribute("dateCreated", "01-04-2020", STRING), SingleValuedAttribute("effect", "unknown", STRING), SingleValuedAttribute("mechanism", "cleavage", STRING))
 
   val e1: Edge                           = Edge("Resnet_Regulation", "Resnet_SmallMol_72057594038010064", "Resnet_SmallMol","Resnet_ClinicalParameter_72057594038000019","Resnet_ClinicalParameter", edgeAttributes1)
   val e2: Edge                           = Edge("Resnet_Regulation", "Resnet_SmallMol_72057594038010064", "Resnet_SmallMol","Resnet_ClinicalParameter_72057594038000018","Resnet_ClinicalParameter", edgeAttributes2)
+  val e3: Edge                           = Edge("Resnet_Regulation", "Resnet_SmallMol_72057594038010064", "Resnet_SmallMol","Resnet_Protein_20057594038000040","Resnet_Protein", edgeAttributes2)
 
 
   /*SingleValuedAttribute("dateCreated", "10-16-2021", STRING).asJson
@@ -125,7 +127,7 @@ object TgCirceApp extends App {
 
     _        <-
       Stream
-      .emits(List(TgMessage(List(v0), List(e1,e2))))
+      .emits(List(TgMessage(List(v0,v1), List(e1,e2,e3))))
       .evalTap { msg  => IO { info("Sending Request: \n" +  msg.asJson.spaces2) } }
       .evalMap { msg  => client.expect[String](makeTgRequest(msg)) }
       .evalMap { resp => IO { info("Received Response: \n" + parse(resp).getOrElse(Json.Null).spaces2) } }

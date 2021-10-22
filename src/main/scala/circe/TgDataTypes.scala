@@ -13,6 +13,18 @@ object TgDataTypes {
 
   /**
    *
+   * TYPES ALIASES
+   *
+   */
+  type VertexType       = String
+  type EdgeType         = String
+  type AttributeType    = String
+  type VertexId         = String
+  type AttributeValue   = String
+
+
+  /**
+   *
    *  TG DATA TYPES
    *
    */
@@ -20,8 +32,8 @@ object TgDataTypes {
   case class TgMessage(vertices: List[Vertex], edges: List[Edge])
 
   sealed trait TgObject
-  final case class Vertex(vType: String, id: String, attributes: List[TgAttribute]) extends TgObject
-  final case class Edge(eType:String, sourceVertexId: String, sourceVertexType: String, targetVertexId: String, targetVertexType: String, attributes: List[TgAttribute]) extends TgObject
+  final case class Vertex(vType: VertexType, id: VertexId, attributes: List[TgAttribute]) extends TgObject
+  final case class Edge(eType: EdgeType, sourceVertexId: VertexId, sourceVertexType: VertexType, targetVertexId: VertexId, targetVertexType: VertexType, attributes: List[TgAttribute]) extends TgObject
 
 
   sealed trait TgDataType
@@ -29,15 +41,13 @@ object TgDataTypes {
   case object STRING extends TgDataType
 
 
-  sealed abstract class TgAttribute(val aType: String)
-  final case class SingleValuedAttribute(override val aType: String, value: String, dataType: TgDataType) extends TgAttribute(aType)
-  final case class MultiValuedAttribute(override val aType: String, values: List[String], dataType: TgDataType) extends TgAttribute(aType)
-  final case class UserDefinedAttribute(override val aType: String, values: List[(String, TgAttribute)]) extends TgAttribute(aType)
+  sealed abstract class TgAttribute(val aType: AttributeType)
+  final case class SingleValuedAttribute(override val aType: AttributeType, value: AttributeValue, dataType: TgDataType) extends TgAttribute(aType)
+  final case class MultiValuedAttribute(override val aType: AttributeType, values: List[AttributeValue], dataType: TgDataType) extends TgAttribute(aType)
+  final case class UserDefinedAttribute(override val aType: AttributeType, values: List[(AttributeType, TgAttribute)]) extends TgAttribute(aType)
 
 
-  case class EdgeGroupKey(sourceVertexType: String, sourceVertexId: String, eType:String, targetVertexType: String)
-
-
+  case class EdgeGroupKey(sourceVertexType: VertexType, sourceVertexId: VertexId, eType: EdgeType, targetVertexType: VertexType)
 
 
 
@@ -63,40 +73,52 @@ object TgDataTypes {
     }
   }
 
-
   /**
-   * UserDefinedAttribute
+   * UserDefinedAttribute (see [[https://docs.tigergraph.com/v/3.1/dev/restpp-api/intro#formatting-data-in-json TG Formatting Advanced DataTypes]])
    *
-   * __Note__:
-   * ''In TG the Order of the Fields of a User Define Type matter at Ingestion time, hence we sort it by default to ensure an order.
-   * The sorting is first done upstream in the schema builder, so we do it downstream when inserting data.''
+   * E.g. The Tuple Definition
+   *
+   * {{{
+   *    TYPEDEF TUPLE <name STRING, age INT> Person
+   * }}}
+   * Translates to
+   *
+   * {{{
+   *    {
+   *      "keyList: ["name", "age"],
+   *      "valueList": ["Sam", 24]
+   *    }
+   * }}}
+   *
+   * __Rule__:
+   *
+   * `In TG the Order of the Fields of a User Define Type matter at Ingestion time, hence we sort it alphabetically by default to ensure an order.`
+   * `The sorting is first done upstream in the schema builder, so we do it downstream when inserting data.`
+   *
    */
   implicit val encodeUserDefinedAttribute: Encoder[UserDefinedAttribute] = new Encoder[UserDefinedAttribute] {
 
     override def apply(a: UserDefinedAttribute): Json = {
-      obj(a.aType -> obj("value" -> (encodeKeyValueArraysObject.tupled compose mapAsKeysJsonValuesPair) (a.values.sortBy(_._1)) ))
+      obj(a.aType -> obj("value" -> makeKeysValuesObject (a.values.sortBy(_._1)) ))
     }
 
-    private val mapAsKeysJsonValuesPair: List[(String, TgAttribute)] => (List[String], List[Json]) = (values: List[(String, TgAttribute)]) =>  {
+    private def makeKeysValuesObject (values: List[(AttributeType, TgAttribute)]): Json =  {
       values
         .unzip
-        .pipe { case (types, attributes) => types -> ( attributes map mapAttributeValueToJsonValue ) }
+        .pipe { case (types, attributes) => (types map {_.asJson}) -> ( attributes map makeJsonValueFromAttributeValue ) }
+        .pipe { case (keys, values) => obj("keylist" -> keys.asJson) -> obj("valuelist" -> values.asJson) }
+        .pipe { case (keyListObject, valueListObject) => keyListObject.deepMerge(valueListObject) }
     }
 
-    private val encodeKeyValueArraysObject: (List[String], List[Json]) => Json = (types: List[String], values: List[Json]) => {
-      (obj("keylist" -> types.asJson), obj("valuelist" -> values.asJson)) pipe { case (a, b) => b.deepMerge(a) }
-    }
-
-    private def mapAttributeValueToJsonValue(attribute: TgAttribute): Json = attribute match {
+    private def makeJsonValueFromAttributeValue(attribute: TgAttribute): Json = attribute match {
       case SingleValuedAttribute(_, value, dataType) => if (dataType == NUMBER) value.toDouble.asJson else value.asJson
       case MultiValuedAttribute(_, values, dataType) => if (dataType == NUMBER) values.map(_.toDouble).asJson else values.asJson
       case UserDefinedAttribute(_, _)           => "unsupported".asJson
     }
   }
 
-
   /**
-   * TgAttribute (ADT)
+   *  TgAttribute ( i.e. Attribute ADT)
    */
   implicit val encodeTgAttribute: Encoder[TgAttribute] = new Encoder[TgAttribute] {
     override def apply(a: TgAttribute):Json = a match {
@@ -107,7 +129,7 @@ object TgDataTypes {
   }
 
   /**
-   * TGAttributeList
+   * TgAttributeList
    */
   implicit val encodeTgAttributeList: Encoder[List[TgAttribute]] = new Encoder[List[TgAttribute]] {
     override def apply(a: List[TgAttribute]): Json = {
@@ -119,60 +141,140 @@ object TgDataTypes {
 
 
   /**
-   * Vertex Standalone (not used)
+   * Vertex Standalone (not used in batch)
    */
   implicit val encodeStandAloneVertex: Encoder[Vertex] = new Encoder[Vertex] {
     override def apply(a: Vertex): Json = {
-      a.attributes.asJson pipe { attributes => obj( a.vType -> obj(a.id -> attributes) ) }
+      obj(a.vType -> obj(a.id ->  a.attributes.asJson))
     }
   }
 
-
   /**
-   * Edge StandAlone (not used)
+   * Edge StandAlone (not used in batch)
    */
   implicit val encodeStandAloneEdge: Encoder[Edge] = new Encoder[Edge] {
     override def apply(a: Edge): Json = {
-      obj(
-        a.sourceVertexType -> obj(a.sourceVertexId -> obj(a.eType -> obj(a.targetVertexType -> obj(a.targetVertexId -> a.attributes.asJson))))
-      )
+      obj(a.sourceVertexType -> obj(a.sourceVertexId -> obj(a.eType -> obj(a.targetVertexType -> obj(a.targetVertexId -> a.attributes.asJson)))))
     }
   }
 
 
+
+
+
+  /**
+   *
+   * Nested Vertices Message (see [[https://docs.tigergraph.com/v/3.1/dev/restpp-api/built-in-endpoints#request-body-2  TG Json Message Specification]])
+   *
+   * {{{
+   *  "vertices": {
+   *     "<vertex_type>": {
+   *         "<vertex_id>": {
+   *             "<attribute>": {
+   *                 "value": <value>,
+   *                 "op": <opcode>
+   *             }
+   *         }
+   *      }
+   *  }
+   * }}}
+   *
+   * __Rule__:
+   *
+   * `The nested hierarchy means that vertices are grouped by type`
+   *
+   */
   implicit val encodeNestedVertices: Encoder[List[Vertex]] = new Encoder[List[Vertex]] {
-
     override def apply(a: List[Vertex]): Json = {
-      a.groupMapReduce(_.vType)(_.asJson(encodeNestedVertex))(_.deepMerge(_)) pipe (_.asJson)
+      a.groupMapReduce
+      { vertex => vertex.vType }
+      { vertex => obj(vertex.id -> vertex.attributes.asJson) }
+      { _.deepMerge(_) } pipe (_.asJson)
     }
-
-    private def encodeNestedVertex(vertex: Vertex): Json = {
-      vertex.attributes.asJson pipe { attributes => obj(vertex.id -> attributes)}
-    }
-
   }
 
+  /**
+   * Nested Edges Message (see [[https://docs.tigergraph.com/v/3.1/dev/restpp-api/built-in-endpoints#request-body-2  TG Json Message Specification]])
+   *
+   * {{{
+   *
+   *  "edges": {
+   *     "<source_vertex_type>": {
+   *        "<source_vertex_id>": {
+   *           "<edge_type>": {
+   *              "<target_vertex_type>": {
+   *                 "<target_vertex_id>": {
+   *                    "<attribute>": {
+   *                       "value": <value>,
+   *                       "op": <opcode>
+   *                    }
+   *                 }
+   *              }
+   *           }
+   *        }
+   *     }
+   *  }
+   * }}}
+   *
+   * __Rule__:
+   *
+   * `The nested hierarchy means Edges are first grouped by source vertex type, then vertex ID, then edge type, then target vertex type`
+   *
+   */
   implicit val encodeNestedEdges: Encoder[List[Edge]] = new Encoder[List[Edge]] {
     override def apply(a: List[Edge]): Json = {
-      val edgeGroupMap: List[(EdgeGroupKey, Json)] =
-        a.groupMapReduce
-        { edge => EdgeGroupKey(edge.sourceVertexType, edge.sourceVertexId, edge.eType, edge.targetVertexType) }
-        { edge => obj(edge.targetVertexId -> edge.attributes.asJson ) }
-        { _.deepMerge(_) }.toList
-
-      val jsonEdgeGroupList: List[Json] =
-        edgeGroupMap map { case (egk, jsonGroup) =>
-          obj(egk.sourceVertexType -> obj(egk.sourceVertexId -> obj(egk.eType -> obj(egk.targetVertexType -> jsonGroup))))
-        }
-      jsonEdgeGroupList.foldLeft(obj())(_.deepMerge(_))
+      a.groupMapReduce
+      { edge => EdgeGroupKey(edge.sourceVertexType, edge.sourceVertexId, edge.eType, edge.targetVertexType) }
+      { edge => obj(edge.targetVertexId -> edge.attributes.asJson ) }
+      { _.deepMerge(_) }
+        .toList
+        .map { case (egk, edgeGroup) => obj(egk.sourceVertexType -> obj(egk.sourceVertexId -> obj(egk.eType -> obj(egk.targetVertexType -> edgeGroup))))}
+        .foldLeft(obj())(_.deepMerge(_))
     }
   }
 
 
   /**
-   * TgMessageWithNestedObjects
+   * TG Message As Nested Objects (see [[https://docs.tigergraph.com/v/3.1/dev/restpp-api/built-in-endpoints#request-body-2  TG Json Message Specification]])
+   *
+   * {{{
+   * {
+   *
+   *  "vertices": {
+   *     "<vertex_type>": {
+   *         "<vertex_id>": {
+   *             "<attribute>": {
+   *                 "value": <value>,
+   *                 "op": <opcode>
+   *             }
+   *         }
+   *      }
+   *  }
+   *
+   *  "edges": {
+   *     "<source_vertex_type>": {
+   *        "<source_vertex_id>": {
+   *           "<edge_type>": {
+   *              "<target_vertex_type>": {
+   *                 "<target_vertex_id>": {
+   *                    "<attribute>": {
+   *                       "value": <value>,
+   *                       "op": <opcode>
+   *                    }
+   *                 }
+   *              }
+   *           }
+   *        }
+   *     }
+   *  }
+   *
+   * }
+   * }}}
+   *
+   * @see [[encodeNestedVertices]]
+   * @see [[encodeNestedEdges]]
    */
-  implicit val encodeTgMessageWithNestedObjects: Encoder[TgMessage] = new Encoder[TgMessage] {
+  implicit val encodeTgMessageAsNestedObjects: Encoder[TgMessage] = new Encoder[TgMessage] {
     override def apply(a: TgMessage): Json = {
       obj("vertices" -> a.vertices.asJson, "edges" -> a.edges.asJson)
     }
