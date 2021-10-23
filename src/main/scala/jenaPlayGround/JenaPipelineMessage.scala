@@ -75,7 +75,7 @@ object JenaPipelineMessage extends App {
 
   } yield ()
 
- // program.unsafeRunSync()
+  program.unsafeRunSync()
 
   import cats.syntax.all._
 
