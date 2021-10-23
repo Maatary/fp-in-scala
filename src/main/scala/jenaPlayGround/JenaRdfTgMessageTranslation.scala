@@ -75,7 +75,7 @@ object JenaRdfTgMessageTranslation extends App {
     for {
 
       typeMapper                      <- IO { TypeMapper.getInstance() }
-      rdfDataType                     <- IO { typeMapper.getSafeTypeByName(dataProperty.dataType)}
+      rdfDataType                     <- IO { typeMapper.getSafeTypeByName(dataProperty.dataType) }
 
       maybeValue                      <- getDataPropValue(ontoResource, dataProperty.linkType, rdfDataType)
 
@@ -108,7 +108,7 @@ object JenaRdfTgMessageTranslation extends App {
     for {
 
       typeMapper                      <- IO { TypeMapper.getInstance() }
-      rdfDataType                     <- IO { typeMapper.getSafeTypeByName(dataProperty.dataType)}
+      rdfDataType                     <- IO { typeMapper.getSafeTypeByName(dataProperty.dataType) }
 
       values                          <- getDataPropValues(ontoResource, dataProperty.linkType, rdfDataType)
 
@@ -134,8 +134,15 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
+  def makeAttributeFromDataProperty(ontoResource: OntResource) (dataProperty: DataProperty): IO[Option[TgAttribute]] = dataProperty match {
+    case DataProperty(_,_,_, None)                   => makeMultiValuedAttributeFromDataProperty(ontoResource, dataProperty)
+    case DataProperty(_,_,_, Some(card)) if card > 1 => makeMultiValuedAttributeFromDataProperty(ontoResource, dataProperty)
+    case _                                           => makeSingleValuedAttributeFromDataProperty(ontoResource, dataProperty)
+  }
 
   val program = for {
+
+    _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488 ")}
 
     ontDoc                           <- IO { OntDocumentManager.getInstance() } // Set your global Ontology Manager without any LocationMapper, so the reliance on the StreamMndgr is ensured. The process is broken
     _                                <- IO { ontDoc.setProcessImports(false) }
@@ -147,11 +154,15 @@ object JenaRdfTgMessageTranslation extends App {
     mDataProperty                    <- IO.pure { DataProperty("https://data.elsevier.com/lifescience/schema/resnet/alias", XSD.xstring.getURI,  None, None)}
 
 
-    maybeSingledValueAttribute       <- makeSingleValuedAttributeFromDataProperty(ontResource, sDataProperty)
+    /*maybeSingledValueAttribute       <- makeSingleValuedAttributeFromDataProperty(ontResource, sDataProperty)
     maybeMultiValuedValueAttribute   <- makeMultiValuedAttributeFromDataProperty(ontResource, mDataProperty)
 
     _                                <- IO.println(maybeSingledValueAttribute)
-    _                                <- IO.println(maybeMultiValuedValueAttribute)
+    _                                <- IO.println(maybeMultiValuedValueAttribute)*/
+
+    attributes                       <- (List(mDataProperty, sDataProperty) traverse makeAttributeFromDataProperty(ontResource) ) map { _.flatten }
+
+    _                                <- IO { info (s"Message Translated with result:\n${attributes.toString()}")}
 
 
   } yield ()
