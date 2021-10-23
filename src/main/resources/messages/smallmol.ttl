@@ -1,0 +1,19 @@
+@prefix resnet: <https://data.elsevier.com/lifescience/schema/resnet/> .
+
+<https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488>
+    a                    resnet:SmallMol ;
+    resnet:alias         "factor 5 Leiden", "blood clotting factor V Leiden", "factor V (Arg506Gln)", "FVLeiden",
+                         "R506Q", "factor 5 (Arg506Gln)", "factor 5 (R506Q)", "F5 R506Q",
+                         "blood clotting factor 5 Leiden", "Arg506Gln", "factor V Leiden", "factor V (R506Q)",
+                         "mutant factor V (Arg506Gln)" ;
+    resnet:class         "Endogenous compound" ;
+    resnet:dateCreated   "2020-11-13 04:37:01.336" ;
+    resnet:dateModified  "2020-11-13 04:37:01.337" ;
+    resnet:flags         01.0 ;
+    resnet:idObjectClass 1 ;
+    resnet:idObjectType  104 ;
+    resnet:idOwner       0 ;
+    resnet:medScanId     "1002826" ;
+    resnet:nodeType      "SmallMol" ;
+    resnet:sName         "factor V Leiden" ;
+    resnet:urn           "urn:agi-smol:blood%20clotting%20factor%205%20Leiden" .
