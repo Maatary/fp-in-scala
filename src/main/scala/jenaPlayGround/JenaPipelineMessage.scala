@@ -9,6 +9,7 @@ import org.apache.jena.vocabulary.RDF
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 
+import scala.collection.immutable.TreeMap
 import scala.jdk.CollectionConverters._
 
 
@@ -93,5 +94,9 @@ object JenaPipelineMessage extends App {
   val sValue = value.toString
 
   println(sValue)
+
+  //Map[UriType -> OntoType]
+
+
 
 }

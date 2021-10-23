@@ -154,9 +154,8 @@ object JenaRdfTgMessageTranslation extends App {
     mDataProperty                    <- IO.pure { DataProperty("https://data.elsevier.com/lifescience/schema/resnet/alias", XSD.xstring.getURI,  None, None)}
 
 
-    /*maybeSingledValueAttribute       <- makeSingleValuedAttributeFromDataProperty(ontResource, sDataProperty)
+    /*maybeSingledValueAttribute     <- makeSingleValuedAttributeFromDataProperty(ontResource, sDataProperty)
     maybeMultiValuedValueAttribute   <- makeMultiValuedAttributeFromDataProperty(ontResource, mDataProperty)
-
     _                                <- IO.println(maybeSingledValueAttribute)
     _                                <- IO.println(maybeMultiValuedValueAttribute)*/
 
