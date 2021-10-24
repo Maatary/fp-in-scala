@@ -1,5 +1,6 @@
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
+import org.apache.jena.shared.PrefixMapping
 
 import scala.collection.immutable.{SortedMap, TreeMap}
 import scala.util.chaining.scalaUtilChainingOps
@@ -21,7 +22,12 @@ def  inferCaseInsensitiveTypeFromUri(uri: String): String = {
 inferCaseInsensitiveTypeFromUri("https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488")
 
 
+val pm = PrefixMapping.Factory.create()
 
+
+pm.setNsPrefix("reaxys","https://data.elsevier.com/lifescience/schema/reaxys/")
+
+pm.shortForm("https://data.elsevier.com/lifescience/schema/reaxys/Bioassay")
 
 
 

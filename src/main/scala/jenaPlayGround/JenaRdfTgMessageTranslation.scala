@@ -223,7 +223,12 @@ object JenaRdfTgMessageTranslation extends App {
 
       insensitiveType       <- IO { inferCaseInsensitiveTypeFromUri(eUri) }
       objType               <- IO { lookup(insensitiveType) }
-      _                     <- IO { info(objType.toString) }
+      _                     <-
+        objType match {
+          case eType:EntityType   => IO { info(eType.show) }
+          case rType:RelationType => IO { info(rType.show) }
+        }
+
 
       tgMessage             <-
 
@@ -239,12 +244,12 @@ object JenaRdfTgMessageTranslation extends App {
 
   val program = for {
 
-    _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/resnet/protein/72057594037931644 ")}
+    _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/reaxys/bioassay/517534")}
 
-    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/protein/72057594037931644" }
-    messageFile                      <- IO.pure { "messages/protein.ttl" }
+    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/reaxys/bioassay/517534" }
+    messageFile                      <- IO.pure { "messages/bioassay.ttl" }
 
-    fdnSchema                        <- fdnParser.program
+    fdnSchema                        <- fdnParser.program("elsevier_entellect_proxy_schema_reaxys.ttl")
     lookup                           = makeLookUpFromFdnSchema(fdnSchema)
 
     tgMessage                        <- translateResourceMessage(eUri, messageFile)(lookup)

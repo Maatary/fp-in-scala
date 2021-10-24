@@ -1,0 +1,28 @@
+@prefix reaxys: <https://data.elsevier.com/lifescience/schema/reaxys/> .
+
+<https://data.elsevier.com/lifescience/entity/reaxys/bioassay/517534>
+    a                                   reaxys:Bioassay ;
+    reaxys:hasAssayTechniqueDescription "In vivo Measurement" ;
+    reaxys:hasAssayType                 "In vivo Measurement" ;
+    reaxys:hasBioassayDescription
+                                        "Effect : DNA strand breaks and apoptotic bodies freq. in hepatocytes apoptosis suppression<BR>Target : Dunkin-Hartley guinea pig<BR>Bioassay : TUNEL: terminal deoxynucleotidyl transferase-mediated dUTP nick-end labelling; number of apoptotic bodies counted by a microscope; frequency of apoptotic bodies per 1000 hepatocytes calcd. in vivo; pigs of 350-400 g, n=5; food and water ad lib.; treatment with title comp.; killing 24 h after last dose; liver removed and incub. in proteinase K and treated with H2O2; DNA strand breaks detd. by TUNEL using in situ cell death detection kit" ;
+    reaxys:hasBioassayFullType          "In Vivo" ;
+    reaxys:hasBioassayHash              "D47CFBD48C520A65C33BFEBE8631668B" ;
+    reaxys:hasBioassayMembraneArea
+                                        <https://data.elsevier.com/lifescience/entity/reaxys/bioassaymembranearea/517534> ;
+    reaxys:hasBioassayMembraneDiameter
+                                        <https://data.elsevier.com/lifescience/entity/reaxys/bioassaymembranediameter/517534> ;
+    reaxys:hasBioassayMembranePoreSize
+                                        <https://data.elsevier.com/lifescience/entity/reaxys/bioassaymembraneporesize/517534> ;
+    reaxys:hasBioassayType              "IVV" ;
+    reaxys:hasCategoryDescription       "In Vivo (Animal models)" ;
+    reaxys:hasCreationDate              "2013-12-12 22:01:50" ;
+    reaxys:hasDocument                  <https://data.elsevier.com/lifescience/entity/reaxys/document/6239832> ;
+    reaxys:hasIMPIndicator              "-1" ;
+    reaxys:hasMainAssayIndicator        "-1" ;
+    reaxys:hasMeasureIndicator          "0" ;
+    reaxys:hasMeasureSettings           <https://data.elsevier.com/lifescience/entity/reaxys/measuresettings/684456> ;
+    reaxys:hasStatus                    "S" ;
+    reaxys:hasSupplier                  <https://data.elsevier.com/lifescience/entity/reaxys/supplier/38716> ;
+    reaxys:hasUpdateDate                "2018-11-22 10:13:13" .
+

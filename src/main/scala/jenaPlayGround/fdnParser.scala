@@ -138,11 +138,11 @@ import DataTypes._
 
   Logger(classOf[jenaPlayGround.fdnParser.type].getName).withMinimumLevel(Level.Info).replace()
 
-  def program = for {
+  def program(proxyFile: String = "elsevier_entellect_proxy_schema_resnet.ttl") = for {
 
     _                    <- setGlobalDocManagerProperties()
 
-    schemaPair           <- loadSchema("elsevier_entellect_upper_schema_foundation.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_external_schema_skosxl.ttl", "elsevier_entellect_proxy_schema_resnet.ttl")
+    schemaPair           <- loadSchema("elsevier_entellect_upper_schema_foundation.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_external_schema_skosxl.ttl", proxyFile)
 
     (schema, schemaWithImports) = schemaPair
 
@@ -179,7 +179,7 @@ import DataTypes._
 
   } yield FdnGraphSchema(ontUri, ontPrefix,  eTypes, relTypes)
 
-  println(program.unsafeRunSync().show)
+  println(program().unsafeRunSync().show)
 
 
 
