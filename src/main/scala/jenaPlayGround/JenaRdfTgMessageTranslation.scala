@@ -155,8 +155,71 @@ object JenaRdfTgMessageTranslation extends App {
     SortedMap[String, ObjectType](List(eTypes, rTypes).flatten: _*)(scala.math.Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
   }
 
+  def translateResourceMessage(eUri: String, messageFile: String)(lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
+
+    for {
+
+      insensitiveType       <- IO { inferCaseInsensitiveTypeFromUri(eUri) }
+      objType               <- IO { lookup(insensitiveType) }
+      _                     <- IO { info(objType.toString) }
+
+      tgMessage             <-
+
+        objType match {
+          case eType: EntityType => translateEntity(eUri, eType, messageFile)
+          case rType: RelationType => IO.raiseError(new Throwable("Unsupported Resource Type"))
+        }
+
+    } yield tgMessage
+
+  }
+
+  def translateEntity(eUri: String, entityType: EntityType, messageFile: String): IO[TgMessage] = {
+
+    for {
+
+      ontDoc                           <- IO { OntDocumentManager.getInstance() }
+      _                                <- IO { ontDoc.setProcessImports(false) }
+
+      ontModel                         <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
+      _                                <- IO { ontModel.read(messageFile, Lang.TURTLE.getName) }
+      ontResource                      <- IO { ontModel.getOntResource(eUri) }
+
+
+      dataProperties                   <- IO.pure { entityType.dataProperties }
+      attributes                       <- (dataProperties traverse makeAttributeFromDataProperty(ontResource) ) map { _.flatten }
+
+      tgMessage                        <- IO.pure { TgMessage(List(Vertex(entityType.entityType, eUri, attributes)), List()) }
+
+      _                                <- IO { ontModel.close() }
+
+    } yield tgMessage
+
+  }
+
+  def translateRelation(): IO[TgMessage] = ???
+
 
   val program = for {
+
+    _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488 ")}
+
+    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488" }
+    messageFile                      <- IO.pure { "messages/smallmol.ttl" }
+
+    fdnSchema                        <- fdnParser.program
+    lookup                           = makeLookUpFromFdnSchema(fdnSchema)
+
+    tgMessage                        <- translateResourceMessage(eUri, messageFile)(lookup)
+
+    _                                <- IO { info ( tgMessage.toString ) }
+
+
+  } yield ()
+
+  program.unsafeRunSync()
+
+/*  val program = for {
 
 
     _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488 ")}
@@ -180,7 +243,7 @@ object JenaRdfTgMessageTranslation extends App {
 
     objType                          <- IO { lookup(insensitiveType) }
 
-    _                                <- IO { info(objType.toString) }
+    _                                <- IO { info(objType.asInstanceOf[EntityType].show) }
 
     dataProperties                   <- IO { objType.asInstanceOf[EntityType].dataProperties}
     attributes                       <- (dataProperties traverse makeAttributeFromDataProperty(ontResource) ) map { _.flatten }
@@ -190,10 +253,9 @@ object JenaRdfTgMessageTranslation extends App {
   } yield ()
 
 
-  program.unsafeRunSync()
+  program.unsafeRunSync()*/
 
   /*val program = for {
-
     _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488 ")}
 
     ontDoc                           <- IO { OntDocumentManager.getInstance() } // Set your global Ontology Manager without any LocationMapper, so the reliance on the StreamMndgr is ensured. The process is broken
@@ -214,7 +276,6 @@ object JenaRdfTgMessageTranslation extends App {
     attributes                       <- (List(mDataProperty, sDataProperty) traverse makeAttributeFromDataProperty(ontResource) ) map { _.flatten }
 
     _                                <- IO { info (s"Message Translated with result:\n${attributes.toString()}")}
-
 
   } yield ()
 
