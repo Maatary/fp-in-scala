@@ -1,0 +1,152 @@
+@prefix resnet: <https://data.elsevier.com/lifescience/schema/resnet/> .
+
+<https://data.elsevier.com/lifescience/entity/resnet/protein/72057594037931644>
+    a                              resnet:Protein ;
+    resnet:alias                   "Segment polarity protein dishevelled homolog DVL-1",
+                                   "dishevelled 1 (homologous to Drosophila dsh)", "Dvl1", "DSH homolog I",
+                                   "Segment polarity protein dishevelled homolog DVL I", "RP23-242K15.15",
+                                   "OTTMUSP00000011687", "RP5-890O3.5", "dishevelled, dsh homolog", "DVL1P1", "Dvl I",
+                                   "dishevelled, dsh homolog I", "DVL", "OTTHUMP00000003104", "DVL1L1",
+                                   "dishevelled, dsh homolog 1 (Drosophila)", "RP23-242K15.15-003", "DSH homolog 1",
+                                   "MGC54245", "dishevelled, dsh homolog 1",
+                                   "segment polarity protein dishevelled homolog DVL-1", "KIAA4029", "dvl-1", "DRS2",
+                                   "dishevelled 1", "DRS2 locus", "mKIAA4029", "dishevelled I", "homologous to dsh",
+                                   "dishevelled segment polarity protein 1", "dishevelled-1" ;
+    resnet:cellLocalization        "Cell membrane", "Cytosol", "cytosol", "Cytoplasmic vesicle", "Cytoplasm" ;
+    resnet:dateCreated             "2020-11-12 18:08:04.023" ;
+    resnet:dateModified            "2020-11-12 18:08:04.023" ;
+    resnet:description             "dishevelled segment polarity protein 1" ;
+    resnet:ensemblId               "ENSG00000107404", "ENST00000378888.9", "ENSMUSG00000029071", "ENSMUST00000143457.7",
+                                   "ENSP00000368169", "ENSP00000368169.5", "ENSMUST00000168552", "ENSMUST00000030948",
+                                   "ENSMUSP00000133137", "ENSMUST00000030948.15", "ENST00000378888", "ENSP00000368166",
+                                   "ENSRNOP00000026439", "ENSRNOG00000019423", "ENSMUSP00000030948", "ENST00000378891",
+                                   "ENSP00000368166.5", "ENST00000378891.9", "ENSMUSP00000030948.9",
+                                   "ENSRNOT00000026439", "ENSRNOT00000026439.5", "ENSRNOP00000026439.5",
+                                   "ENST00000378888.10" ;
+    resnet:flags                   0 ;
+    resnet:genBankId               "AF143545", "XP_006538584", "XP_006239660", "EAW56225", "BU702464", "XM_017593659",
+                                   "BC090034", "XM_008764389", "AAC50682", "XP_008762611", "CH471183", "XM_006538521",
+                                   "AC126156", "AC106940", "NP_001317240", "XP_006538582", "XP_006538587",
+                                   "AAHY01033005", "XM_005244733", "BAG53150", "AAD33897", "EDL15045", "AK155349",
+                                   "BAH13201", "AF551276", "XM_006538524", "U46461", "XP_006538585", "NM_031820",
+                                   "AMYH02000094", "CH466594", "ABBA01016032", "XM_006538522", "EDL81336", "O14640",
+                                   "AF551182", "AL139287", "AF143548", "AF551095", "XM_008764391", "XM_006538518",
+                                   "NC_000070", "NC_005104", "BC160920", "AAD41492", "AAI60920", "AF551156", "BAD92447",
+                                   "AF143546", "AAH17225", "U28138", "AAI38849", "CH473968", "EAW56226", "NP_001289271",
+                                   "AF006011", "NP_001343310", "AAHX01041235", "AF143549", "AK187733", "AC_000026",
+                                   "AF551037", "EAW56224", "AAH50454", "XM_006538519", "BP305846", "KF495841", "P54792",
+                                   "NM_001356381", "XM_008764388", "XP_005244788", "BC018593", "NM_001302342",
+                                   "XP_005244790", "BC051991", "U10115", "XP_017449148", "XP_017175441", "XM_005244731",
+                                   "XP_006538586", "XM_017319952", "AK220168", "EAW56227", "AC_000073", "BAE33208",
+                                   "NM_010091", "AF551121", "NC_000001", "AAI38850", "XP_008762612", "BC138848",
+                                   "EDL15043", "NP_034221", "XM_006538523", "AC_000133", "BC062070", "XP_006538583",
+                                   "Q9WVB9", "BAC04089", "AAB65242", "NP_004412", "AF143550", "AAA74049",
+                                   "XP_008762610", "BC050454", "XM_006538520", "BAD90353", "XP_006538581",
+                                   "XM_005244732", "NP_114008", "AK293286", "AL670236", "P51141", "BAH11484",
+                                   "EDL15044", "AAD33896", "BC025292", "AK093189", "AK300063", "NM_004421", "BC111419",
+                                   "BAE36912", "BY727676", "AF551059", "XM_006239598", "NM_001330311", "AAA82175",
+                                   "NG_008048", "AAD41493", "XP_005244789", "AK190181", "AF551251", "AF143547",
+                                   "XM_008764390", "BC088987", "AB209210", "AH007910", "BC017225", "NC_018912",
+                                   "AK162430", "BC138849", "XP_008762613", "AK095867" ;
+    resnet:goId                    "0030425", "0005109", "0007507", "0043113", "0016328", "0048365", "0005829",
+                                   "0008013", "1905386", "0030424", "0016020", "0090090", "0060029", "0043197",
+                                   "0090263", "1902474", "0099173", "0005874", "0045893", "0043005", "1904886",
+                                   "0030136", "0007416", "0071340", "0010976", "0045202", "0006366", "2000300",
+                                   "0090103", "0022007", "0007528", "0098793", "0050808", "0034504", "0005737",
+                                   "0031410", "0090179", "0060071", "0001933", "0016055", "0015630", "0007409",
+                                   "0060134", "0014069", "0001932", "0007411", "0007269", "0005623", "0001934",
+                                   "1990909", "0098978", "0050821", "0035176", "0035372", "0098685", "0048813",
+                                   "0006469", "0016023", "0019901", "0031122", "0005886", "0048675", "0060997",
+                                   "0035556", "0001505", "0035567", "2000463", "0019899", "0150012", "1903827",
+                                   "0060070", "0030426", "0032436", "0032091", "0007275", "0021915", "0048668",
+                                   "0043025", "0030177", "0099054" ;
+    resnet:homologeneId            "20926" ;
+    resnet:hugoId                  "3084", "HGNC:3084" ;
+    resnet:humanChromosomePosition "1p36", "1p36.33" ;
+    resnet:idObjectClass           1 ;
+    resnet:idObjectType            103 ;
+    resnet:idOwner                 0 ;
+    resnet:isMemberOf              <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390913>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391327>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039393361>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390984>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390916>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391528>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039393354>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392511>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392996>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391679>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391195>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391671>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390953>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391282>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391592>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391797>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390577>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391124>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390979>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392504>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391853>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391594>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039393172>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391683>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392486>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390821>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390980>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392067>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391711>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391117>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039393702>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039393359>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392516>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390950>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039393353>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392471>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391682>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390955>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392452>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039393356>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392300>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391294>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391286>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392399>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039393358>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391323>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390698>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390705>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390917>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391087>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392066>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039393158>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391758>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392466>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391530>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391532>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391520>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039393355>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390911>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392499>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039390325>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392398>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039393352>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039391322>,
+                                   <https://data.elsevier.com/lifescience/entity/resnet/pathway/72057594039392299> ;
+    resnet:keggId                  "mmu:13542", "rno:83721", "hsa:1855" ;
+    resnet:locusLinkId             "13542", "83721", "1855" ;
+    resnet:medScanId               "1855" ;
+    resnet:mgiId                   "MGI:94941" ;
+    resnet:mouseChromosomePosition "4 87.61 cM" ;
+    resnet:nodeType                "Protein" ;
+    resnet:notes
+                                   "DVL1, the human homolog of the Drosophila dishevelled gene (dsh) encodes a cytoplasmic phosphoprotein that regulates cell proliferation, acting as a transducer molecule for developmental processes, including segmentation and neuroblast specification. DVL1 is a candidate gene for neuroblastomatous transformation. The Schwartz-Jampel syndrome and Charcot-Marie-Tooth disease type 2A have been mapped to the same region as DVL1. The phenotypes of these diseases may be consistent with defects which might be expected from aberrant expression of a DVL gene during development. [provided by RefSeq, Jul 2008]" ;
+    resnet:omimId                  "180700", "601365", "616331" ;
+    resnet:organism                "Mus musculus", "Rattus norvegicus", "Homo sapiens" ;
+    resnet:primaryCellLocalization "Cytoplasm" ;
+    resnet:ratChromosomePosition   "5q36" ;
+    resnet:rgdId                   "620632" ;
+    resnet:sName                   "DVL1" ;
+    resnet:swissProtAccession      "P51141", "Q3U2D3", "Q5TA33", "P51141.2", "Q9QUG5", "Q9WVB9.3", "Q9WVB8", "Q60868",
+                                   "P54792", "Q9WVB9", "P54792.1", "O14640.2", "O14640", "Q5TA35" ;
+    resnet:swissProtId             "DVL1_MOUSE", "DVL1_RAT", "DVL1_HUMAN" ;
+    resnet:unigeneId               "Rn.144610", "Hs.731450", "Mm.3400" ;
+    resnet:urn                     "urn:agi-llid:1855" .

@@ -73,6 +73,29 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
+
+
+  def getDataPropValue(ontoResource:  OntResource, propUri: String, rdfDataType: RDFDatatype): IO[Option[String]] = {
+    for {
+
+      maybeLiteral        <- IO { Option(ontoResource.getPropertyValue(ResourceFactory.createProperty(propUri))) map {_.asLiteral()}  }
+
+      maybeStringValue    <- maybeLiteral traverse { _.asJavaValue(rdfDataType).map(_.toString) }
+
+    } yield maybeStringValue
+  }
+
+  def getDataPropValues(ontoResource:  OntResource, propUri: String, rdfDataType: RDFDatatype): IO[List[String]] = {
+
+    for {
+
+      literals     <- IO { ontoResource.listPropertyValues(ResourceFactory.createProperty(propUri)).asScala.toList map(_.asLiteral()) }
+
+      stringValues <- literals traverse { _.asJavaValue(rdfDataType).map(_.toString) }
+
+    } yield stringValues
+  }
+
   def makeSingleValuedAttributeFromDataProperty(ontoResource:  OntResource, dataProperty: DataProperty): IO[Option[SingleValuedAttribute]] = {
 
     for {
@@ -96,16 +119,6 @@ object JenaRdfTgMessageTranslation extends App {
 
   }
 
-  def getDataPropValue(ontoResource:  OntResource, propUri: String, rdfDataType: RDFDatatype): IO[Option[String]] = {
-    for {
-
-      maybeLiteral        <- IO { Option(ontoResource.getPropertyValue(ResourceFactory.createProperty(propUri))) map {_.asLiteral()}  }
-
-      maybeStringValue    <- maybeLiteral traverse { _.asJavaValue(rdfDataType).map(_.toString) }
-
-    } yield maybeStringValue
-  }
-
   def makeMultiValuedAttributeFromDataProperty(ontoResource:  OntResource, dataProperty: DataProperty): IO[Option[MultiValuedAttribute]] = {
 
     for {
@@ -125,21 +138,39 @@ object JenaRdfTgMessageTranslation extends App {
 
   }
 
-  def getDataPropValues(ontoResource:  OntResource, propUri: String, rdfDataType: RDFDatatype): IO[List[String]] = {
-
-    for {
-
-      literals     <- IO { ontoResource.listPropertyValues(ResourceFactory.createProperty(propUri)).asScala.toList map(_.asLiteral()) }
-
-      stringValues <- literals traverse { _.asJavaValue(rdfDataType).map(_.toString) }
-
-    } yield stringValues
-  }
-
   def makeAttributeFromDataProperty(ontoResource: OntResource) (dataProperty: DataProperty): IO[Option[TgAttribute]] = dataProperty match {
     case DataProperty(_,_,_, None)                   => makeMultiValuedAttributeFromDataProperty(ontoResource, dataProperty)
     case DataProperty(_,_,_, Some(card)) if card > 1 => makeMultiValuedAttributeFromDataProperty(ontoResource, dataProperty)
     case _                                           => makeSingleValuedAttributeFromDataProperty(ontoResource, dataProperty)
+  }
+
+
+  def getObjectPropValues(ontoResource:  OntResource, propUri: String): IO[List[String]] = {
+
+    IO {
+      ontoResource
+        .listPropertyValues(ResourceFactory.createProperty(propUri))
+        .asScala
+        .toList map{ _.asResource().getURI }
+    } onError { _ => IO { error(s"Failed on retrieving resource values for property [$propUri] for resource [$ontoResource] ")} }
+  }
+
+  def makeEdgeFromRelationPropertyTarget(relPropUri: String, sourceEntityUri: String, sourceEntityType: String, lookup: SortedMap[String, ObjectType])(targetEntityUri: String): IO[Edge] = {
+    for  {
+      insensitiveType       <- IO { inferCaseInsensitiveTypeFromUri(targetEntityUri) }
+      targetEntityType      <- IO { lookup(insensitiveType).asInstanceOf[EntityType] }
+    } yield Edge(relPropUri, sourceEntityUri, sourceEntityType, targetEntityUri, targetEntityType.entityType,List())
+  }
+
+  def makeEdgesFromRelationProperty(entityResource: OntResource, sourceEntityType: String, lookup: SortedMap[String, ObjectType])(relationProperty: RelationProperty): IO[List[Edge]] = {
+    for {
+
+      targetEntityUris <- getObjectPropValues(entityResource, relationProperty.linkType)
+
+      edges            <- targetEntityUris traverse makeEdgeFromRelationPropertyTarget(relationProperty.linkType, entityResource.getURI, sourceEntityType,lookup)
+
+    } yield edges
+
   }
 
   def inferCaseInsensitiveTypeFromUri(uri: String): String = {
@@ -155,6 +186,37 @@ object JenaRdfTgMessageTranslation extends App {
     SortedMap[String, ObjectType](List(eTypes, rTypes).flatten: _*)(scala.math.Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
   }
 
+
+  def translateRelation(): IO[TgMessage] = ???
+
+
+  def translateEntity(eUri: String, entityType: EntityType, messageFile: String, lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
+
+    for {
+
+      ontDoc                           <- IO { OntDocumentManager.getInstance() }
+      _                                <- IO { ontDoc.setProcessImports(false) }
+
+      ontModel                         <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
+      _                                <- IO { ontModel.read(messageFile, Lang.TURTLE.getName) }
+      entityResource                   <- IO { ontModel.getOntResource(eUri) }
+
+      _                                <- if (entityResource == null) IO.raiseError(new Throwable(s"Resource $eUri does not exists in message")) else IO.unit
+
+      dataProperties                   <- IO.pure { entityType.dataProperties }
+      attributes                       <- { dataProperties traverse makeAttributeFromDataProperty(entityResource) } map { _.flatten }
+
+      relationProperties               <- IO.pure {entityType.relationProperties}
+      edges                            <- { relationProperties traverse makeEdgesFromRelationProperty(entityResource, entityType.entityType, lookup) } map {_.flatten}
+
+      tgMessage                        <- IO.pure { TgMessage(List(Vertex(entityType.entityType, eUri, attributes)), edges) }
+
+      _                                <- IO { ontModel.close() }
+
+    } yield tgMessage
+
+  }
+
   def translateResourceMessage(eUri: String, messageFile: String)(lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
 
     for {
@@ -166,7 +228,7 @@ object JenaRdfTgMessageTranslation extends App {
       tgMessage             <-
 
         objType match {
-          case eType: EntityType => translateEntity(eUri, eType, messageFile)
+          case eType: EntityType => translateEntity(eUri, eType, messageFile, lookup)
           case rType: RelationType => IO.raiseError(new Throwable("Unsupported Resource Type"))
         }
 
@@ -174,38 +236,13 @@ object JenaRdfTgMessageTranslation extends App {
 
   }
 
-  def translateEntity(eUri: String, entityType: EntityType, messageFile: String): IO[TgMessage] = {
-
-    for {
-
-      ontDoc                           <- IO { OntDocumentManager.getInstance() }
-      _                                <- IO { ontDoc.setProcessImports(false) }
-
-      ontModel                         <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
-      _                                <- IO { ontModel.read(messageFile, Lang.TURTLE.getName) }
-      ontResource                      <- IO { ontModel.getOntResource(eUri) }
-
-
-      dataProperties                   <- IO.pure { entityType.dataProperties }
-      attributes                       <- (dataProperties traverse makeAttributeFromDataProperty(ontResource) ) map { _.flatten }
-
-      tgMessage                        <- IO.pure { TgMessage(List(Vertex(entityType.entityType, eUri, attributes)), List()) }
-
-      _                                <- IO { ontModel.close() }
-
-    } yield tgMessage
-
-  }
-
-  def translateRelation(): IO[TgMessage] = ???
-
 
   val program = for {
 
-    _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488 ")}
+    _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/resnet/protein/72057594037931644 ")}
 
-    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488" }
-    messageFile                      <- IO.pure { "messages/smallmol.ttl" }
+    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/protein/72057594037931644" }
+    messageFile                      <- IO.pure { "messages/protein.ttl" }
 
     fdnSchema                        <- fdnParser.program
     lookup                           = makeLookUpFromFdnSchema(fdnSchema)
