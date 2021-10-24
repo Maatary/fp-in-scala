@@ -18,7 +18,7 @@ import scala.jdk.CollectionConverters._
 
 val program = for {
 
-  model       <- IO { ModelFactory.createDefaultModel().read("proxyInferenceModel.ttl") }
+  model       <- IO { ModelFactory.createDefaultModel().read("elsevier_entellect_proxy_schema_resnet.ttl") }
 
   shapes      <- IO { Shapes.parse( model.getGraph) }
 

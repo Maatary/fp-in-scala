@@ -43,21 +43,24 @@ object DataTypes {
   case class FdnGraphSchema(ontUri: OntUri, ontPrefix: OntPrefix, entityTypes:  List[EntityType],  relationTypes: List[RelationType])
 
   sealed trait FdnGraphSchemaElt
-  final case class EntityType(entityType: String, dataProperties: List[DataProperty], relationProperties: List[RelationProperty], compositionProperties: List[CompositionProperty], schemeProperties: List[SchemeProperty]) extends FdnGraphSchemaElt
-  final case class RelationType(relationType: String, linkPropertyPairs: List[LinkPropertyPair], dataProperties: List[DataProperty], associationProperties: List[AssociationProperty]) extends FdnGraphSchemaElt
 
-  sealed trait Property extends FdnGraphSchemaElt
-  final case class DataProperty(linkType: String, dataType: String, min: Option[Int], max: Option[Int]) extends Property
-  final case class AssociationProperty(linkType: String, entityType: String, min: Option[Int], max: Option[Int]) extends Property
-  final case class RelationProperty(linkType: String, entityTypes: List[String], min: Option[Int], max: Option[Int]) extends Property
-  final case class CompositionProperty(linkType: String, entityType: String, min: Option[Int], max: Option[Int]) extends Property
-  final case class SchemeProperty(linkType: String, dataType: String) extends Property
+  sealed trait ObjectType extends FdnGraphSchemaElt
+  final case class EntityType(entityType: String, dataProperties: List[DataProperty], relationProperties: List[RelationProperty], compositionProperties: List[CompositionProperty], schemeProperties: List[SchemeProperty]) extends ObjectType
+  final case class RelationType(relationType: String, linkPropertyPairs: List[LinkPropertyPair], dataProperties: List[DataProperty], associationProperties: List[AssociationProperty]) extends ObjectType
 
-  sealed trait LinkProperty extends Property
+  sealed trait PropertyType extends FdnGraphSchemaElt
+  final case class DataProperty(linkType: String, dataType: String, min: Option[Int], max: Option[Int]) extends PropertyType
+  final case class AssociationProperty(linkType: String, entityType: String, min: Option[Int], max: Option[Int]) extends PropertyType
+  final case class RelationProperty(linkType: String, entityTypes: List[String], min: Option[Int], max: Option[Int]) extends PropertyType
+  final case class CompositionProperty(linkType: String, entityType: String, min: Option[Int], max: Option[Int]) extends PropertyType
+  final case class SchemeProperty(linkType: String, dataType: String) extends PropertyType
+
+  sealed trait LinkProperty extends PropertyType
   final case class DirectionalLinkProperty(linkType: String, entityType: String) extends LinkProperty
   final case class NonDirectionalLinkProperty(linkType: String, entityType: String) extends LinkProperty
 
   final case class LinkPropertyPair(linkPropertyA: NonDirectionalLinkProperty, linkPropertyB: LinkProperty) extends FdnGraphSchemaElt
+
 
 
   implicit val showFdnGraphSchema:  Show[FdnGraphSchema] = (fdnGraphSchema: FdnGraphSchema) => {
@@ -135,11 +138,11 @@ import DataTypes._
 
   Logger(classOf[jenaPlayGround.fdnParser.type].getName).withMinimumLevel(Level.Info).replace()
 
-  val program = for {
+  def program = for {
 
     _                    <- setGlobalDocManagerProperties()
 
-    schemaPair           <- loadSchema("elsevier_entellect_upper_schema_foundation.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_external_schema_skosxl.ttl", "proxyInferenceModel.ttl")
+    schemaPair           <- loadSchema("elsevier_entellect_upper_schema_foundation.ttl", "elsevier_entellect_external_schema_skos.ttl", "elsevier_entellect_external_schema_skosxl.ttl", "elsevier_entellect_proxy_schema_resnet.ttl")
 
     (schema, schemaWithImports) = schemaPair
 
@@ -320,7 +323,7 @@ import DataTypes._
    *  TODO - Fix in code - AnnotationProperty are assumed to range on data Values which is not always true, but currently what we have
    *
    */
-  def makeProperty(schemaWithImports: SchemaWithImports)(propertyShape: PropertyShape): IO[Property] = {
+  def makeProperty(schemaWithImports: SchemaWithImports)(propertyShape: PropertyShape): IO[PropertyType] = {
 
     for {
 
@@ -540,27 +543,27 @@ import DataTypes._
     IO.pure{ SchemeProperty(SKOS.inScheme.getURI, XSD.xstring.getURI)  }
   }
 
-  def getDataProperties(properties: List[Property]): IO[List[DataProperty]] = IO {
+  def getDataProperties(properties: List[PropertyType]): IO[List[DataProperty]] = IO {
     properties.collect { case dp: DataProperty => dp }
   }
 
-  def getLinkProperties(properties: List[Property]): IO[List[LinkProperty]] = IO {
+  def getLinkProperties(properties: List[PropertyType]): IO[List[LinkProperty]] = IO {
     properties.collect { case lp: LinkProperty => lp }
   }
 
-  def getAssociationProperties(properties: List[Property]): IO[List[AssociationProperty]] = IO {
+  def getAssociationProperties(properties: List[PropertyType]): IO[List[AssociationProperty]] = IO {
     properties.collect { case ap: AssociationProperty => ap }
   }
 
-  def getRelationProperties(properties: List[Property]): IO[List[RelationProperty]] = IO {
+  def getRelationProperties(properties: List[PropertyType]): IO[List[RelationProperty]] = IO {
     properties.collect { case rp: RelationProperty => rp }
   }
 
-  def getCompositionProperties(properties: List[Property]): IO[List[CompositionProperty]] = IO {
+  def getCompositionProperties(properties: List[PropertyType]): IO[List[CompositionProperty]] = IO {
     properties.collect { case cp: CompositionProperty => cp }
   }
 
-  def getSchemeProperties(properties: List[Property]): IO [List[SchemeProperty]] = IO {
+  def getSchemeProperties(properties: List[PropertyType]): IO [List[SchemeProperty]] = IO {
     properties.collect { case sp: SchemeProperty => sp }
   }
 

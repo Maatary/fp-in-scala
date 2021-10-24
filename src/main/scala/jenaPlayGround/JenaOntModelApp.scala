@@ -298,7 +298,7 @@ object JenaOntModelApp extends App {
 
     fdnModel        <- IO { ModelFactory.createDefaultModel().read("elsevier_entellect_upper_schema_foundation.ttl") }
     schemaModel     <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_TRANS_INF) }
-    _               <- IO { schemaModel.read("proxyInferenceModel.ttl") }
+    _               <- IO { schemaModel.read("elsevier_entellect_proxy_schema_resnet.ttl") }
     _               <- IO { schemaModel.addSubModel(fdnModel) }
 
     _               <- IO { schemaModel.getOntClass("https://data.elsevier.com/lifescience/schema/resnet/PartOf").listSuperClasses().asScala.toList.foreach( e => println(e.toString)) }

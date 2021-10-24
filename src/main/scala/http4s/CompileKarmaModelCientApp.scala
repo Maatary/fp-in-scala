@@ -157,7 +157,7 @@ object CompileKarmaModelCientApp extends App {
 
  val program = for {
 
-    ontology         <- Files[IO].readAll(Path(getClass.getResource("/proxyInferenceModel.ttl").getPath)).compile.to(Array).map(new String(_))
+    ontology         <- Files[IO].readAll(Path(getClass.getResource("/elsevier_entellect_proxy_schema_resnet.ttl").getPath)).compile.to(Array).map(new String(_))
     model            <- Files[IO].readAll(Path(getClass.getResource("/premapping-cellprocess.ttl").getPath)).compile.to(Array).map(new String(_))
     syntheticMessage <- Files[IO].readAll(Path(getClass.getResource("/premapping-cellprocess-sample-message.json").getPath)).compile.to(Array).map(new String(_))
     //modelURI         <- IO.pure{"https://data.elsevier.com/lifescience/extraction/resnet/CellProcess"}

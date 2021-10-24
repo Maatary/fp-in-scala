@@ -2,6 +2,7 @@ import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 
 import scala.collection.immutable.{SortedMap, TreeMap}
+import scala.util.chaining.scalaUtilChainingOps
 
 val map = TreeMap("hello" -> 2, "key" -> 3)(Ordering.by(_.toLowerCase))
 
@@ -9,14 +10,18 @@ val map2 = SortedMap("key1" -> 45, "Key2" -> 43, "KEY3" -> 42)(scala.math.Orderi
 
 map("Hello")
 
+import  scribe._
 //https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488
-def  inferCaseInsensitiveTypeFromUri(uri: String): IO[String] = {
-  for {
-    array  <- IO { uri.split("/entity/").last.split("/") }
-    schema <- IO { array(0) }
-    eType  <- IO { array(1) }
-  } yield s"https://data.elsevier.com/lifescience/schema/${schema}/${eType}"
+//Not Type Safe, but we will catch the error somewhere else
+def  inferCaseInsensitiveTypeFromUri(uri: String): String = {
+  uri.split("/entity/").last.split("/")
+    .pipe { array => s"https://data.elsevier.com/lifescience/schema/${array(0)}/${array(1)}"}
 }
 
 inferCaseInsensitiveTypeFromUri("https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488")
-.unsafeRunSync()
+
+
+
+
+
+

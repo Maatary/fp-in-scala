@@ -22,6 +22,11 @@ import scala.jdk.CollectionConverters._
 import scribe._
 import cats.syntax.all._
 
+import scala.collection.immutable.SortedMap
+import scala.util.chaining.scalaUtilChainingOps
+
+
+
 object JenaRdfTgMessageTranslation extends App {
 
 
@@ -47,7 +52,7 @@ object JenaRdfTgMessageTranslation extends App {
 
 
   /**
-   * DSL to quickly convert RDF DataTypes to TG DataType
+   * DSL to quickly convert Literal to its JavaValue
    *
    * Assume that the RDFDataType have been created with Jena TypeMapper Global Instance.
    */
@@ -66,8 +71,6 @@ object JenaRdfTgMessageTranslation extends App {
       }
     } onError { _ => IO { error(s"""Can't convert literal [${literal.getLexicalForm}] of DataType [${literal.getDatatypeURI}] to supplied DataType [${rdfDataType.getURI}]""") } }
   }
-
-
 
 
   def makeSingleValuedAttributeFromDataProperty(ontoResource:  OntResource, dataProperty: DataProperty): IO[Option[SingleValuedAttribute]] = {
@@ -96,7 +99,7 @@ object JenaRdfTgMessageTranslation extends App {
   def getDataPropValue(ontoResource:  OntResource, propUri: String, rdfDataType: RDFDatatype): IO[Option[String]] = {
     for {
 
-      maybeLiteral        <- IO { Option(ontoResource.getPropertyValue(ResourceFactory.createProperty(propUri)).asLiteral()) }
+      maybeLiteral        <- IO { Option(ontoResource.getPropertyValue(ResourceFactory.createProperty(propUri))) map {_.asLiteral()}  }
 
       maybeStringValue    <- maybeLiteral traverse { _.asJavaValue(rdfDataType).map(_.toString) }
 
@@ -133,14 +136,63 @@ object JenaRdfTgMessageTranslation extends App {
     } yield stringValues
   }
 
-
   def makeAttributeFromDataProperty(ontoResource: OntResource) (dataProperty: DataProperty): IO[Option[TgAttribute]] = dataProperty match {
     case DataProperty(_,_,_, None)                   => makeMultiValuedAttributeFromDataProperty(ontoResource, dataProperty)
     case DataProperty(_,_,_, Some(card)) if card > 1 => makeMultiValuedAttributeFromDataProperty(ontoResource, dataProperty)
     case _                                           => makeSingleValuedAttributeFromDataProperty(ontoResource, dataProperty)
   }
 
+  def inferCaseInsensitiveTypeFromUri(uri: String): String = {
+    uri.split("/entity/").last.split("/")
+      .pipe { array => s"https://data.elsevier.com/lifescience/schema/${array(0)}/${array(1)}"}
+  }
+
+  def makeLookUpFromFdnSchema(fdnGraphSchema: FdnGraphSchema): SortedMap[String, ObjectType] = {
+
+    val eTypes: List[(String, ObjectType)] = fdnGraphSchema.entityTypes.map(entityType => (entityType.entityType, entityType))
+    val rTypes: List[(String, ObjectType)] = fdnGraphSchema.relationTypes.map(relationType => (relationType.relationType, relationType))
+
+    SortedMap[String, ObjectType](List(eTypes, rTypes).flatten: _*)(scala.math.Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
+  }
+
+
   val program = for {
+
+
+    _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488 ")}
+
+    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488" }
+
+
+    ontDoc                           <- IO { OntDocumentManager.getInstance() } // Set your global Ontology Manager without any LocationMapper, so the reliance on the StreamMndgr is ensured. The process is broken
+    _                                <- IO { ontDoc.setProcessImports(false) }
+    ontModel                         <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
+    _                                <- IO { ontModel.read("messages/smallmol.ttl", Lang.TURTLE.getName) }
+    ontResource                      <- IO { ontModel.getOntResource(eUri) }
+
+
+
+
+    insensitiveType                  = inferCaseInsensitiveTypeFromUri(eUri)
+
+    fdnSchema                        <- fdnParser.program
+    lookup                           = makeLookUpFromFdnSchema(fdnSchema)
+
+    objType                          <- IO { lookup(insensitiveType) }
+
+    _                                <- IO { info(objType.toString) }
+
+    dataProperties                   <- IO { objType.asInstanceOf[EntityType].dataProperties}
+    attributes                       <- (dataProperties traverse makeAttributeFromDataProperty(ontResource) ) map { _.flatten }
+
+    _                                <- IO { info (s"Message Translated with result:\n${attributes.toString()}")}
+
+  } yield ()
+
+
+  program.unsafeRunSync()
+
+  /*val program = for {
 
     _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488 ")}
 
@@ -150,14 +202,14 @@ object JenaRdfTgMessageTranslation extends App {
     _                                <- IO { ontModel.read("messages/smallmol.ttl", Lang.TURTLE.getName) }
 
     ontResource                      <- IO { ontModel.getOntResource("https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488") }
-    sDataProperty                    <- IO.pure { DataProperty("https://data.elsevier.com/lifescience/schema/resnet/flags", XSD.xdouble.getURI,  None, Some(1))}
+    sDataProperty                    <- IO.pure { DataProperty("https://data.elsevier.com/lifescience/schema/resnet/flagss", XSD.xdouble.getURI,  None, Some(1))}
     mDataProperty                    <- IO.pure { DataProperty("https://data.elsevier.com/lifescience/schema/resnet/alias", XSD.xstring.getURI,  None, None)}
 
 
-    /*maybeSingledValueAttribute     <- makeSingleValuedAttributeFromDataProperty(ontResource, sDataProperty)
-    maybeMultiValuedValueAttribute   <- makeMultiValuedAttributeFromDataProperty(ontResource, mDataProperty)
-    _                                <- IO.println(maybeSingledValueAttribute)
-    _                                <- IO.println(maybeMultiValuedValueAttribute)*/
+    //maybeSingledValueAttribute       <- makeSingleValuedAttributeFromDataProperty(ontResource, sDataProperty)
+    //maybeMultiValuedValueAttribute   <- makeMultiValuedAttributeFromDataProperty(ontResource, mDataProperty)
+    //_                                <- IO.println(maybeSingledValueAttribute)
+    //_                                <- IO.println(maybeMultiValuedValueAttribute)
 
     attributes                       <- (List(mDataProperty, sDataProperty) traverse makeAttributeFromDataProperty(ontResource) ) map { _.flatten }
 
@@ -166,6 +218,6 @@ object JenaRdfTgMessageTranslation extends App {
 
   } yield ()
 
-  program.unsafeRunSync()
+  program.unsafeRunSync()*/
 
 }
