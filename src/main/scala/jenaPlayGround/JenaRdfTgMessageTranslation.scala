@@ -221,6 +221,7 @@ object JenaRdfTgMessageTranslation extends App {
 
     for {
 
+      _                     <- IO { info (s"Started Translating Resource with Uri: ${eUri}")}
       insensitiveType       <- IO { inferCaseInsensitiveTypeFromUri(eUri) }
       objType               <- IO { lookup(insensitiveType) }
       _                     <-
@@ -243,8 +244,6 @@ object JenaRdfTgMessageTranslation extends App {
 
 
   val program = for {
-
-    _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/reaxys/bioassay/517534")}
 
     eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/reaxys/bioassay/517534" }
     messageFile                      <- IO.pure { "messages/bioassay.ttl" }
