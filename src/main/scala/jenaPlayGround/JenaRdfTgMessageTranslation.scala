@@ -21,6 +21,7 @@ import org.apache.jena.util.SplitIRI._
 import scala.jdk.CollectionConverters._
 import scribe._
 import cats.syntax.all._
+import scribe.writer.SystemOutputWriter
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 import java.nio.charset.StandardCharsets
@@ -31,7 +32,7 @@ import scala.util.chaining.scalaUtilChainingOps
 
 object JenaRdfTgMessageTranslation extends App {
 
-  this.logger
+  Logger(classOf[JenaRdfTgMessageTranslation.type].getName)
     .withMinimumLevel(Level.Debug)
     .replace()
 
@@ -61,7 +62,7 @@ object JenaRdfTgMessageTranslation extends App {
       case _: XSDDateTimeType     => IO.pure(STRING)
       case dataType: XSDDatatype if dataType.equals(XSDDatatype.XSDboolean) => IO.pure(STRING)
       case dataType: XSDDatatype if dataType.equals(XSDDatatype.XSDanyURI) => IO.pure(STRING)
-      case e                      => IO {warn(s"unknown XSD: $e defaulting to String")} *> IO.pure(STRING)
+      case e                      => IO { warn(s"unknown XSD: $e defaulting to String")} *> IO.pure(STRING)
     }
   }
 
@@ -80,7 +81,7 @@ object JenaRdfTgMessageTranslation extends App {
         case _: XSDDouble           => IO { literal.getDouble }
         case _: XSDBaseNumericType  => IO { literal.getDouble }
         case _: XSDDateTimeType     => IO { literal.getString }
-        case dataType: XSDDatatype if dataType.equals(XSDDatatype.XSDboolean) => IO { literal.getString } //Not quite right but we don't support boolean yet
+        case dataType: XSDDatatype if dataType.equals(XSDDatatype.XSDboolean) => IO { literal.getString } //Not quite right but we don't support boolean yet, not even sure jena will let it fly.
         case dataType: XSDDatatype if dataType.equals(XSDDatatype.XSDanyURI) => IO { literal.getString }
         case e                      => IO { warn(s"unknown XSD: $e defaulting to trying conversion to a java String")  } *> IO { literal.getString }
       }
@@ -90,21 +91,20 @@ object JenaRdfTgMessageTranslation extends App {
 
 
 
-  def getDataPropValue(ontoResource:  OntResource, propUri: String, rdfDataType: RDFDatatype): IO[Option[String]] = {
+  def getDataPropValue(ontoResource:  OntResource, dataProperty: DataProperty, rdfDataType: RDFDatatype): IO[Option[String]] = {
     for {
 
-      maybeLiteral        <- IO { Option(ontoResource.getPropertyValue(ResourceFactory.createProperty(propUri))) map {_.asLiteral()}  }
+      maybeLiteral        <- IO { Option(ontoResource.getPropertyValue(ResourceFactory.createProperty(dataProperty.linkType))) map {_.asLiteral()}  }
 
       maybeStringValue    <- maybeLiteral traverse { _.asJavaValue(rdfDataType).map(_.toString) }
 
     } yield maybeStringValue
   }
 
-  def getDataPropValues(ontoResource:  OntResource, propUri: String, rdfDataType: RDFDatatype): IO[List[String]] = {
-
+  def getDataPropValues(ontoResource:  OntResource, dataProperty: DataProperty, rdfDataType: RDFDatatype): IO[List[String]] = {
     for {
 
-      literals     <- IO { ontoResource.listPropertyValues(ResourceFactory.createProperty(propUri)).asScala.toList map(_.asLiteral()) }
+      literals     <- IO { ontoResource.listPropertyValues(ResourceFactory.createProperty(dataProperty.linkType)).asScala.toList map(_.asLiteral()) }
 
       stringValues <- literals traverse { _.asJavaValue(rdfDataType).map(_.toString) }
 
@@ -118,7 +118,7 @@ object JenaRdfTgMessageTranslation extends App {
       typeMapper                      <- IO { TypeMapper.getInstance() }
       rdfDataType                     <- IO { typeMapper.getSafeTypeByName(dataProperty.dataType) }
 
-      maybeValue                      <- getDataPropValue(ontoResource, dataProperty.linkType, rdfDataType)
+      maybeValue                      <- getDataPropValue(ontoResource, dataProperty, rdfDataType)
 
       maybeSingleValuedAttribute      <-
         maybeValue
@@ -141,7 +141,7 @@ object JenaRdfTgMessageTranslation extends App {
       typeMapper                      <- IO { TypeMapper.getInstance() }
       rdfDataType                     <- IO { typeMapper.getSafeTypeByName(dataProperty.dataType) }
 
-      values                          <- getDataPropValues(ontoResource, dataProperty.linkType, rdfDataType)
+      values                          <- getDataPropValues(ontoResource, dataProperty, rdfDataType)
 
       maybeMultiValuedAttribute       <-
         values match {
@@ -161,20 +161,22 @@ object JenaRdfTgMessageTranslation extends App {
 
 
   def getObjectPropValues(ontoResource:  OntResource, propUri: String): IO[List[String]] = {
-
     IO {
       ontoResource
         .listPropertyValues(ResourceFactory.createProperty(propUri))
         .asScala
         .toList map{ _.asResource().getURI }
-    } onError { _ => IO { error(s"Failed on retrieving resource values for property [$propUri] for resource [$ontoResource] ")} }
+    } onError { _ => IO { error(s"Failed to retrieve Resource Values for ObjectProperty [$propUri] for resource [$ontoResource]")} }
   }
 
   def makeEdgeFromRelationPropertyTarget(relPropUri: String, sourceEntityUri: String, sourceEntityType: String, lookup: SortedMap[String, ObjectType])(targetEntityUri: String): IO[Edge] = {
     for  {
-      insensitiveType       <- IO { inferCaseInsensitiveTypeFromUri(targetEntityUri) }
-      targetEntityType      <- IO { lookup(insensitiveType).asInstanceOf[EntityType] }
-    } yield Edge(relPropUri, sourceEntityUri, sourceEntityType, targetEntityUri, targetEntityType.entityType,List())
+
+      insensitiveType  <- inferCaseInsensitiveTypeFromUri(targetEntityUri) onError { _ => IO { error(s"Failed to Infer Case Insensitive Type for Target Entity: $targetEntityUri")} }
+
+      targetEntityType <- IO { lookup(insensitiveType).asInstanceOf[EntityType] } onError { _ => IO { error(s"Failed to lookup EntityType for Target Entity [$targetEntityUri] of [RelationProperty $relPropUri] with Case Insensitive Type: ${insensitiveType}")} }
+
+    } yield Edge(relPropUri, sourceEntityUri, sourceEntityType, targetEntityUri, targetEntityType.entityType, List())
   }
 
   def makeEdgesFromRelationProperty(entityResource: OntResource, sourceEntityType: String, lookup: SortedMap[String, ObjectType])(relationProperty: RelationProperty): IO[List[Edge]] = {
@@ -188,9 +190,11 @@ object JenaRdfTgMessageTranslation extends App {
 
   }
 
-  def inferCaseInsensitiveTypeFromUri(uri: String): String = {
-    uri.split("/entity/").last.split("/")
-      .pipe { array => s"https://data.elsevier.com/lifescience/schema/${array(0)}/${array(1)}"}
+  def inferCaseInsensitiveTypeFromUri(rUri: String): IO[String] = {
+    IO {
+      rUri.split("/entity/").last.split("/")
+        .pipe { array => s"https://data.elsevier.com/lifescience/schema/${ array(0) }/${ array(1) }" }
+    } onError { _ => IO { error(s"Tried to Infer Case Insensitive Type From Non Compliant Resource Uri: $rUri") } }
   }
 
   def makeLookUpFromFdnSchema(fdnGraphSchema: FdnGraphSchema): SortedMap[String, ObjectType] = {
@@ -211,9 +215,9 @@ object JenaRdfTgMessageTranslation extends App {
 
     for {
 
-      _                       <- IO { info (s"Resource $entityUri Inferred as Entity. Starting Entity Translation Process ..." ) }
+      _                       <- IO { info (s"Starting Entity Translation Process for Entity $entityUri" ) }
 
-      _                       <- if (this.logger.includes(Level.Debug)) IO { debug(s"Resource $entityUri FdnSchema EntityType Description: [${entityType.show}]") } else IO.unit
+      _                       <- IO { debug(s"Entity $entityUri FdnSchema EntityType Description: [${entityType.show}]") }
 
       dataProperties          <- IO.pure { entityType.dataProperties }
       attributes              <- { dataProperties traverse makeAttributeFromDataProperty(entityResource) } map { _.flatten }
@@ -223,7 +227,7 @@ object JenaRdfTgMessageTranslation extends App {
 
       tgMessage               <- IO.pure { TgMessage(List(Vertex(entityType.entityType, entityUri, attributes)), edges) }
 
-      _                       <- IO { info (s"Entity Translation for Resource $entityUri was successful" ) }
+      _                       <- IO { info (s"Entity Translation Process for Entity $entityUri was successful" ) }
 
     } yield tgMessage
 
@@ -235,16 +239,17 @@ object JenaRdfTgMessageTranslation extends App {
 
       _                     <- IO { info (s"Start Translating Message for Resource with Uri: $resUri")}
 
+
       ontDoc                <- IO { OntDocumentManager.getInstance() }
       _                     <- IO { ontDoc.setProcessImports(false) }
-
       ontModel              <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
       _                     <- IO { ontModel.read(messageFile, Lang.TURTLE.getName) }
       _                     <- if (this.logger.includes(Level.Debug)) ontModel.toPrettyString.flatMap{ m => IO { debug(s"Resource $resUri Message: [\n$m]") } } else IO.unit
 
+
+
       maybeResource         <- IO { Option(ontModel.getOntResource(resUri)) }
       resource              <-
-
         maybeResource match {
 
           case None    => ontModel.toPrettyString.flatMap { m => IO { error(s"Resource $resUri does not exists in message:\n$m") } } *> IO.raiseError(new Throwable(s"ontModel.getOntResource($resUri) returned Null"))
@@ -252,24 +257,28 @@ object JenaRdfTgMessageTranslation extends App {
           case Some(r) => IO.pure { r }
         }
 
+
+
+
       resType               <- IO { resource.getRDFType.getURI } onError { _ => ontModel.toPrettyString.flatMap { m => IO { error( s"The Resource $resUri does not have a Type in message:\n$m" ) }} }
       _                     <- IO { info (s"Extracted Type $resType from Message for resource $resUri") }
 
-      objType               <- IO { lookup(resType) }
+      objType               <- IO { lookup(resType) } onError { _ => IO { error(s"Failed to find Type $resType in FdnSchema for Resource $resUri ") } }
+      _                     <- IO { info (s"Successfully looked up $resType in FdnSchema") }
 
 
       tgMessage             <-
-
         objType match {
-
-          case eType: EntityType => translateEntity(resUri, eType, resource, lookup)
-
-          case rType: RelationType => translateRelation(resUri, rType, resource, lookup)
-
+          case eType: EntityType    => IO { info (s"Resource $resUri Inferred as Entity" ) } *> translateEntity(resUri, eType, resource, lookup)
+          case rType: RelationType  => IO { info (s"Resource $resUri Inferred as Relation" ) } *> translateRelation(resUri, rType, resource, lookup)
         }
 
-      _                     <- IO { info (s"Successfully Translated Message for Resource with Uri: $resUri")}
+
+
       _                     <- IO { ontModel.close() }
+
+      _                     <- IO { info (s"Successfully Translated Message for Resource with Uri: $resUri")}
+
 
     } yield tgMessage
 
@@ -286,7 +295,7 @@ object JenaRdfTgMessageTranslation extends App {
 
     tgMessage                        <- translateResourceMessage(eUri, messageFile)(lookup)
 
-    _                                <- IO { info ( tgMessage.show ) }
+    _                                <- IO { info ( "Got TgMessage: " + tgMessage.show ) }
 
 
   } yield ()

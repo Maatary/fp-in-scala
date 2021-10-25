@@ -7,8 +7,8 @@ addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.3" cross CrossVers
 libraryDependencies ++= Seq (
   "org.typelevel"   %% "cats-core"           % "2.6.1",
   "org.typelevel"   %% "cats-effect"         % "3.2.9",
-  "co.fs2"          %% "fs2-core"            % "3.1.5",
-  "co.fs2"          %% "fs2-io"              % "3.1.5",
+  "co.fs2"          %% "fs2-core"            % "3.1.6",
+  "co.fs2"          %% "fs2-io"              % "3.1.6",
   "org.http4s"      %% "http4s-dsl"          % "1.0.0-M29",
   "org.http4s"      %% "http4s-blaze-server" % "1.0.0-M29",
   "org.http4s"      %% "http4s-blaze-client" % "1.0.0-M29",
@@ -20,11 +20,13 @@ libraryDependencies ++= Seq (
   "io.circe"        %% "circe-core"          % "0.14.1",
   "io.circe"        %% "circe-generic"       % "0.14.1",
   "io.circe"        %% "circe-parser"        % "0.14.1",
-  "is.cir"          %% "ciris"               % "2.1.1",
-  "is.cir"          %% "ciris-enumeratum"    % "2.1.1",
-  "is.cir"          %% "ciris-circe"         % "2.1.1",
+  "is.cir"          %% "ciris"               % "2.2.0",
+  "is.cir"          %% "ciris-enumeratum"    % "2.2.0",
+  "is.cir"          %% "ciris-circe"         % "2.2.0",
 
-  "com.outr"        %% "scribe-slf4j"        % "3.6.0",
+  "com.outr"        %% "scribe"              % "3.6.2",
+
+  "com.outr"        %% "scribe-slf4j"        % "3.6.2",
 
   "com.lihaoyi"     %% "ammonite-ops"        % "2.3.8",
 
