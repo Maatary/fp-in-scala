@@ -34,4 +34,18 @@ Future{throw new EmptyStackException }*/
 val eff = Stream.eval(IO { println("BEING RUN!!"); 1 + 1 })
 
 
+Stream.emits(List(1,2,3,4))
+
+val e1 = Stream(List(1,2,3,4), List(3,33,56,7))
+  .evalMap {
+    list => Stream.emits(list).evalMap(IO.pure).compile.last
+  }.compile.toVector.unsafeRunSync()
+
+val e2 = Stream(List(1,2,3,4), List(3,33,56,7))
+  .flatMap {
+    list => Stream.eval(Stream.emits(list).evalMap(IO.pure).compile.last)
+  }.compile.toVector.unsafeRunSync()
+
+
+
 

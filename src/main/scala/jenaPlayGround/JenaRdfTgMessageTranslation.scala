@@ -230,7 +230,6 @@ object JenaRdfTgMessageTranslation extends App {
           case rType:RelationType => IO { info(rType.show) }
         }
 
-
       tgMessage             <-
 
         objType match {
