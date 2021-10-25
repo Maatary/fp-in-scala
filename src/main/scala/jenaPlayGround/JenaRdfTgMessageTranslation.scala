@@ -224,11 +224,7 @@ object JenaRdfTgMessageTranslation extends App {
       _                     <- IO { info (s"Started Translating Resource with Uri: ${eUri}")}
       insensitiveType       <- IO { inferCaseInsensitiveTypeFromUri(eUri) }
       objType               <- IO { lookup(insensitiveType) }
-      _                     <-
-        objType match {
-          case eType:EntityType   => IO { info(eType.show) }
-          case rType:RelationType => IO { info(rType.show) }
-        }
+      _                     <- IO { info(objType.show) }
 
       tgMessage             <-
 

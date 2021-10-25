@@ -90,6 +90,11 @@ object DataTypes {
        |]""".stripMargin
   }
 
+  implicit val showObjectType: Show[ObjectType] = {
+    case eType: EntityType   => eType.show
+    case rType: RelationType => rType.show
+  }
+
   implicit val showDataProperty: Show[DataProperty] = (dataProperty: DataProperty) => {
     s"""DataProperty: [linkType: ${dataProperty.linkType}, dataType: ${dataProperty.dataType}, minCount: ${dataProperty.min}, maxCount: ${dataProperty.max}]""".stripMargin
   }

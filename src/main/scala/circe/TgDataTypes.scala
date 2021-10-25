@@ -47,7 +47,18 @@ object TgDataTypes {
   final case class UserDefinedAttribute(override val aType: AttributeType, values: List[(AttributeType, TgAttribute)]) extends TgAttribute(aType)
 
 
+  /**
+   *  SHOW TYPE CLASSES
+   */
 
+
+
+
+
+
+  /**
+   *  CLIENT JSON SERIALIZATION TYPE CLASSES
+   */
 
   case class EdgeGroupKey(sourceVertexType: VertexType, sourceVertexId: VertexId, eType: EdgeType, targetVertexType: VertexType)
 
