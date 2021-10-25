@@ -5,8 +5,9 @@ import io.circe.Json._
 import io.circe._
 import io.circe.syntax._
 import scala.util.chaining.scalaUtilChainingOps
+import cats.Show
+import cats.syntax.all._
 
-//import cats.syntax.functor._
 
 object TgDataTypes {
 
@@ -51,7 +52,32 @@ object TgDataTypes {
    *  SHOW TYPE CLASSES
    */
 
+  implicit val showTgMessage: Show[TgMessage] = (tgMsg: TgMessage) => {
+    s"""
+       |TgMessage: [\n
+       |Vertices: ${tgMsg.vertices.map(_.show).mkString("\n","\n","\n")}
+       |Edges: ${tgMsg.edges.map(_.show).mkString("\n","\n","\n")}
+       |]""".stripMargin
+  }
 
+  implicit val showVertex: Show[Vertex] = (vertex: Vertex) => {
+    s"""
+       |Vertex: [
+       |Id: ${vertex.id}
+       |VertexType: ${vertex.vType}
+       |Attributes: ${vertex.attributes.map(_.toString).mkString("\n ", "\n ", "")}
+       |]""".stripMargin
+  }
+
+  implicit val showEdge: Show[Edge] = (edge: Edge) => {
+    s"""
+       |Edge: [
+       |EdgeType: ${edge.eType}
+       |SourceVertex: [Id: ${edge.sourceVertexId} | Type: ${edge.sourceVertexType}]
+       |TargetVertex: [Id: ${edge.targetVertexId} | Type: ${edge.targetVertexType}]
+       |Attributes: ${edge.attributes.map(_.toString).mkString("\n", "\n", "")}
+       |]""".stripMargin
+  }
 
 
 

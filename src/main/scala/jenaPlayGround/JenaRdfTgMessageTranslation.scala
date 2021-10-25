@@ -22,6 +22,8 @@ import scala.jdk.CollectionConverters._
 import scribe._
 import cats.syntax.all._
 
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
+import java.nio.charset.StandardCharsets
 import scala.collection.immutable.SortedMap
 import scala.util.chaining.scalaUtilChainingOps
 
@@ -29,7 +31,20 @@ import scala.util.chaining.scalaUtilChainingOps
 
 object JenaRdfTgMessageTranslation extends App {
 
+  this.logger
+    .withMinimumLevel(Level.Debug)
+    .replace()
 
+
+  implicit class OntModelOps(model: OntModel) {
+    def toPrettyString: IO[String] = {
+      for {
+        outStream <- IO.pure { new ByteArrayOutputStream() }
+        _         <- IO { model.write(outStream, Lang.TTL.getName) }
+        outString <- IO { outStream.toString(StandardCharsets.UTF_8)}
+      } yield outString
+    }
+  }
 
   /**
    * DSL to quickly convert RDF DataTypes to TG DataType
@@ -187,51 +202,74 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
-  def translateRelation(): IO[TgMessage] = ???
+  def translateRelation(eUri: String, relationType: RelationType, entityResource: OntResource, lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
+    IO { info (s"Resource $eUri Inferred as Relation. Starting Entity Translation Process ..." ) } *> IO.raiseError(new Throwable("Unsupported Resource Type"))
+  }
 
 
-  def translateEntity(eUri: String, entityType: EntityType, messageFile: String, lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
+  def translateEntity(entityUri: String, entityType: EntityType, entityResource: OntResource, lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
 
     for {
 
-      ontDoc                           <- IO { OntDocumentManager.getInstance() }
-      _                                <- IO { ontDoc.setProcessImports(false) }
+      _                       <- IO { info (s"Resource $entityUri Inferred as Entity. Starting Entity Translation Process ..." ) }
 
-      ontModel                         <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
-      _                                <- IO { ontModel.read(messageFile, Lang.TURTLE.getName) }
-      entityResource                   <- IO { ontModel.getOntResource(eUri) }
+      _                       <- if (this.logger.includes(Level.Debug)) IO { debug(s"Resource $entityUri FdnSchema EntityType Description: [${entityType.show}]") } else IO.unit
 
-      _                                <- if (entityResource == null) IO.raiseError(new Throwable(s"Resource $eUri does not exists in message")) else IO.unit
+      dataProperties          <- IO.pure { entityType.dataProperties }
+      attributes              <- { dataProperties traverse makeAttributeFromDataProperty(entityResource) } map { _.flatten }
 
-      dataProperties                   <- IO.pure { entityType.dataProperties }
-      attributes                       <- { dataProperties traverse makeAttributeFromDataProperty(entityResource) } map { _.flatten }
+      relationProperties      <- IO.pure {entityType.relationProperties}
+      edges                   <- { relationProperties traverse makeEdgesFromRelationProperty(entityResource, entityType.entityType, lookup) } map {_.flatten}
 
-      relationProperties               <- IO.pure {entityType.relationProperties}
-      edges                            <- { relationProperties traverse makeEdgesFromRelationProperty(entityResource, entityType.entityType, lookup) } map {_.flatten}
+      tgMessage               <- IO.pure { TgMessage(List(Vertex(entityType.entityType, entityUri, attributes)), edges) }
 
-      tgMessage                        <- IO.pure { TgMessage(List(Vertex(entityType.entityType, eUri, attributes)), edges) }
-
-      _                                <- IO { ontModel.close() }
+      _                       <- IO { info (s"Entity Translation for Resource $entityUri was successful" ) }
 
     } yield tgMessage
 
   }
 
-  def translateResourceMessage(eUri: String, messageFile: String)(lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
+  def translateResourceMessage(resUri: String, messageFile: String)(lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
 
     for {
 
-      _                     <- IO { info (s"Started Translating Resource with Uri: ${eUri}")}
-      insensitiveType       <- IO { inferCaseInsensitiveTypeFromUri(eUri) }
-      objType               <- IO { lookup(insensitiveType) }
-      _                     <- IO { info(objType.show) }
+      _                     <- IO { info (s"Start Translating Message for Resource with Uri: $resUri")}
+
+      ontDoc                <- IO { OntDocumentManager.getInstance() }
+      _                     <- IO { ontDoc.setProcessImports(false) }
+
+      ontModel              <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
+      _                     <- IO { ontModel.read(messageFile, Lang.TURTLE.getName) }
+      _                     <- if (this.logger.includes(Level.Debug)) ontModel.toPrettyString.flatMap{ m => IO { debug(s"Resource $resUri Message: [\n$m]") } } else IO.unit
+
+      maybeResource         <- IO { Option(ontModel.getOntResource(resUri)) }
+      resource              <-
+
+        maybeResource match {
+
+          case None    => ontModel.toPrettyString.flatMap { m => IO { error(s"Resource $resUri does not exists in message:\n$m") } } *> IO.raiseError(new Throwable(s"ontModel.getOntResource($resUri) returned Null"))
+
+          case Some(r) => IO.pure { r }
+        }
+
+      resType               <- IO { resource.getRDFType.getURI } onError { _ => ontModel.toPrettyString.flatMap { m => IO { error( s"The Resource $resUri does not have a Type in message:\n$m" ) }} }
+      _                     <- IO { info (s"Extracted Type $resType from Message for resource $resUri") }
+
+      objType               <- IO { lookup(resType) }
+
 
       tgMessage             <-
 
         objType match {
-          case eType: EntityType => translateEntity(eUri, eType, messageFile, lookup)
-          case rType: RelationType => IO.raiseError(new Throwable("Unsupported Resource Type"))
+
+          case eType: EntityType => translateEntity(resUri, eType, resource, lookup)
+
+          case rType: RelationType => translateRelation(resUri, rType, resource, lookup)
+
         }
+
+      _                     <- IO { info (s"Successfully Translated Message for Resource with Uri: $resUri")}
+      _                     <- IO { ontModel.close() }
 
     } yield tgMessage
 
@@ -248,7 +286,7 @@ object JenaRdfTgMessageTranslation extends App {
 
     tgMessage                        <- translateResourceMessage(eUri, messageFile)(lookup)
 
-    _                                <- IO { info ( tgMessage.toString ) }
+    _                                <- IO { info ( tgMessage.show ) }
 
 
   } yield ()
