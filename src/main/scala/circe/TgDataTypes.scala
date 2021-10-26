@@ -4,13 +4,17 @@ package circe
 import io.circe.Json._
 import io.circe._
 import io.circe.syntax._
+
 import scala.util.chaining.scalaUtilChainingOps
 import cats.Show
 import cats.syntax.all._
+import org.apache.jena.ontology.OntResource
 
 
 object TgDataTypes {
 
+  type EntityResource   = OntResource
+  type RelationResource = OntResource
 
   /**
    *
@@ -65,7 +69,7 @@ object TgDataTypes {
        |Vertex: [
        |Id: ${vertex.id}
        |VertexType: ${vertex.vType}
-       |Attributes: ${vertex.attributes.map(_.toString).mkString("\n ", "\n ", "")}
+       |Attributes: ${vertex.attributes.map(_.show).mkString("\n ", "\n ", "")}
        |]""".stripMargin
   }
 
@@ -75,8 +79,26 @@ object TgDataTypes {
        |EdgeType: ${edge.eType}
        |SourceVertex: [Id: ${edge.sourceVertexId} | Type: ${edge.sourceVertexType}]
        |TargetVertex: [Id: ${edge.targetVertexId} | Type: ${edge.targetVertexType}]
-       |Attributes: ${edge.attributes.map(_.toString).mkString("\n", "\n", "")}
+       |Attributes: ${edge.attributes.map(_.show).mkString("\n", "\n", "")}
        |]""".stripMargin
+  }
+
+  implicit val ShowMultiValuedAttribute: Show[MultiValuedAttribute] = (mAttr: MultiValuedAttribute) => {
+    s"""MultiValuedAttribute(${ mAttr.aType }, [${ mAttr.values.mkString(", ") }], ${ mAttr.dataType })""".stripMargin
+  }
+
+  implicit val ShowSingleValuedAttribute: Show[SingleValuedAttribute] = (sAttr: SingleValuedAttribute) => {
+    sAttr.toString
+  }
+
+  implicit val ShowUserDefinedAttribute: Show[UserDefinedAttribute] = (udAttr: UserDefinedAttribute) => {
+    udAttr.toString
+  }
+
+  implicit val showTgAttribute: Show[TgAttribute] = {
+    case sAttr: SingleValuedAttribute => sAttr.show
+    case mAttr: MultiValuedAttribute  => mAttr.show
+    case udAttr: UserDefinedAttribute => udAttr.show
   }
 
 

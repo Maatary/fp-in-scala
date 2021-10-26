@@ -1,0 +1,20 @@
+@prefix resnet: <https://data.elsevier.com/lifescience/schema/resnet/> .
+
+<https://data.elsevier.com/lifescience/entity/resnet/regulation/216172782119066256>
+    a                   resnet:Regulation ;
+    resnet:controlType  "Regulation" ;
+    resnet:dateCreated  "2020-11-16 20:14:09.717" ;
+    resnet:dateModified "2020-11-16 20:14:09.717" ;
+    resnet:effect       "negative" ;
+    resnet:flags        0 ;
+    resnet:idEffect     10052 ;
+    resnet:idObjectType 120 ;
+    resnet:idOwner      0 ;
+    resnet:regulator    <https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038255458> ;
+    resnet:source       <https://data.elsevier.com/lifescience/entity/resnet/source/216172782119066256-2>,
+                        <https://data.elsevier.com/lifescience/entity/resnet/source/216172782119066256-1>,
+                        <https://data.elsevier.com/lifescience/entity/resnet/source/216172782119066256-3>,
+                        <https://data.elsevier.com/lifescience/entity/resnet/source/216172782119066256-0> ;
+    resnet:target       <https://data.elsevier.com/lifescience/entity/resnet/disease/72057594038068597> ;
+    resnet:urn
+                        "urn:agi-Regulation:in-out:urn:agi-cas:11056-06-7:out:urn:agi-disease:lung%20adenocarcinoma:negative" .

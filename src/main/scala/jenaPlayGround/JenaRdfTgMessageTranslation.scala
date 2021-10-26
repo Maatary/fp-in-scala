@@ -10,8 +10,6 @@ import jenaPlayGround.DataTypes._
 import org.apache.jena.ontology.{OntDocumentManager, OntModel, OntModelSpec, OntResource}
 import org.apache.jena.rdf.model.{Literal, ModelFactory, ResourceFactory}
 import org.apache.jena.riot.{Lang, RDFDataMgr}
-import org.apache.jena.riot.system.stream.StreamManager
-import org.apache.jena.sys.JenaSystem
 import org.apache.jena.vocabulary.{RDF, XSD}
 import org.apache.jena.datatypes.{RDFDatatype, TypeMapper}
 import org.apache.jena.datatypes.xsd.XSDDatatype
@@ -43,8 +41,7 @@ object JenaRdfTgMessageTranslation extends App {
 
 
 
-  type EntityResource   = OntResource
-  type RelationResource = OntResource
+
 
   implicit class OntModelOps(model: OntModel) {
     def toPrettyString: IO[String] = {
@@ -120,7 +117,7 @@ object JenaRdfTgMessageTranslation extends App {
   def getDataPropValue(ontoResource:  OntResource, dataProperty: DataProperty, rdfDataType: RDFDatatype): IO[Option[String]] = {
     for {
 
-      maybeLiteral        <- IO { Option(ontoResource.getPropertyValue(ResourceFactory.createProperty(dataProperty.linkType))) map {_.asLiteral()}  } // Should be Pure can't fail (would only fail if the data or the ontology are invalid)
+      maybeLiteral        <- IO { Option ( ontoResource.getPropertyValue(ResourceFactory.createProperty(dataProperty.linkType)) ) map {_.asLiteral()}  } // Should be Pure can't fail (would only fail if the data or the ontology are invalid)
 
       maybeStringValue    <- maybeLiteral traverse { _.asJavaValue(rdfDataType).map(_.toString) }
 
@@ -186,10 +183,20 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
-  def makeAttributeFromSchemeProperty(ontoResource:  OntResource) (schemeProperty: SchemeProperty): IO[Option[TgAttribute]] = {
+
+
+  def getObjectPropValue(ontoResource:  OntResource, objectProperty: ObjectProperty): IO[Option[String]] = {
+    IO { Option ( ontoResource.getPropertyValue(ResourceFactory.createProperty(objectProperty.linkType)) ) map {_.asResource().getURI}  } // Should be Pure can't fail (would only fail if the data or the ontology are invalid)
+  }
+
+  def getObjectPropValues(ontoResource:  OntResource, objectProperty: ObjectProperty): IO[List[String]] = {
+    IO { ontoResource.listPropertyValues(ResourceFactory.createProperty(objectProperty.linkType)).asScala.toList map { _.asResource().getURI } } // Should be Pure can't fail (would only fail if the data or the ontology are invalid)
+  }
+
+  def makeSingleValuedAttributeFromObjectProperty(ontoResource:  OntResource, objectProperty: ObjectProperty): IO[Option[SingleValuedAttribute]] = {
     for {
 
-      maybeAnyUriValue            <- IO { Option(ontoResource.getPropertyValue(ResourceFactory.createProperty(schemeProperty.linkType))) map {_.asResource().getURI}  } // Should be Pure can't fail (would only fail if the data or the ontology are invalid)
+      maybeAnyUriValue            <- getObjectPropValue(ontoResource, objectProperty)
 
       maybeSingleValuedAttribute  <-
         maybeAnyUriValue
@@ -198,15 +205,38 @@ object JenaRdfTgMessageTranslation extends App {
             IO.pure[Option[SingleValuedAttribute]] { None }
           }
           { anyUriValue =>
-            IO.pure { Option(SingleValuedAttribute(localname(schemeProperty.linkType), anyUriValue , STRING)) }
+            IO.pure { Option ( SingleValuedAttribute(localname(objectProperty.linkType), anyUriValue , STRING) ) }
           }
 
     } yield maybeSingleValuedAttribute
   }
 
-  def getObjectPropValues(ontoResource:  OntResource, objectProperty: ObjectProperty): IO[List[String]] = {
-    IO { ontoResource.listPropertyValues(ResourceFactory.createProperty(objectProperty.linkType)).asScala.toList map{ _.asResource().getURI } } // Should be Pure can't fail (would only fail if the data or the ontology are invalid)
+  def makeMultiValuedAttributeFromObjectProperty(ontoResource:  OntResource, objectProperty: ObjectProperty): IO[Option[MultiValuedAttribute]] = {
+    for {
+
+      anyUriValues                <- getObjectPropValues(ontoResource, objectProperty)
+
+      maybeMultiValuedAttribute   <-
+        anyUriValues match {
+          case Nil            => IO.pure[Option[MultiValuedAttribute]] { None }
+          case _              => IO.pure { Option ( MultiValuedAttribute(localname(objectProperty.linkType), anyUriValues, STRING) ) }
+        }
+
+    } yield maybeMultiValuedAttribute
   }
+
+  def makeAttributeFromSchemeProperty(ontoResource:  OntResource) (schemeProperty: SchemeProperty): IO[Option[SingleValuedAttribute]] = {
+    makeSingleValuedAttributeFromObjectProperty(ontoResource, schemeProperty) // Because as of now for Scheme cardinality is always one
+  }
+
+  def makeAttributeFromAssociationProperty(ontoResource:  OntResource) (associationProperty: AssociationProperty): IO[Option[TgAttribute]] = associationProperty.max match {
+    case None                   =>  makeMultiValuedAttributeFromObjectProperty(ontoResource, associationProperty)
+    case Some(card) if card > 1 =>  makeMultiValuedAttributeFromObjectProperty(ontoResource, associationProperty)
+    case _                      =>  makeSingleValuedAttributeFromObjectProperty(ontoResource, associationProperty)
+  }
+
+
+
 
   def makeEdgeFromRelationPropertyTarget(sourceEntity: EntityResource, sourceEntityType: EntityType, relationProperty: RelationProperty, lookup: SortedMap[String, ObjectType])(targetEntityUri: String): IO[Edge] = {
     for  {
@@ -229,6 +259,9 @@ object JenaRdfTgMessageTranslation extends App {
 
   }
 
+
+
+  //TODO Composition Properties
   def translateEntity(entity: EntityResource, entityUri: String, entityType: EntityType, lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
 
     for {
@@ -256,10 +289,29 @@ object JenaRdfTgMessageTranslation extends App {
 
   }
 
+  //TODO LinkPropertyPair
+  def translateRelation(relation: RelationResource, relationUri: String, relationType: RelationType,  lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
+    for {
+
+      _                       <- IO { info (s"Starting Relation Translation Process for Relation $relationUri" ) }
+
+      _                       <- IO { debug(s"Relation $relationUri FdnSchema RelationType Description: [${relationType.show}]") }
+
+      dataProperties          <- IO.pure { relationType.dataProperties }
+      dataAttributes          <- { dataProperties traverse makeAttributeFromDataProperty(relation) } map { _.flatten }
+
+      associationProperties   <- IO.pure { relationType.associationProperties }
+      associationAttributes   <- { associationProperties traverse makeAttributeFromAssociationProperty(relation) } map { _.flatten }
+
+      allAttributes           <- IO.pure { dataAttributes ++ associationAttributes }
 
 
-  def translateRelation(relation: RelationResource, entityUri: String, relationType: RelationType,  lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
-    IO { info (s"Resource $entityUri Inferred as Relation. Starting Entity Translation Process ..." ) } *> IO.raiseError(new Throwable("Unsupported Resource Type"))
+
+      tgMessage               <- IO.pure { TgMessage ( List(), List(Edge(relationType.relationType, "sourceId","sourceType","targetId", "targetType", allAttributes)) ) }
+
+      _                       <- IO { info (s"Relation Translation Process for Entity $relationUri was successful" ) }
+
+    } yield tgMessage
   }
 
 
@@ -313,10 +365,10 @@ object JenaRdfTgMessageTranslation extends App {
 
   val program = for {
 
-    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/taxonomy/ppplus/meyler/yq57xzgC5K4" }
-    messageFile                      <- IO.pure { "messages/melyer.ttl" }
+    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/directregulation/216172782114755708" }
+    messageFile                      <- IO.pure { "messages/directregulation.ttl" }
 
-    fdnSchema                        <- fdnParser.program("elsevier_entellect_proxy_schema_ppplus.ttl")
+    fdnSchema                        <- fdnParser.program()
     lookup                           = makeLookUpFromFdnSchema(fdnSchema)
 
     tgMessage                        <- translateResourceMessage(eUri, messageFile)(lookup)
