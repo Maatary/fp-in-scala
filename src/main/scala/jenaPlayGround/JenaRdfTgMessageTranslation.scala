@@ -32,9 +32,16 @@ import scala.util.chaining.scalaUtilChainingOps
 
 object JenaRdfTgMessageTranslation extends App {
 
+
+
+  Logger.root
+    .withMinimumLevel(Level.Info).replace()
+
   Logger(classOf[JenaRdfTgMessageTranslation.type].getName)
     .withMinimumLevel(Level.Debug)
     .replace()
+
+
 
   type EntityResource   = OntResource
   type RelationResource = OntResource
@@ -91,6 +98,23 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
+  def inferCaseInsensitiveTypeFromUri(rUri: String): IO[String] = {
+    IO {
+      if (rUri.contains("entity"))
+        rUri.split("/entity/").last.split("/").pipe { array => s"https://data.elsevier.com/lifescience/schema/${ array(0) }/${ array(1) }" }
+      else
+        rUri.split("/taxonomy/").last.split("/").pipe { array => s"https://data.elsevier.com/lifescience/schema/${ array(0) }/${ array(1) }" }
+    } onError { _ => IO { error(s"Tried to Infer Case Insensitive Type From Non Compliant Resource Uri: $rUri") } }
+  }
+
+  def makeLookUpFromFdnSchema(fdnGraphSchema: FdnGraphSchema): SortedMap[String, ObjectType] = {
+
+    val eTypes: List[(String, ObjectType)] = fdnGraphSchema.entityTypes.map(entityType => (entityType.entityType, entityType))
+    val rTypes: List[(String, ObjectType)] = fdnGraphSchema.relationTypes.map(relationType => (relationType.relationType, relationType))
+
+    SortedMap[String, ObjectType](List(eTypes, rTypes).flatten: _*)(scala.math.Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
+  }
+
 
 
   def getDataPropValue(ontoResource:  OntResource, dataProperty: DataProperty, rdfDataType: RDFDatatype): IO[Option[String]] = {
@@ -129,7 +153,7 @@ object JenaRdfTgMessageTranslation extends App {
             IO.pure[Option[SingleValuedAttribute]] { None }
           }
           { value =>
-            rdfDataType.asTgDataType flatMap { dt => IO { Option(SingleValuedAttribute(localname(dataProperty.linkType), value , dt)) } }
+            rdfDataType.asTgDataType flatMap { dt => IO.pure { Option(SingleValuedAttribute(localname(dataProperty.linkType), value , dt)) } }
           }
 
     } yield  maybeSingleValuedAttribute
@@ -148,7 +172,7 @@ object JenaRdfTgMessageTranslation extends App {
       maybeMultiValuedAttribute       <-
         values match {
           case Nil            => IO.pure[Option[MultiValuedAttribute]] { None }
-          case _              => rdfDataType.asTgDataType flatMap { dt => IO { Option(MultiValuedAttribute(localname(dataProperty.linkType), values, dt)) } }
+          case _              => rdfDataType.asTgDataType flatMap { dt => IO.pure { Option(MultiValuedAttribute(localname(dataProperty.linkType), values, dt)) } }
         }
 
     } yield maybeMultiValuedAttribute
@@ -161,6 +185,24 @@ object JenaRdfTgMessageTranslation extends App {
     case _                                           => makeSingleValuedAttributeFromDataProperty(ontoResource, dataProperty)
   }
 
+
+  def makeAttributeFromSchemeProperty(ontoResource:  OntResource) (schemeProperty: SchemeProperty): IO[Option[TgAttribute]] = {
+    for {
+
+      maybeAnyUriValue            <- IO { Option(ontoResource.getPropertyValue(ResourceFactory.createProperty(schemeProperty.linkType))) map {_.asResource().getURI}  } // Should be Pure can't fail (would only fail if the data or the ontology are invalid)
+
+      maybeSingleValuedAttribute  <-
+        maybeAnyUriValue
+          .fold
+          {
+            IO.pure[Option[SingleValuedAttribute]] { None }
+          }
+          { anyUriValue =>
+            IO.pure { Option(SingleValuedAttribute(localname(schemeProperty.linkType), anyUriValue , STRING)) }
+          }
+
+    } yield maybeSingleValuedAttribute
+  }
 
   def getObjectPropValues(ontoResource:  OntResource, objectProperty: ObjectProperty): IO[List[String]] = {
     IO { ontoResource.listPropertyValues(ResourceFactory.createProperty(objectProperty.linkType)).asScala.toList map{ _.asResource().getURI } } // Should be Pure can't fail (would only fail if the data or the ontology are invalid)
@@ -187,27 +229,6 @@ object JenaRdfTgMessageTranslation extends App {
 
   }
 
-  def inferCaseInsensitiveTypeFromUri(rUri: String): IO[String] = {
-    IO {
-      rUri.split("/entity/").last.split("/")
-        .pipe { array => s"https://data.elsevier.com/lifescience/schema/${ array(0) }/${ array(1) }" }
-    } onError { _ => IO { error(s"Tried to Infer Case Insensitive Type From Non Compliant Resource Uri: $rUri") } }
-  }
-
-  def makeLookUpFromFdnSchema(fdnGraphSchema: FdnGraphSchema): SortedMap[String, ObjectType] = {
-
-    val eTypes: List[(String, ObjectType)] = fdnGraphSchema.entityTypes.map(entityType => (entityType.entityType, entityType))
-    val rTypes: List[(String, ObjectType)] = fdnGraphSchema.relationTypes.map(relationType => (relationType.relationType, relationType))
-
-    SortedMap[String, ObjectType](List(eTypes, rTypes).flatten: _*)(scala.math.Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
-  }
-
-
-  def translateRelation(relation: RelationResource, entityUri: String, relationType: RelationType,  lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
-    IO { info (s"Resource $entityUri Inferred as Relation. Starting Entity Translation Process ..." ) } *> IO.raiseError(new Throwable("Unsupported Resource Type"))
-  }
-
-
   def translateEntity(entity: EntityResource, entityUri: String, entityType: EntityType, lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
 
     for {
@@ -217,18 +238,30 @@ object JenaRdfTgMessageTranslation extends App {
       _                       <- IO { debug(s"Entity $entityUri FdnSchema EntityType Description: [${entityType.show}]") }
 
       dataProperties          <- IO.pure { entityType.dataProperties }
-      attributes              <- { dataProperties traverse makeAttributeFromDataProperty(entity) } map { _.flatten }
+      dataAttributes          <- { dataProperties traverse makeAttributeFromDataProperty(entity) } map { _.flatten }
+
+      schemeProperties        <- IO.pure { entityType.schemeProperties }
+      schemeAttributes        <- { schemeProperties traverse makeAttributeFromSchemeProperty(entity) } map { _.flatten }
+
+      allAttributes           <- IO.pure { dataAttributes ++ schemeAttributes }
 
       relationProperties      <- IO.pure {entityType.relationProperties}
       edges                   <- { relationProperties traverse makeEdgesFromRelationProperty(entity, entityType, lookup) } map {_.flatten}
 
-      tgMessage               <- IO.pure { TgMessage(List(Vertex(entityType.entityType, entityUri, attributes)), edges) }
+      tgMessage               <- IO.pure { TgMessage(List(Vertex(entityType.entityType, entityUri, allAttributes)), edges) }
 
       _                       <- IO { info (s"Entity Translation Process for Entity $entityUri was successful" ) }
 
     } yield tgMessage
 
   }
+
+
+
+  def translateRelation(relation: RelationResource, entityUri: String, relationType: RelationType,  lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
+    IO { info (s"Resource $entityUri Inferred as Relation. Starting Entity Translation Process ..." ) } *> IO.raiseError(new Throwable("Unsupported Resource Type"))
+  }
+
 
   def translateResourceMessage(resUri: String, messageFile: String)(lookup: SortedMap[String, ObjectType]): IO[TgMessage] = {
 
@@ -244,7 +277,6 @@ object JenaRdfTgMessageTranslation extends App {
       _                     <- if (this.logger.includes(Level.Debug)) ontModel.toPrettyString.flatMap{ m => IO { debug(s"Resource $resUri Message: [\n$m]") } } else IO.unit
 
 
-
       maybeResource         <- IO { Option(ontModel.getOntResource(resUri)) }
       resource              <-
         maybeResource match {
@@ -253,8 +285,6 @@ object JenaRdfTgMessageTranslation extends App {
 
           case Some(r) => IO.pure { r }
         }
-
-
 
 
       resType               <- IO { resource.getRDFType.getURI } onError { _ => ontModel.toPrettyString.flatMap { m => IO { error( s"The Resource $resUri does not have a Type in message:\n$m" ) }} }
@@ -271,7 +301,6 @@ object JenaRdfTgMessageTranslation extends App {
         }
 
 
-
       _                     <- IO { ontModel.close() }
 
       _                     <- IO { info (s"Successfully Translated Message for Resource with Uri: $resUri")}
@@ -284,10 +313,10 @@ object JenaRdfTgMessageTranslation extends App {
 
   val program = for {
 
-    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/reaxys/bioassay/517534" }
-    messageFile                      <- IO.pure { "messages/bioassay.ttl" }
+    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/taxonomy/ppplus/meyler/yq57xzgC5K4" }
+    messageFile                      <- IO.pure { "messages/melyer.ttl" }
 
-    fdnSchema                        <- fdnParser.program("elsevier_entellect_proxy_schema_reaxys.ttl")
+    fdnSchema                        <- fdnParser.program("elsevier_entellect_proxy_schema_ppplus.ttl")
     lookup                           = makeLookUpFromFdnSchema(fdnSchema)
 
     tgMessage                        <- translateResourceMessage(eUri, messageFile)(lookup)

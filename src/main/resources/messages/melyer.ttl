@@ -1,0 +1,19 @@
+@prefix ppplus: <https://data.elsevier.com/lifescience/schema/ppplus/> .
+@prefix skos:   <http://www.w3.org/2004/02/skos/core#> .
+
+<https://data.elsevier.com/lifescience/taxonomy/ppplus/meyler/Hyv4tmeQ8QF>
+    a             ppplus:Meyler ;
+    skos:inScheme <https://data.elsevier.com/lifescience/taxonomy/ppplus/meyler/MeylerScheme> .
+
+<https://data.elsevier.com/lifescience/taxonomy/ppplus/meyler/yq57xzgC5K4>
+    a                       ppplus:Meyler ;
+    skos:broader            <https://data.elsevier.com/lifescience/taxonomy/ppplus/meyler/Hyv4tmeQ8QF> ;
+    skos:inScheme           <https://data.elsevier.com/lifescience/taxonomy/ppplus/meyler/MeylerScheme> ;
+    skos:prefLabel          "Etamsylate, Dicynene"@en ;
+    ppplus:hasChecksum      "8ffae0380da81e7288c63b6227278482" ;
+    ppplus:hasDrug          <https://data.elsevier.com/lifescience/entity/ppplus/drug/skpHmCMtHt9> ;
+    ppplus:hasNum           6 ;
+    ppplus:hasTextContentId "1425" ;
+    ppplus:hasType          "article"@en ;
+    ppplus:isLeaf           false .
+

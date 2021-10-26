@@ -57,9 +57,10 @@ object DataTypes {
   final case class CompositionProperty(override val linkType: String, entityType: String, min: Option[Int], max: Option[Int]) extends ObjectProperty(linkType)
   final case class SchemeProperty(override val linkType: String, entityType: String) extends ObjectProperty(linkType)
 
-  sealed abstract class LinkProperty(override val linkType: String) extends ObjectProperty(linkType)
-  final case class DirectionalLinkProperty(override val linkType: String, entityType: String) extends LinkProperty(linkType)
-  final case class NonDirectionalLinkProperty(override val linkType: String, entityType: String) extends LinkProperty(linkType)
+  sealed abstract class LinkProperty(override val linkType: String, val entityType: String) extends ObjectProperty(linkType)
+  final case class DirectionalLinkProperty(override val linkType: String, override val entityType: String) extends LinkProperty(linkType, entityType)
+  final case class NonDirectionalLinkProperty(override val linkType: String, override val entityType: String) extends LinkProperty(linkType, entityType)
+
 
   final case class LinkPropertyPair(linkPropertyA: NonDirectionalLinkProperty, linkPropertyB: LinkProperty) extends FdnGraphSchemaElt
 
