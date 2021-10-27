@@ -20,7 +20,7 @@ object TgDataTypes {
 
   type EntityUri          = String
   type RelationUri        = String
-  type EntityResourceData = (EntityUri, ResourceType)
+  //type EntityResourceData = (EntityUri, ResourceType)
 
   /**
    *
@@ -35,7 +35,7 @@ object TgDataTypes {
 
 
 
-  //case class EntityResourceData(eUri: EntityUri, eType: ResourceType)
+  case class EntityResourceData(eUri: EntityUri, eType: ResourceType)
 
   /**
    *
