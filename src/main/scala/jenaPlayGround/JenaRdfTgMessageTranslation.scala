@@ -35,9 +35,12 @@ object JenaRdfTgMessageTranslation extends App {
   Logger.root
     .withMinimumLevel(Level.Info).replace()
 
-  /*Logger(classOf[JenaRdfTgMessageTranslation.type].getName)
-    .withMinimumLevel(Level.Debug)
-    .replace()*/
+  Logger(classOf[jenaPlayGround.fdnParser.type].getName)
+    .withMinimumLevel(Level.Info)
+    .replace()
+  Logger(classOf[JenaRdfTgMessageTranslation.type].getName)
+    .withMinimumLevel(Level.Info)
+    .replace()
 
 
 
@@ -184,6 +187,9 @@ object JenaRdfTgMessageTranslation extends App {
 
 
 
+  def getObjectPropResource(ontoResource:  OntResource, objectProperty: ObjectProperty): IO[Option[OntResource]] = {
+    IO { Option ( ontoResource.getPropertyValue(ResourceFactory.createProperty(objectProperty.linkType)) ) map {_.as(classOf[OntResource])} } // Should be Pure can't fail (would only fail if the data or the ontology are invalid)
+  }
 
   def getObjectPropValue(ontoResource:  OntResource, objectProperty: ObjectProperty): IO[Option[String]] = {
     IO { Option ( ontoResource.getPropertyValue(ResourceFactory.createProperty(objectProperty.linkType)) ) map {_.asResource().getURI}  } // Should be Pure can't fail (would only fail if the data or the ontology are invalid)
@@ -236,16 +242,35 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
-  def lookUpEntityResourceType(eUri: EntityUri, lookup: SortedMap[ResourceType, ObjectType]): IO[ResourceType] = {
+  def lookUpEntityType(lookup: SortedMap[ResourceType, ObjectType])(eUri: EntityUri): IO[EntityType] = {
     for {
       insensitiveResType  <- inferCaseInsensitiveResourceTypeFromUri(eUri) onError { _ => IO { error(s"Failed to Infer Case Insensitive Resource Type for Entity: $eUri")} }
       entityType          <- IO { lookup(insensitiveResType).asInstanceOf[EntityType] } onError { _ => IO { error(s"Failed to lookup EntityType for Entity [$eUri] from Its Inferred Case Insensitive Resource Type [$insensitiveResType]")} }
-    } yield entityType.entityType
+    } yield entityType
   }
 
-  def makeEdgeFromRelationPropertyTarget(sourceEntity: EntityResource, sourceEntityType: EntityType, relationProperty: RelationProperty, lookup: SortedMap[String, ObjectType])(targetEntityUri: String): IO[Edge] = {
-    lookUpEntityResourceType(targetEntityUri, lookup)
-      .map { Edge(relationProperty.linkType, sourceEntity.getURI, sourceEntityType.entityType, targetEntityUri, _, List())}
+
+  def translateSubEntity(compositionProperty: CompositionProperty, subEntityResource: EntityResource, subEntityType: EntityType): IO[UserDefinedAttribute] = {
+    for {
+      dataProperties          <- IO.pure {subEntityType.dataProperties }
+      dataAttributes          <- { dataProperties traverse makeAttributeFromDataProperty(subEntityResource) } map { _.flatten }
+    } yield UserDefinedAttribute(compositionProperty.linkType, dataAttributes.map(attr => attr.aType -> attr))
+  }
+
+  def makeAttributeFromCompositionProperty(sourceEntity: EntityResource, lookup: SortedMap[ResourceType, ObjectType]) (compositionProperty: CompositionProperty): IO[Option[UserDefinedAttribute]] = {
+    for {
+      maybeSubEntityResource    <- getObjectPropResource(sourceEntity, compositionProperty)
+
+      maybeSubEntityType        <- maybeSubEntityResource.map(_.getURI) traverse lookUpEntityType(lookup) // There should be no need to do the lookup, the type is in  compositionProperty.entityType
+
+      maybeUserDefinedAttribute <- (maybeSubEntityResource, maybeSubEntityType) traverseN { (subEntityResource, SubEntityType ) => translateSubEntity(compositionProperty, subEntityResource, SubEntityType) }
+
+    } yield maybeUserDefinedAttribute
+  }
+
+  def makeEdgeFromRelationPropertyTarget(sourceEntity: EntityResource, sourceEntityType: EntityType, relationProperty: RelationProperty, lookup: SortedMap[ResourceType, ObjectType])(targetEntityUri: String): IO[Edge] = {
+    lookUpEntityType(lookup)(targetEntityUri)
+      .map { eType => Edge(relationProperty.linkType, sourceEntity.getURI, sourceEntityType.entityType, targetEntityUri, eType.entityType, List())}
       .onError {_ => IO { error(s"Failed to lookup Entity ResourceType for Target Entity [$targetEntityUri] of RelationProperty [${relationProperty.linkType}] for Entity [${sourceEntity.getURI}]")} }
   }
 
@@ -262,10 +287,11 @@ object JenaRdfTgMessageTranslation extends App {
       targetLinkProperty              <- IO.pure { relationType.linkPropertyPairs.head.linkPropertyB }
       maybeTargetEntityUri            <- getObjectPropValue(relation, targetLinkProperty)
 
-      maybeTargetEntityType           <- maybeTargetEntityUri.map(lookUpEntityResourceType(_, lookup)).sequence
+      maybeTargetEntityType           <- maybeTargetEntityUri traverse lookUpEntityType(lookup)
+      maybeTargetEntityResourceType   <- IO.pure { maybeTargetEntityType.map(_.entityType) }
 
 
-      maybeTargetEntityResourceData   <- IO.pure { maybeTargetEntityUri -> maybeTargetEntityType mapN EntityResourceData }
+      maybeTargetEntityResourceData   <- IO.pure { maybeTargetEntityUri -> maybeTargetEntityResourceType mapN EntityResourceData }
 
       _                               <-
 
@@ -284,10 +310,10 @@ object JenaRdfTgMessageTranslation extends App {
       sourceLinkProperty              <- IO.pure { relationType.linkPropertyPairs.head.linkPropertyA }
       maybeSourceEntityUri            <- getObjectPropValue(relation, sourceLinkProperty)
 
-      maybeSourceEntityType           <- maybeSourceEntityUri.map(lookUpEntityResourceType(_, lookup)).sequence
+      maybeSourceEntityType           <- maybeSourceEntityUri traverse lookUpEntityType(lookup)
+      maybeSourceEntityResourceType   <- IO.pure { maybeSourceEntityType.map(_.entityType) }
 
-
-      maybeSourceEntityResourceData   <- IO.pure { maybeSourceEntityUri -> maybeSourceEntityType mapN EntityResourceData }
+      maybeSourceEntityResourceData   <- IO.pure { maybeSourceEntityUri -> maybeSourceEntityResourceType mapN EntityResourceData }
 
       _                               <-
 
@@ -317,7 +343,10 @@ object JenaRdfTgMessageTranslation extends App {
       schemeProperties        <- IO.pure { entityType.schemeProperties }
       schemeAttributes        <- { schemeProperties traverse makeAttributeFromSchemeProperty(entity) } map { _.flatten }
 
-      allAttributes           <- IO.pure { dataAttributes ++ schemeAttributes }
+      compositionProperties   <- IO.pure { entityType.compositionProperties}
+      compositionAttributes   <- { compositionProperties traverse makeAttributeFromCompositionProperty(entity,  lookup) } map { _.flatten }
+
+      allAttributes           <- IO.pure { dataAttributes ++ schemeAttributes ++ compositionAttributes }
 
       relationProperties      <- IO.pure {entityType.relationProperties}
       edges                   <- { relationProperties traverse makeEdgesFromRelationProperty(entity, entityType, lookup) } map {_.flatten}
@@ -349,13 +378,14 @@ object JenaRdfTgMessageTranslation extends App {
       maybeSourceResourceData <- getRelationSourceResourceData(relation, relationType, lookup)
       maybeTargetResourceData <- getRelationTargetResourceData(relation, relationType, lookup)
 
-      maybeTgMessage          <-
-        IO.pure {
-          maybeSourceResourceData -> maybeTargetResourceData mapN { (source, target) =>
-            TgMessage ( List(), List(Edge(relationType.relationType, source.eUri, source.eType, target.eUri, target.eType, allAttributes)) )
-          }
-        }
 
+      maybeTgMessage          <-
+
+          IO.pure {
+            maybeSourceResourceData -> maybeTargetResourceData mapN { (source, target) =>
+              TgMessage ( List(), List(Edge(relationType.relationType, source.eUri, source.eType, target.eUri, target.eType, allAttributes)) )
+            }
+          }
 
       tgMessage               <-
 
@@ -423,11 +453,13 @@ object JenaRdfTgMessageTranslation extends App {
 
   val program = for {
 
-    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/directregulation/216172782114755708" }
-    messageFile                      <- IO.pure { "messages/directregulation.ttl" }
+    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/reaxys/feeding/4037623626" }
+    messageFile                      <- IO.pure { "messages/feeding.ttl" }
 
-    fdnSchema                        <- fdnParser.program()
+    fdnSchema                        <- fdnParser.program("elsevier_entellect_proxy_schema_reaxys.ttl")
     lookup                           =  makeLookUpFromFdnSchema(fdnSchema)
+
+    //_                                <- IO {info(fdnSchema.show)}
 
     tgMessage                        <- translateResourceMessage(eUri, messageFile)(lookup)
 

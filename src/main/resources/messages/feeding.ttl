@@ -1,0 +1,17 @@
+@prefix reaxys: <https://data.elsevier.com/lifescience/schema/reaxys/> .
+
+<https://data.elsevier.com/lifescience/entity/reaxys/feedingduration/4037623626>
+    a                       reaxys:FeedingDuration ;
+    reaxys:hasDisplayValue  "8 hour" ;
+    reaxys:hasStandardValue "480" ;
+    reaxys:hasValue         "8" ;
+    reaxys:hasValueUnit     "hour" .
+
+<https://data.elsevier.com/lifescience/entity/reaxys/feeding/4037623626>
+    a                            reaxys:Feeding ;
+    reaxys:hasBiologicalMaterial <https://data.elsevier.com/lifescience/entity/reaxys/biologicalmaterial/7792> ;
+    reaxys:hasFeedingDuration    <https://data.elsevier.com/lifescience/entity/reaxys/feedingduration/4037623626> ;
+    reaxys:hasFeedingMethod      <https://data.elsevier.com/lifescience/entity/reaxys/feedingmethod/1> ;
+    reaxys:hasFeedingType        <https://data.elsevier.com/lifescience/entity/reaxys/feedingtype/1> ;
+    reaxys:hasRelationIndex      "4" .
+
