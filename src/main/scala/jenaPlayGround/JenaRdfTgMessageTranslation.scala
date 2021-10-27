@@ -35,9 +35,9 @@ object JenaRdfTgMessageTranslation extends App {
   Logger.root
     .withMinimumLevel(Level.Info).replace()
 
-  Logger(classOf[JenaRdfTgMessageTranslation.type].getName)
+  /*Logger(classOf[JenaRdfTgMessageTranslation.type].getName)
     .withMinimumLevel(Level.Debug)
-    .replace()
+    .replace()*/
 
 
 
@@ -95,7 +95,7 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
-  def inferCaseInsensitiveTypeFromUri(rUri: String): IO[String] = {
+  def inferCaseInsensitiveResourceTypeFromUri(rUri: String): IO[String] = {
     IO {
       if (rUri.contains("entity"))
         rUri.split("/entity/").last.split("/").pipe { array => s"https://data.elsevier.com/lifescience/schema/${ array(0) }/${ array(1) }" }
@@ -236,41 +236,34 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
-
+  def lookUpEntityResourceType(eUri: EntityUri, lookup: SortedMap[ResourceType, ObjectType]): IO[ResourceType] = {
+    for {
+      insensitiveResType  <- inferCaseInsensitiveResourceTypeFromUri(eUri) onError { _ => IO { error(s"Failed to Infer Case Insensitive Resource Type for Entity: $eUri")} }
+      entityType          <- IO { lookup(insensitiveResType).asInstanceOf[EntityType] } onError { _ => IO { error(s"Failed to lookup EntityType for Entity [$eUri] from Its Inferred Case Insensitive Resource Type [$insensitiveResType]")} }
+    } yield entityType.entityType
+  }
 
   def makeEdgeFromRelationPropertyTarget(sourceEntity: EntityResource, sourceEntityType: EntityType, relationProperty: RelationProperty, lookup: SortedMap[String, ObjectType])(targetEntityUri: String): IO[Edge] = {
-    for  {
-
-      insensitiveResType  <- inferCaseInsensitiveTypeFromUri(targetEntityUri) onError { _ => IO { error(s"Failed to Infer Case Insensitive Resource Type for Target Entity: $targetEntityUri")} }
-
-      targetEntityType    <- IO { lookup(insensitiveResType).asInstanceOf[EntityType] } onError { _ => IO { error(s"Failed to lookup EntityType for Target Entity [$targetEntityUri] of [RelationProperty $relationProperty.linkType] with Case Insensitive Type: ${insensitiveResType}")} }
-
-    } yield Edge(relationProperty.linkType, sourceEntity.getURI, sourceEntityType.entityType, targetEntityUri, targetEntityType.entityType, List())
+    lookUpEntityResourceType(targetEntityUri, lookup)
+      .map { Edge(relationProperty.linkType, sourceEntity.getURI, sourceEntityType.entityType, targetEntityUri, _, List())}
+      .onError {_ => IO { error(s"Failed to lookup Entity ResourceType for Target Entity [$targetEntityUri] of RelationProperty [${relationProperty.linkType}] for Entity [${sourceEntity.getURI}]")} }
   }
 
   def makeEdgesFromRelationProperty(sourceEntity: EntityResource, entityType: EntityType, lookup: SortedMap[ResourceType, ObjectType])(relationProperty: RelationProperty): IO[List[Edge]] = {
     for {
-
       targetEntityUris <- getObjectPropValues(sourceEntity, relationProperty)
-
       edges            <- targetEntityUris traverse makeEdgeFromRelationPropertyTarget(sourceEntity, entityType, relationProperty, lookup)
-
     } yield edges
-
   }
 
   def getRelationTargetResourceData(relation: RelationResource, relationType: RelationType, lookup: SortedMap[ResourceType, ObjectType]): IO[Option[EntityResourceData]] = {
     for {
 
-      targetLinkProperty              <- IO.pure { relationType.linkPropertyPairs.head.linkPropertyB}
+      targetLinkProperty              <- IO.pure { relationType.linkPropertyPairs.head.linkPropertyB }
       maybeTargetEntityUri            <- getObjectPropValue(relation, targetLinkProperty)
 
-      maybeTargetEntityType           <-
+      maybeTargetEntityType           <- maybeTargetEntityUri.map(lookUpEntityResourceType(_, lookup)).sequence
 
-        maybeTargetEntityUri match {
-          case Some(targetEntityUri) => inferCaseInsensitiveTypeFromUri(targetEntityUri) map {_.some}
-          case None                  => IO.pure { None }
-        }
 
       maybeTargetEntityResourceData   <- IO.pure { maybeTargetEntityUri -> maybeTargetEntityType mapN EntityResourceData }
 
@@ -278,7 +271,7 @@ object JenaRdfTgMessageTranslation extends App {
 
         maybeTargetEntityResourceData match {
           case Some(_)              => IO.unit
-          case None                 => IO { warn(s"Failed to Retrieve SourceEntity for Relation ${relation.getURI}") }
+          case None                 => IO { warn(s"Failed to Retrieve SourceEntity for LinkProperty [${targetLinkProperty.linkType}] for Relation [${relation.getURI}]") }
         }
 
     } yield maybeTargetEntityResourceData
@@ -291,12 +284,8 @@ object JenaRdfTgMessageTranslation extends App {
       sourceLinkProperty              <- IO.pure { relationType.linkPropertyPairs.head.linkPropertyA }
       maybeSourceEntityUri            <- getObjectPropValue(relation, sourceLinkProperty)
 
-      maybeSourceEntityType           <-
+      maybeSourceEntityType           <- maybeSourceEntityUri.map(lookUpEntityResourceType(_, lookup)).sequence
 
-        maybeSourceEntityUri match {
-          case Some(sourceEntityUri) => inferCaseInsensitiveTypeFromUri(sourceEntityUri) map {_.some}
-          case None                  => IO.pure { None }
-        }
 
       maybeSourceEntityResourceData   <- IO.pure { maybeSourceEntityUri -> maybeSourceEntityType mapN EntityResourceData }
 
@@ -304,7 +293,7 @@ object JenaRdfTgMessageTranslation extends App {
 
         maybeSourceEntityResourceData match {
           case Some(_)              => IO.unit
-          case None                 => IO { warn(s"Failed to Retrieve SourceEntity for Relation ${relation.getURI}") }
+          case None                 => IO { warn(s"Failed to Retrieve SourceEntity for LinkProperty [${sourceLinkProperty.linkType}] for Relation [${relation.getURI}]") }
         }
 
     } yield maybeSourceEntityResourceData
@@ -342,7 +331,6 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
-  //TODO LinkPropertyPair
   def translateRelation(relation: RelationResource, relationUri: String, relationType: RelationType,  lookup: SortedMap[ResourceType, ObjectType]): IO[TgMessage] = {
     for {
 
@@ -362,17 +350,26 @@ object JenaRdfTgMessageTranslation extends App {
       maybeTargetResourceData <- getRelationTargetResourceData(relation, relationType, lookup)
 
       maybeTgMessage          <-
-        IO {
+        IO.pure {
           maybeSourceResourceData -> maybeTargetResourceData mapN { (source, target) =>
             TgMessage ( List(), List(Edge(relationType.relationType, source.eUri, source.eType, target.eUri, target.eType, allAttributes)) )
           }
         }
 
 
+      tgMessage               <-
 
-      _                       <- IO { info (s"Relation Translation Process for Entity $relationUri was successful" ) }
+          maybeTgMessage
+            .fold
+            {
+              IO.pure { TgMessage(List(), List()) } <* IO { warn(s"Relation Translation Process for Relation $relationUri resulted in an Empty Message because of missing Mandatory LinkPair." ) }
+            }
+            { msg =>
+              IO.pure { msg } <* IO { info (s"Relation Translation Process for Relation $relationUri was successful" ) }
+            }
 
-    } yield maybeTgMessage.get
+
+    } yield tgMessage
   }
 
 
@@ -430,7 +427,7 @@ object JenaRdfTgMessageTranslation extends App {
     messageFile                      <- IO.pure { "messages/directregulation.ttl" }
 
     fdnSchema                        <- fdnParser.program()
-    lookup                           = makeLookUpFromFdnSchema(fdnSchema)
+    lookup                           =  makeLookUpFromFdnSchema(fdnSchema)
 
     tgMessage                        <- translateResourceMessage(eUri, messageFile)(lookup)
 

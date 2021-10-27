@@ -31,3 +31,9 @@ pm.shortForm("https://data.elsevier.com/lifescience/schema/reaxys/Bioassay")
 
 
 
+import cats.syntax.all._
+
+
+Option(2).onError(_ => Option(println("no error here")))
+
+Option(null).onError(_ => Option(println("Error Here")))
