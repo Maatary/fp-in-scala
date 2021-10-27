@@ -38,28 +38,28 @@ object DataTypes {
   type SchemaWithImports = OntModel
   type OntPrefix         = String
   type OntUri            = String
-
+  type ResourceType      = String
 
   case class FdnGraphSchema(ontUri: OntUri, ontPrefix: OntPrefix, entityTypes:  List[EntityType],  relationTypes: List[RelationType])
 
   sealed trait FdnGraphSchemaElt
 
   sealed trait ObjectType extends FdnGraphSchemaElt
-  final case class EntityType(entityType: String, dataProperties: List[DataProperty], relationProperties: List[RelationProperty], compositionProperties: List[CompositionProperty], schemeProperties: List[SchemeProperty]) extends ObjectType
-  final case class RelationType(relationType: String, linkPropertyPairs: List[LinkPropertyPair], dataProperties: List[DataProperty], associationProperties: List[AssociationProperty]) extends ObjectType
+  final case class EntityType(entityType: ResourceType, dataProperties: List[DataProperty], relationProperties: List[RelationProperty], compositionProperties: List[CompositionProperty], schemeProperties: List[SchemeProperty]) extends ObjectType
+  final case class RelationType(relationType: ResourceType, linkPropertyPairs: List[LinkPropertyPair], dataProperties: List[DataProperty], associationProperties: List[AssociationProperty]) extends ObjectType
 
   sealed trait PropertyType extends FdnGraphSchemaElt
-  final case class DataProperty(linkType: String, dataType: String, min: Option[Int], max: Option[Int]) extends PropertyType
+  final case class DataProperty(linkType: ResourceType, dataType: ResourceType, min: Option[Int], max: Option[Int]) extends PropertyType
 
-  sealed abstract class ObjectProperty(val linkType: String) extends PropertyType
-  final case class AssociationProperty(override val linkType: String, entityType: String, min: Option[Int], max: Option[Int]) extends ObjectProperty(linkType)
-  final case class RelationProperty(override val linkType: String, entityTypes: List[String], min: Option[Int], max: Option[Int]) extends ObjectProperty(linkType)
-  final case class CompositionProperty(override val linkType: String, entityType: String, min: Option[Int], max: Option[Int]) extends ObjectProperty(linkType)
-  final case class SchemeProperty(override val linkType: String, entityType: String) extends ObjectProperty(linkType)
+  sealed abstract class ObjectProperty(val linkType: ResourceType) extends PropertyType
+  final case class AssociationProperty(override val linkType: ResourceType, entityType: ResourceType, min: Option[Int], max: Option[Int]) extends ObjectProperty(linkType)
+  final case class RelationProperty(override val linkType: ResourceType, entityTypes: List[ResourceType], min: Option[Int], max: Option[Int]) extends ObjectProperty(linkType)
+  final case class CompositionProperty(override val linkType: ResourceType, entityType: ResourceType, min: Option[Int], max: Option[Int]) extends ObjectProperty(linkType)
+  final case class SchemeProperty(override val linkType: ResourceType, entityType: ResourceType) extends ObjectProperty(linkType)
 
-  sealed abstract class LinkProperty(override val linkType: String, val entityType: String) extends ObjectProperty(linkType)
-  final case class DirectionalLinkProperty(override val linkType: String, override val entityType: String) extends LinkProperty(linkType, entityType)
-  final case class NonDirectionalLinkProperty(override val linkType: String, override val entityType: String) extends LinkProperty(linkType, entityType)
+  sealed abstract class LinkProperty(override val linkType: ResourceType, val entityType: ResourceType) extends ObjectProperty(linkType)
+  final case class DirectionalLinkProperty(override val linkType: String, override val entityType: ResourceType) extends LinkProperty(linkType, entityType)
+  final case class NonDirectionalLinkProperty(override val linkType: ResourceType, override val entityType: ResourceType) extends LinkProperty(linkType, entityType)
 
 
   final case class LinkPropertyPair(linkPropertyA: NonDirectionalLinkProperty, linkPropertyB: LinkProperty) extends FdnGraphSchemaElt
@@ -422,7 +422,7 @@ import DataTypes._
   /**
    * A LinkPropertyShape can have Its linked EntityType expressed as an sh:class directly or an sh:class in a QualifiedValueShape.
    */
-  def getLinkPropertyEntityType(linkPropertyShape: PropertyShape): IO [String] = {
+  def getLinkPropertyEntityType(linkPropertyShape: PropertyShape): IO [ResourceType] = {
 
     for {
 

@@ -10,23 +10,32 @@ import cats.Show
 import cats.syntax.all._
 import org.apache.jena.ontology.OntResource
 
+import jenaPlayGround.DataTypes._
 
 object TgDataTypes {
 
-  type EntityResource   = OntResource
-  type RelationResource = OntResource
+  type EntityResource     = OntResource
+  type RelationResource   = OntResource
+
+
+  type EntityUri          = String
+  type RelationUri        = String
+  type EntityResourceData = (EntityUri, ResourceType)
 
   /**
    *
    * TYPES ALIASES
    *
    */
-  type VertexType       = String
-  type EdgeType         = String
-  type AttributeType    = String
-  type VertexId         = String
-  type AttributeValue   = String
+  type VertexType         = String
+  type EdgeType           = String
+  type AttributeType      = String
+  type VertexId           = String
+  type AttributeValue     = String
 
+
+
+  //case class EntityResourceData(eUri: EntityUri, eType: ResourceType)
 
   /**
    *
