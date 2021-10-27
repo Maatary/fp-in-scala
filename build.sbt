@@ -9,6 +9,7 @@ libraryDependencies ++= Seq (
   "org.typelevel"   %% "cats-effect"         % "3.2.9",
   "co.fs2"          %% "fs2-core"            % "3.1.6",
   "co.fs2"          %% "fs2-io"              % "3.1.6",
+  "com.github.fd4s" %% "fs2-kafka"           % "2.2.0",
   "org.http4s"      %% "http4s-dsl"          % "1.0.0-M29",
   "org.http4s"      %% "http4s-blaze-server" % "1.0.0-M29",
   "org.http4s"      %% "http4s-blaze-client" % "1.0.0-M29",

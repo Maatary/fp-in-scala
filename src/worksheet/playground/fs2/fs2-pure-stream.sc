@@ -1,9 +1,11 @@
 import cats.effect.unsafe.implicits.global
-import cats.effect.{ExitCode, IO}
+import cats.effect._
 import fs2.Stream
 import cats.syntax.all._
+import fs2.kafka.{AutoOffsetReset, ConsumerRecord, ConsumerSettings, Deserializer, KafkaConsumer}
 
 import java.util.EmptyStackException
+import scala.concurrent.duration.Duration
 
 
 
@@ -42,15 +44,39 @@ val e1 = Stream(List(1,2,3,4), List(3,33,56,7))
   }.compile.toVector.unsafeRunSync()
 
 val e2 = Stream(List(1,2,3,4), List(3,33,56,7))
-  .flatMap {
-    list =>
-      Stream
-      .eval(
-        Stream.emits(list)
-        .evalMap(IO.pure)
-        .compile.last
-      )
+  .flatMap { list =>
+    Stream.eval(Stream.emits(list).evalMap(IO.pure).compile.last)
   }.compile.toVector.unsafeRunSync()
+
+val e3 = Stream(List(1,2,3,4), List(3,33,56,7))
+  .flatMap { list =>
+    Stream.eval(
+      Stream.emits(list).covary[IO].groupWithin(2, 1.seconds)
+      .evalMap(ch => IO.println(ch.toList)).compile.drain)
+      .as(list.last)
+  }.compile.toVector.unsafeRunSync()
+
+/*def processRecord(record: ConsumerRecord[String, String]): IO[Unit] =
+  IO(println(s"Processing record: $record"))
+
+val consumerSettings = ConsumerSettings(
+  keyDeserializer = Deserializer[IO, String],
+  valueDeserializer = Deserializer[IO, String]
+).withAutoOffsetReset(AutoOffsetReset.Earliest)
+  .withBootstrapServers("localhost:9092")
+  .withGroupId("group")
+
+val stream =
+  KafkaConsumer.stream(consumerSettings)
+    .subscribeTo("topic")
+    .partitionedRecords
+    .map { partitionStream =>
+      partitionStream
+        .evalMap { committable =>
+          processRecord(committable.record)
+        }
+    }
+    .parJoinUnbounded*/
 
 
 
