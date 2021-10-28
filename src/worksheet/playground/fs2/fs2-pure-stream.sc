@@ -50,9 +50,12 @@ val e2 = Stream(List(1,2,3,4), List(3,33,56,7))
 
 val e3 = Stream(List(1,2,3,4), List(3,33,56,7))
   .flatMap { list =>
-    Stream.eval(
-      Stream.emits(list).covary[IO].groupWithin(2, 1.seconds)
-      .evalMap(ch => IO.println(ch.toList)).compile.drain)
+    Stream
+      .eval(
+        Stream.emits(list).covary[IO].groupWithin(2, 1.seconds)
+          .evalMap(ch => IO.println(ch.toList)).compile.drain
+      )
+      .evalMap(_ => IO.println(s"done with batch:$list"))
       .as(list.last)
   }.compile.toVector.unsafeRunSync()
 

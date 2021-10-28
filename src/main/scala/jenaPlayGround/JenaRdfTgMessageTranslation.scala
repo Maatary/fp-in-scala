@@ -241,6 +241,10 @@ object JenaRdfTgMessageTranslation extends App {
     case _                      =>  makeSingleValuedAttributeFromObjectProperty(ontoResource, associationProperty)
   }
 
+  def makeAttributeFromRelationProperty(ontoResource:  OntResource)(relationProperty: RelationProperty): IO[Option[SingleValuedAttribute]] = {
+    makeSingleValuedAttributeFromObjectProperty(ontoResource, relationProperty) // This is for subEntity Only, and cardinality of SubEntity properties are always 1
+  }
+
 
   def lookUpEntityType(lookup: SortedMap[ResourceType, ObjectType])(eUri: EntityUri): IO[EntityType] = {
     for {
@@ -250,11 +254,16 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
-  def translateSubEntity(compositionProperty: CompositionProperty, subEntityResource: EntityResource, subEntityType: EntityType): IO[UserDefinedAttribute] = {
+  def translateSubEntity(compositionProperty: CompositionProperty, subEntity: EntityResource, subEntityType: EntityType): IO[UserDefinedAttribute] = {
     for {
       dataProperties          <- IO.pure {subEntityType.dataProperties }
-      dataAttributes          <- { dataProperties traverse makeAttributeFromDataProperty(subEntityResource) } map { _.flatten }
-    } yield UserDefinedAttribute(compositionProperty.linkType, dataAttributes.map(attr => attr.aType -> attr))
+      dataAttributes          <- { dataProperties traverse makeAttributeFromDataProperty(subEntity) } map { _.flatten }
+      schemeProperties        <- IO.pure { subEntityType.schemeProperties }
+      schemeAttributes        <- { schemeProperties traverse makeAttributeFromSchemeProperty(subEntity) } map { _.flatten }
+      relationProperties      <- IO.pure { subEntityType.relationProperties }
+      relationAttributes      <- { relationProperties traverse makeAttributeFromRelationProperty(subEntity)} map { _.flatten }
+      allAttributes           <- IO.pure { dataAttributes ++ schemeAttributes ++ relationAttributes }
+    } yield UserDefinedAttribute(compositionProperty.linkType, allAttributes.map(attr => attr.aType -> attr))
   }
 
   def makeAttributeFromCompositionProperty(sourceEntity: EntityResource, lookup: SortedMap[ResourceType, ObjectType]) (compositionProperty: CompositionProperty): IO[Option[UserDefinedAttribute]] = {
@@ -328,7 +337,6 @@ object JenaRdfTgMessageTranslation extends App {
 
 
 
-  //TODO Composition Properties
   def translateEntity(entity: EntityResource, entityUri: String, entityType: EntityType, lookup: SortedMap[ResourceType, ObjectType]): IO[TgMessage] = {
 
     for {
@@ -453,13 +461,13 @@ object JenaRdfTgMessageTranslation extends App {
 
   val program = for {
 
-    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/reaxys/feeding/4037623626" }
-    messageFile                      <- IO.pure { "messages/feeding.ttl" }
+    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/reaxys/biologicalactivity/9990220" }
+    messageFile                      <- IO.pure { "messages/biologicalactivity.ttl" }
 
     fdnSchema                        <- fdnParser.program("elsevier_entellect_proxy_schema_reaxys.ttl")
     lookup                           =  makeLookUpFromFdnSchema(fdnSchema)
 
-    //_                                <- IO {info(fdnSchema.show)}
+    _                                <- IO {info(fdnSchema.show)}
 
     tgMessage                        <- translateResourceMessage(eUri, messageFile)(lookup)
 

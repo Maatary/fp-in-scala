@@ -1,0 +1,27 @@
+@prefix reaxys: <https://data.elsevier.com/lifescience/schema/reaxys/> .
+
+<https://data.elsevier.com/lifescience/entity/reaxys/biologicalactivity/9990220>
+    a                            reaxys:BiologicalActivity ;
+    reaxys:hasAgentConfiguration <https://data.elsevier.com/lifescience/entity/reaxys/agentconfiguration/5405314> ;
+    reaxys:hasBiologicalActivityMeasure
+                                 <https://data.elsevier.com/lifescience/entity/reaxys/biologicalactivitymeasure/9990220> ;
+    reaxys:hasBiologicalActivityMeasureCount
+                                 <https://data.elsevier.com/lifescience/entity/reaxys/biologicalactivitymeasurecount/9990220> ;
+    reaxys:hasCreationDate       "2013-12-16 22:18:49" ;
+    reaxys:hasDatasource         <https://data.elsevier.com/lifescience/entity/reaxys/datasource/369329> ;
+    reaxys:hasMeasureSettings    <https://data.elsevier.com/lifescience/entity/reaxys/measuresettings/1864445> ;
+    reaxys:hasPXValue            "1" ;
+    reaxys:hasPXValueOrigin      <https://data.elsevier.com/lifescience/entity/reaxys/pxvalueorigin/8> ;
+    reaxys:hasUpdateDate         "2020-03-17 15:48:39" .
+
+<https://data.elsevier.com/lifescience/entity/reaxys/biologicalactivitymeasurecount/9990220>
+    a                             reaxys:BiologicalActivityMeasureCount ;
+    reaxys:hasUpperValuePrecision <https://data.elsevier.com/lifescience/entity/reaxys/precision/13> .
+
+<https://data.elsevier.com/lifescience/entity/reaxys/biologicalactivitymeasure/9990220>
+    a                        reaxys:BiologicalActivityMeasure ;
+    reaxys:hasDisplayValue   "> 64 &#x00b5;g/mL" ;
+    reaxys:hasStandardValue  "0.00015" ;
+    reaxys:hasValue          "64" ;
+    reaxys:hasValuePrecision <https://data.elsevier.com/lifescience/entity/reaxys/precision/13> ;
+    reaxys:hasValueUnit      "&#x00b5;g/mL" .
