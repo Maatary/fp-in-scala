@@ -5,6 +5,7 @@ package jenaPlayGround
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
+import cats.kernel.Monoid
 import circe.TgDataTypes._
 import jenaPlayGround.DataTypes._
 import org.apache.jena.ontology.{OntDocumentManager, OntModel, OntModelSpec, OntResource}
@@ -19,6 +20,7 @@ import org.apache.jena.util.SplitIRI._
 import scala.jdk.CollectionConverters._
 import scribe._
 import cats.syntax.all._
+import circe.TgDataTypes
 import scribe.writer.SystemOutputWriter
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
@@ -43,6 +45,15 @@ object JenaRdfTgMessageTranslation extends App {
     .replace()
 
 
+
+  implicit class EmptyMonoidOps(dataType: TgDataType) {
+
+    def empty: String = dataType match {
+      case NUMBER => Monoid[Double].empty.toString
+      case STRING => Monoid[String].empty
+    }
+
+  }
 
 
 
@@ -137,7 +148,7 @@ object JenaRdfTgMessageTranslation extends App {
     } yield stringValues
   }
 
-  def makeSingleValuedAttributeFromDataProperty(ontoResource:  OntResource, dataProperty: DataProperty): IO[Option[SingleValuedAttribute]] = {
+  def makeSingleValuedAttributeFromDataProperty(ontoResource:  OntResource, dataProperty: DataProperty, isForSubEntity: Boolean = false): IO[Option[SingleValuedAttribute]] = {
 
     for {
 
@@ -147,15 +158,11 @@ object JenaRdfTgMessageTranslation extends App {
       maybeValue                      <- getDataPropValue(ontoResource, dataProperty, rdfDataType)
 
       maybeSingleValuedAttribute      <-
-        maybeValue
-          .fold
-          {
-            IO.pure[Option[SingleValuedAttribute]] { None }
-          }
-          { value =>
-            rdfDataType.asTgDataType flatMap { dt => IO.pure { Option(SingleValuedAttribute(localname(dataProperty.linkType), value , dt)) } }
-          }
-
+        (maybeValue, isForSubEntity) match {
+          case (None, false)        => IO.pure[Option[SingleValuedAttribute]] { None }
+          case (None, true)         => rdfDataType.asTgDataType flatMap { dt => IO.pure { Option(SingleValuedAttribute(localname(dataProperty.linkType), dt.empty , dt)) } }
+          case (Some(value), _)     => rdfDataType.asTgDataType flatMap { dt => IO.pure { Option(SingleValuedAttribute(localname(dataProperty.linkType), value , dt)) } }
+        }
     } yield  maybeSingleValuedAttribute
 
   }
@@ -171,20 +178,19 @@ object JenaRdfTgMessageTranslation extends App {
 
       maybeMultiValuedAttribute       <-
         values match {
-          case Nil            => IO.pure[Option[MultiValuedAttribute]] { None }
-          case _              => rdfDataType.asTgDataType flatMap { dt => IO.pure { Option(MultiValuedAttribute(localname(dataProperty.linkType), values, dt)) } }
+          case Nil   => IO.pure[Option[MultiValuedAttribute]] { None }
+          case  _    => rdfDataType.asTgDataType flatMap { dt => IO.pure { Option(MultiValuedAttribute(localname(dataProperty.linkType), values, dt)) } }
         }
 
     } yield maybeMultiValuedAttribute
 
   }
 
-  def makeAttributeFromDataProperty(ontoResource: OntResource) (dataProperty: DataProperty): IO[Option[TgAttribute]] = dataProperty match {
+  def makeAttributeFromDataProperty(ontoResource: OntResource, isForSubEntity: Boolean = false) (dataProperty: DataProperty): IO[Option[TgAttribute]] = dataProperty match {
     case DataProperty(_,_,_, None)                   => makeMultiValuedAttributeFromDataProperty(ontoResource, dataProperty)
     case DataProperty(_,_,_, Some(card)) if card > 1 => makeMultiValuedAttributeFromDataProperty(ontoResource, dataProperty)
-    case _                                           => makeSingleValuedAttributeFromDataProperty(ontoResource, dataProperty)
+    case _                                           => makeSingleValuedAttributeFromDataProperty(ontoResource, dataProperty, isForSubEntity)
   }
-
 
 
   def getObjectPropResource(ontoResource:  OntResource, objectProperty: ObjectProperty): IO[Option[OntResource]] = {
@@ -199,20 +205,18 @@ object JenaRdfTgMessageTranslation extends App {
     IO { ontoResource.listPropertyValues(ResourceFactory.createProperty(objectProperty.linkType)).asScala.toList map { _.asResource().getURI } } // Should be Pure can't fail (would only fail if the data or the ontology are invalid)
   }
 
-  def makeSingleValuedAttributeFromObjectProperty(ontoResource:  OntResource, objectProperty: ObjectProperty): IO[Option[SingleValuedAttribute]] = {
+
+  def makeSingleValuedAttributeFromObjectProperty(ontoResource:  OntResource, objectProperty: ObjectProperty, isForSubEntity: Boolean = false): IO[Option[SingleValuedAttribute]] = {
     for {
 
       maybeAnyUriValue            <- getObjectPropValue(ontoResource, objectProperty)
 
       maybeSingleValuedAttribute  <-
-        maybeAnyUriValue
-          .fold
-          {
-            IO.pure[Option[SingleValuedAttribute]] { None }
-          }
-          { anyUriValue =>
-            IO.pure { Option ( SingleValuedAttribute(localname(objectProperty.linkType), anyUriValue , STRING) ) }
-          }
+        (maybeAnyUriValue, isForSubEntity) match {
+          case (None, false)            => IO.pure[Option[SingleValuedAttribute]] { None }
+          case (None, true)             => IO.pure { Option ( SingleValuedAttribute(localname(objectProperty.linkType), STRING.empty , STRING) ) }
+          case (Some(anyUriValue), _)   => IO.pure { Option ( SingleValuedAttribute(localname(objectProperty.linkType), anyUriValue , STRING) ) }
+        }
 
     } yield maybeSingleValuedAttribute
   }
@@ -231,18 +235,19 @@ object JenaRdfTgMessageTranslation extends App {
     } yield maybeMultiValuedAttribute
   }
 
-  def makeAttributeFromSchemeProperty(ontoResource:  OntResource) (schemeProperty: SchemeProperty): IO[Option[SingleValuedAttribute]] = {
-    makeSingleValuedAttributeFromObjectProperty(ontoResource, schemeProperty) // Because as of now for Scheme cardinality is always one
+  //TODO comment subEntity case
+  def makeAttributeFromSchemeProperty(ontoResource:  OntResource, isForSubEntity: Boolean = false) (schemeProperty: SchemeProperty): IO[Option[SingleValuedAttribute]] = {
+    makeSingleValuedAttributeFromObjectProperty(ontoResource, schemeProperty, isForSubEntity) // Because as of now for Scheme cardinality is always one
+  }
+  //TODO comment subEntity case
+  def makeAttributeFromRelationProperty(ontoResource:  OntResource)(relationProperty: RelationProperty): IO[Option[SingleValuedAttribute]] = {
+    makeSingleValuedAttributeFromObjectProperty(ontoResource, relationProperty, isForSubEntity = true) // This is for subEntity Only, and cardinality of SubEntity properties are always 1
   }
 
   def makeAttributeFromAssociationProperty(ontoResource:  OntResource) (associationProperty: AssociationProperty): IO[Option[TgAttribute]] = associationProperty.max match {
     case None                   =>  makeMultiValuedAttributeFromObjectProperty(ontoResource, associationProperty)
     case Some(card) if card > 1 =>  makeMultiValuedAttributeFromObjectProperty(ontoResource, associationProperty)
     case _                      =>  makeSingleValuedAttributeFromObjectProperty(ontoResource, associationProperty)
-  }
-
-  def makeAttributeFromRelationProperty(ontoResource:  OntResource)(relationProperty: RelationProperty): IO[Option[SingleValuedAttribute]] = {
-    makeSingleValuedAttributeFromObjectProperty(ontoResource, relationProperty) // This is for subEntity Only, and cardinality of SubEntity properties are always 1
   }
 
 
@@ -257,9 +262,9 @@ object JenaRdfTgMessageTranslation extends App {
   def translateSubEntity(compositionProperty: CompositionProperty, subEntity: EntityResource, subEntityType: EntityType): IO[UserDefinedAttribute] = {
     for {
       dataProperties          <- IO.pure {subEntityType.dataProperties }
-      dataAttributes          <- { dataProperties traverse makeAttributeFromDataProperty(subEntity) } map { _.flatten }
+      dataAttributes          <- { dataProperties traverse makeAttributeFromDataProperty(subEntity, isForSubEntity = true) } map { _.flatten }
       schemeProperties        <- IO.pure { subEntityType.schemeProperties }
-      schemeAttributes        <- { schemeProperties traverse makeAttributeFromSchemeProperty(subEntity) } map { _.flatten }
+      schemeAttributes        <- { schemeProperties traverse makeAttributeFromSchemeProperty(subEntity, isForSubEntity = true) } map { _.flatten }
       relationProperties      <- IO.pure { subEntityType.relationProperties }
       relationAttributes      <- { relationProperties traverse makeAttributeFromRelationProperty(subEntity)} map { _.flatten }
       allAttributes           <- IO.pure { dataAttributes ++ schemeAttributes ++ relationAttributes }
