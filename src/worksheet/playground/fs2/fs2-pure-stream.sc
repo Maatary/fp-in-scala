@@ -61,8 +61,7 @@ val e3 = Stream(List(1,2,3,4), List(3,33,56,7))
   }.compile.toVector.unsafeRunSync()
 
 
-Monoid[Double].empty.toString
-Monoid[String].empty.toString
+
 /*def processRecord(record: ConsumerRecord[String, String]): IO[Unit] =
   IO(println(s"Processing record: $record"))
 

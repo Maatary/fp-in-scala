@@ -275,9 +275,11 @@ object JenaRdfTgMessageTranslation extends App {
     for {
       maybeSubEntityResource    <- getObjectPropResource(sourceEntity, compositionProperty)
 
-      maybeSubEntityType        <- maybeSubEntityResource.map(_.getURI) traverse lookUpEntityType(lookup) // There should be no need to do the lookup, the type is in  compositionProperty.entityType
+      maybeSubEntityType        <- maybeSubEntityResource.map(_.getURI) traverse lookUpEntityType(lookup) // There should be no need to do the lookup, the type is in compositionProperty.entityType
 
-      maybeUserDefinedAttribute <- (maybeSubEntityResource, maybeSubEntityType) traverseN { (subEntityResource, SubEntityType ) => translateSubEntity(compositionProperty, subEntityResource, SubEntityType) }
+      maybeProps                <- IO { maybeSubEntityResource map {_.listProperties().asScala.toList} collect { case l if l.nonEmpty =>  l } }  //Hack For Reaxys, which can produce empty subEntity. We only create subEntities if they have props.
+
+      maybeUserDefinedAttribute <- (maybeSubEntityResource, maybeSubEntityType, maybeProps) traverseN { (subEntityResource, SubEntityType, _ ) => translateSubEntity(compositionProperty, subEntityResource, SubEntityType) }
 
     } yield maybeUserDefinedAttribute
   }
@@ -466,8 +468,8 @@ object JenaRdfTgMessageTranslation extends App {
 
   val program = for {
 
-    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/reaxys/biologicalactivity/9990220" }
-    messageFile                      <- IO.pure { "messages/biologicalactivity.ttl" }
+    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/reaxys/bioassay/517534" }
+    messageFile                      <- IO.pure { "messages/bioassay.ttl" }
 
     fdnSchema                        <- fdnParser.program("elsevier_entellect_proxy_schema_reaxys.ttl")
     lookup                           =  makeLookUpFromFdnSchema(fdnSchema)
