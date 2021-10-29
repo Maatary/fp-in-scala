@@ -437,7 +437,6 @@ object JenaRdfTgMessageTranslation extends App {
         maybeResource match {
 
           case None    => ontModel.toPrettyString.flatMap { m => IO { error(s"Resource $resUri does not exists in message:\n$m") } } *> IO.raiseError(new Throwable(s"ontModel.getOntResource($resUri) returned Null"))
-
           case Some(r) => IO.pure { r }
         }
 
