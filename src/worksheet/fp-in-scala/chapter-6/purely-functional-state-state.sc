@@ -49,6 +49,9 @@ import scala.annotation.tailrec
  *
  *    -- This in turn has implication on function like '''foldLeft''' and ordering see [[__sequence]] which is implemented trough a '''foldLeft''' **
  *
+ *    -- This is a distinguishing feature of state action function in term of function composition.
+ *    That is, in Kleisli the outer input needs be threaded to each function, while State return a result along with an input for the next function (i.e. the state)
+ *
  */
 
 
@@ -99,8 +102,7 @@ case class State[S, +A](run: S => (A, S)) {
   def map2[B, C](stB: State[S, B])(f: (A, B) => C): State[S, C] = State[S, C] { (s: S) =>
     val (a, sa) = run(s)
     val (b, sb) = stB.run(sa)
-    (f(a, b), sb)
-    // Or stB.map(b => f(a, b)).run(sa)
+    (f(a, b), sb) // Or stB.map(b => f(a, b)).run(sa)
   }
 
   /**
@@ -186,7 +188,7 @@ case class State[S, +A](run: S => (A, S)) {
     for {
       a <- this // thread the result of the first function
       b <- stB // make explicit the input of the map function of the result of the second function
-    } yield f(a, b) // map over the result of the second function with closure over the result of the fist function
+    } yield f(a, b) // map over the result of the second function with closure over the result of the fist function stB.map(b => f(a,b))
   }
 
 }
