@@ -1,4 +1,10 @@
-
+/**
+ *  Function currying
+ *
+ *  What I was trying to understand is how supplying the first argument ensure
+ *  that you get a function where that parameter is already evaluated in the body of the function returned.
+ *  Review the use of state monad update function &  Haskell Weak Head Normal Form.
+ */
 
 
 val f = (a: String) => (b: String) => (c :Int) => b match {
@@ -6,7 +12,14 @@ val f = (a: String) => (b: String) => (c :Int) => b match {
   case _ => println("it's not hello"); s"good by $a"
 }
 
-f("Maatari")("hello")(1)
+
+//val f1 = f("Maatari")
+
+//f1("hello")(1)
+
+val partialf = f("Maatari")("hello")
+
+
 
 
 val h = (a: String) => (b: String) => b match {
