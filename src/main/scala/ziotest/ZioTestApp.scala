@@ -28,4 +28,6 @@ object ZioTestApp extends App {
     ZLayer.fromManaged(managedConsumer)
 
   console.putStrLn("")
+
+  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = ???
 }
