@@ -35,6 +35,8 @@ libraryDependencies ++= Seq (
   "org.apache.jena" % "apache-jena-libs"     % "4.2.0" pomOnly(),
   "org.topbraid"    % "shacl"                % "1.3.2",
 
+
+
   "com.github.imrafaelmerino" %% "json-scala-values" % "4.0.0",
   "org.json"                  % "json"               % "20210307",
 
@@ -47,6 +49,11 @@ libraryDependencies ++= Seq (
 
 
   )
+
+libraryDependencies ++= Seq(
+  "dev.zio" %% "zio-kafka"   % "0.15.0",
+  "dev.zio" %% "zio-json"    % "0.1.5"
+)
 
 scalacOptions := Seq(
   "-feature",

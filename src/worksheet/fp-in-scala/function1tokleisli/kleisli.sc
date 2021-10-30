@@ -1,6 +1,7 @@
-import cats.{Functor, Monad}
+import cats.effect.IO
+import cats.{Functor, Id, Monad}
 
-case class Kleisli[F[_], A, B](run: A => F[B]) {
+/*case class Kleisli[F[_], A, B](run: A => F[B]) {
   def apply(a: A): F[B] = run(a)
 
   def map[C](f: B => C)(implicit F: Functor[F]): Kleisli[F, A, C] = Kleisli { a => F.map(run(a))(f) }
@@ -47,9 +48,26 @@ case class Kleisli[F[_], A, B](run: A => F[B]) {
   def compose[Z](f: Z => F[A])(implicit M: Monad[F]): Kleisli[F, Z, B] = Kleisli(f) andThen this.run
 
 
-}
+}*/
 
 {
+  import cats.data.Kleisli._
   import cats.data.Kleisli
+
+  import fs2._
+  type StreamIO[A] = Stream[IO, A]
+
+  trait greeting1{
+    val gService = "hello"
+  }
+  trait greeting2{
+    val gService = "hello"
+  }
+  val program = for {
+    g1 <- ask[StreamIO, greeting1].flatMap { _ => Kleisli.liftF(Stream.eval(IO {"hi"})) }
+    g2 <- ask[StreamIO, greeting2].flatMap { _ => Kleisli.liftF(Stream.eval(IO {"hi"})) }
+  } yield ()
+
+  Kleisli[Id,String, String]{ _.toLowerCase }
 }
 
