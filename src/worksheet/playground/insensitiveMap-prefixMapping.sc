@@ -27,6 +27,10 @@ val pm = PrefixMapping.Factory.create()
 
 pm.setNsPrefix("reaxys","https://data.elsevier.com/lifescience/schema/reaxys/")
 
-pm.shortForm("https://data.elsevier.com/lifescience/schema/reaxys/Bioassay")
+val shortForm = pm.shortForm("https://data.elsevier.com/lifescience/schema/reaxys/Bioassay")
+
+
+
+shortForm.split(':') pipe { array => s"${array(0).capitalize}_${array(1)}" }
 
 

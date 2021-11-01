@@ -2,12 +2,19 @@ package jenaPlayGround
 
 
 
-
+import cats.syntax.all._
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import cats.kernel.Monoid
+
+
 import circe.TgDataTypes._
 import jenaPlayGround.DataTypes._
+
+import jenaPlayGround.SchemaLookupDataBuilder.DataTypes._
+
+
+
 import org.apache.jena.ontology.{OntDocumentManager, OntModel, OntModelSpec, OntResource}
 import org.apache.jena.rdf.model.{Literal, ModelFactory, ResourceFactory}
 import org.apache.jena.riot.{Lang, RDFDataMgr}
@@ -17,17 +24,17 @@ import org.apache.jena.datatypes.xsd.XSDDatatype
 import org.apache.jena.datatypes.xsd.impl.{RDFLangString, XSDBaseNumericType, XSDBaseStringType, XSDDateTimeType, XSDDouble, XSDFloat}
 import org.apache.jena.util.SplitIRI._
 
-import scala.jdk.CollectionConverters._
+
 import scribe._
-import cats.syntax.all._
-import circe.TgDataTypes
-import scribe.writer.SystemOutputWriter
+
+
+
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 import java.nio.charset.StandardCharsets
 import scala.collection.immutable.SortedMap
 import scala.util.chaining.scalaUtilChainingOps
-
+import scala.jdk.CollectionConverters._
 
 
 object JenaRdfTgMessageTranslation extends App {
@@ -117,15 +124,6 @@ object JenaRdfTgMessageTranslation extends App {
         rUri.split("/taxonomy/").last.split("/").pipe { array => s"https://data.elsevier.com/lifescience/schema/${ array(0) }/${ array(1) }" }
     } onError { _ => IO { error(s"Tried to Infer Case Insensitive Type From Non Compliant Resource Uri: $rUri") } }
   }
-
-  def makeLookUpFromFdnSchema(fdnGraphSchema: FdnGraphSchema): SortedMap[ResourceType, ObjectType] = {
-
-    val eTypes: List[(ResourceType, ObjectType)] = fdnGraphSchema.entityTypes.map(entityType => (entityType.entityType, entityType))
-    val rTypes: List[(ResourceType, ObjectType)] = fdnGraphSchema.relationTypes.map(relationType => (relationType.relationType, relationType))
-
-    SortedMap[ResourceType, ObjectType](List(eTypes, rTypes).flatten: _*)(scala.math.Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
-  }
-
 
 
   def getDataPropValue(ontoResource:  OntResource, dataProperty: DataProperty, rdfDataType: RDFDatatype): IO[Option[String]] = {
@@ -418,7 +416,7 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
-  def translateResourceMessage(resUri: String, messageFile: String)(lookup: SortedMap[ResourceType, ObjectType]): IO[TgMessage] = {
+  def translateResourceMessage(lookupData: SchemaLookupData)(resUri: String, messageFile: String): IO[TgMessage] = {
 
     for {
 
@@ -444,14 +442,14 @@ object JenaRdfTgMessageTranslation extends App {
       resType               <- IO { resource.getRDFType.getURI } onError { _ => ontModel.toPrettyString.flatMap { m => IO { error( s"The Resource $resUri does not have a Type in message:\n$m" ) }} }
       _                     <- IO { info (s"Extracted Type $resType from Message for resource $resUri") }
 
-      objType               <- IO { lookup(resType) } onError { _ => IO { error(s"Failed to find Type $resType in FdnSchema for Resource $resUri ") } }
+      objType               <- IO { lookupData.lookup(resType) } onError { _ => IO { error(s"Failed to find Type $resType in FdnSchema for Resource $resUri ") } }
       _                     <- IO { info (s"Successfully looked up $resType in FdnSchema") }
 
 
       tgMessage             <-
         objType match {
-          case eType: EntityType    => IO { info (s"Resource $resUri Inferred as Entity" ) } *> translateEntity(resource, resUri, eType, lookup)
-          case rType: RelationType  => IO { info (s"Resource $resUri Inferred as Relation" ) } *> translateRelation(resource, resUri, rType, lookup)
+          case eType: EntityType    => IO { info (s"Resource $resUri Inferred as Entity" ) } *> translateEntity(resource, resUri, eType, lookupData.lookup)
+          case rType: RelationType  => IO { info (s"Resource $resUri Inferred as Relation" ) } *> translateRelation(resource, resUri, rType, lookupData.lookup)
         }
 
 
@@ -470,12 +468,15 @@ object JenaRdfTgMessageTranslation extends App {
     eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/reaxys/bioassay/517534" }
     messageFile                      <- IO.pure { "messages/bioassay.ttl" }
 
-    fdnSchema                        <- fdnParser.program("elsevier_entellect_proxy_schema_reaxys.ttl")
-    lookup                           =  makeLookUpFromFdnSchema(fdnSchema)
+    chemblFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_chembl.ttl")
+    ppplusFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_ppplus.ttl")
+    resnetFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_resnet.ttl")
+    reaxysFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_reaxys.ttl")
+    lookupData                       <-  SchemaLookupDataBuilder.makeLookUpFromFdnSchemas(List(resnetFdnSchema, reaxysFdnSchema, ppplusFdnSchema, chemblFdnSchema))
 
-    _                                <- IO {info(fdnSchema.show)}
+    // _                                <- IO {info(fdnSchema.show)}
 
-    tgMessage                        <- translateResourceMessage(eUri, messageFile)(lookup)
+    tgMessage                        <- translateResourceMessage(lookupData)(eUri, messageFile)
 
     _                                <- IO { info ( "Got TgMessage: " + tgMessage.show ) }
 
@@ -484,66 +485,5 @@ object JenaRdfTgMessageTranslation extends App {
 
   program.unsafeRunSync()
 
-/*  val program = for {
-
-
-    _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488 ")}
-
-    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488" }
-
-
-    ontDoc                           <- IO { OntDocumentManager.getInstance() } // Set your global Ontology Manager without any LocationMapper, so the reliance on the StreamMndgr is ensured. The process is broken
-    _                                <- IO { ontDoc.setProcessImports(false) }
-    ontModel                         <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
-    _                                <- IO { ontModel.read("messages/smallmol.ttl", Lang.TURTLE.getName) }
-    ontResource                      <- IO { ontModel.getOntResource(eUri) }
-
-
-
-
-    insensitiveType                  = inferCaseInsensitiveTypeFromUri(eUri)
-
-    fdnSchema                        <- fdnParser.program
-    lookup                           = makeLookUpFromFdnSchema(fdnSchema)
-
-    objType                          <- IO { lookup(insensitiveType) }
-
-    _                                <- IO { info(objType.asInstanceOf[EntityType].show) }
-
-    dataProperties                   <- IO { objType.asInstanceOf[EntityType].dataProperties}
-    attributes                       <- (dataProperties traverse makeAttributeFromDataProperty(ontResource) ) map { _.flatten }
-
-    _                                <- IO { info (s"Message Translated with result:\n${attributes.toString()}")}
-
-  } yield ()
-
-
-  program.unsafeRunSync()*/
-
-  /*val program = for {
-    _                                <- IO { info ("Started Translating Resource with Uri: https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488 ")}
-
-    ontDoc                           <- IO { OntDocumentManager.getInstance() } // Set your global Ontology Manager without any LocationMapper, so the reliance on the StreamMndgr is ensured. The process is broken
-    _                                <- IO { ontDoc.setProcessImports(false) }
-    ontModel                         <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
-    _                                <- IO { ontModel.read("messages/smallmol.ttl", Lang.TURTLE.getName) }
-
-    ontResource                      <- IO { ontModel.getOntResource("https://data.elsevier.com/lifescience/entity/resnet/smallmol/72057594038209488") }
-    sDataProperty                    <- IO.pure { DataProperty("https://data.elsevier.com/lifescience/schema/resnet/flagss", XSD.xdouble.getURI,  None, Some(1))}
-    mDataProperty                    <- IO.pure { DataProperty("https://data.elsevier.com/lifescience/schema/resnet/alias", XSD.xstring.getURI,  None, None)}
-
-
-    //maybeSingledValueAttribute       <- makeSingleValuedAttributeFromDataProperty(ontResource, sDataProperty)
-    //maybeMultiValuedValueAttribute   <- makeMultiValuedAttributeFromDataProperty(ontResource, mDataProperty)
-    //_                                <- IO.println(maybeSingledValueAttribute)
-    //_                                <- IO.println(maybeMultiValuedValueAttribute)
-
-    attributes                       <- (List(mDataProperty, sDataProperty) traverse makeAttributeFromDataProperty(ontResource) ) map { _.flatten }
-
-    _                                <- IO { info (s"Message Translated with result:\n${attributes.toString()}")}
-
-  } yield ()
-
-  program.unsafeRunSync()*/
 
 }
