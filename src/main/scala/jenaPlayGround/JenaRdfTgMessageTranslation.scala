@@ -55,7 +55,7 @@ object JenaRdfTgMessageTranslation extends App {
 
 
 
-  implicit class OntModelOps(model: OntModel) {
+  implicit class PrettyModelOps(model: OntModel) {
     def toPrettyString: IO[String] = {
       for {
         outStream <- IO.pure { new ByteArrayOutputStream() }
@@ -64,6 +64,17 @@ object JenaRdfTgMessageTranslation extends App {
       } yield outString
     }
   }
+
+  implicit class OntModelOps(messageStream: String) {
+    def asOntModel: IO[OntModel] = {
+      for {
+        ontDoc       <- IO { OntDocumentManager.getInstance().setProcessImports(false) }
+        messageModel <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
+        _            <- IO { messageModel.read(new ByteArrayInputStream(messageStream.getBytes(StandardCharsets.UTF_8)), null, Lang.TTL.getName) }
+      } yield messageModel
+    }
+  }
+
 
   /**
    * DSL to quickly convert RDF DataTypes to TG DataType
@@ -112,6 +123,8 @@ object JenaRdfTgMessageTranslation extends App {
       pm.shortForm(resourceType).split(':') pipe { array => s"${toUpperCamel(array(0))}_${array(1)}" }
     }
   }
+
+
 
   def inferCaseInsensitiveResourceTypeFromUri(rUri: String): IO[String] = {
     IO {
@@ -426,17 +439,14 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
-  def translateResourceMessage(lookupData: SchemaLookupData)(resUri: String, messageFile: String): IO[TgMessage] = {
+  def translateResourceMessage(lookupData: SchemaLookupData)(resUri: String, messageStream: String): IO[TgMessage] = {
 
     for {
 
       _                     <- IO { info (s"Start Translating Message for Resource with Uri: $resUri")}
 
 
-      ontDoc                <- IO { OntDocumentManager.getInstance() }
-      _                     <- IO { ontDoc.setProcessImports(false) }
-      ontModel              <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
-      _                     <- IO { ontModel.read(messageFile, Lang.TURTLE.getName) }
+      ontModel              <- messageStream.asOntModel
       _                     <- if (this.logger.includes(Level.Debug)) ontModel.toPrettyString.flatMap{ m => IO { debug(s"Resource $resUri Message: [\n$m]") } } else IO.unit
 
 
@@ -472,11 +482,15 @@ object JenaRdfTgMessageTranslation extends App {
 
   }
 
+  import fs2._
+  import fs2.io.file._
 
   val program = for {
 
     eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/protein/72057594037931644" }
-    messageFile                      <- IO.pure { "messages/protein.ttl" }
+    message                          <- Files[IO].readAll(Path("src/main/resources/messages/protein.ttl")).through(text.utf8.decode).compile.string
+
+
 
     chemblFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_chembl.ttl")
     ppplusFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_ppplus.ttl")
@@ -486,9 +500,10 @@ object JenaRdfTgMessageTranslation extends App {
 
     // _                                <- IO {info(fdnSchema.show)}
 
-    tgMessage                        <- translateResourceMessage(lookupData)(eUri, messageFile)
+    tgMessage                        <- translateResourceMessage(lookupData)(eUri, message)
 
     _                                <- IO { info ( "Got TgMessage: " + tgMessage.show ) }
+
 
 
   } yield ()
