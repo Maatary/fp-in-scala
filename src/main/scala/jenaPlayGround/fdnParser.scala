@@ -44,9 +44,9 @@ object DataTypes {
 
   sealed trait FdnGraphSchemaElt
 
-  sealed trait ObjectType extends FdnGraphSchemaElt
-  final case class EntityType(entityType: ResourceType, dataProperties: List[DataProperty], relationProperties: List[RelationProperty], compositionProperties: List[CompositionProperty], schemeProperties: List[SchemeProperty]) extends ObjectType
-  final case class RelationType(relationType: ResourceType, linkPropertyPairs: List[LinkPropertyPair], dataProperties: List[DataProperty], associationProperties: List[AssociationProperty]) extends ObjectType
+  sealed trait IndividualType extends FdnGraphSchemaElt
+  final case class EntityType(entityType: ResourceType, dataProperties: List[DataProperty], relationProperties: List[RelationProperty], compositionProperties: List[CompositionProperty], schemeProperties: List[SchemeProperty]) extends IndividualType
+  final case class RelationType(relationType: ResourceType, linkPropertyPairs: List[LinkPropertyPair], dataProperties: List[DataProperty], associationProperties: List[AssociationProperty]) extends IndividualType
 
   sealed trait PropertyType extends FdnGraphSchemaElt
   final case class DataProperty(linkType: ResourceType, dataType: ResourceType, min: Option[Int], max: Option[Int]) extends PropertyType
@@ -93,7 +93,7 @@ object DataTypes {
        |]""".stripMargin
   }
 
-  implicit val showObjectType: Show[ObjectType] = {
+  implicit val showIndividualType: Show[IndividualType] = {
     case eType: EntityType   => eType.show
     case rType: RelationType => rType.show
   }

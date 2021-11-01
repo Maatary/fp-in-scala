@@ -6,15 +6,10 @@ import cats.syntax.all._
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import cats.kernel.Monoid
-
-
+import circe.TgDataTypes
 import circe.TgDataTypes._
 import jenaPlayGround.DataTypes._
-
 import jenaPlayGround.SchemaLookupDataBuilder.DataTypes._
-
-
-
 import org.apache.jena.ontology.{OntDocumentManager, OntModel, OntModelSpec, OntResource}
 import org.apache.jena.rdf.model.{Literal, ModelFactory, ResourceFactory}
 import org.apache.jena.riot.{Lang, RDFDataMgr}
@@ -22,13 +17,9 @@ import org.apache.jena.vocabulary.{RDF, XSD}
 import org.apache.jena.datatypes.{RDFDatatype, TypeMapper}
 import org.apache.jena.datatypes.xsd.XSDDatatype
 import org.apache.jena.datatypes.xsd.impl.{RDFLangString, XSDBaseNumericType, XSDBaseStringType, XSDDateTimeType, XSDDouble, XSDFloat}
+import org.apache.jena.shared.PrefixMapping
 import org.apache.jena.util.SplitIRI._
-
-
 import scribe._
-
-
-
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 import java.nio.charset.StandardCharsets
@@ -115,6 +106,11 @@ object JenaRdfTgMessageTranslation extends App {
     } onError { _ => IO { error(s"""Can't convert literal [${literal.getLexicalForm}] of DataType [${literal.getDatatypeURI}] to supplied DataType [${rdfDataType.getURI}]""") } }
   }
 
+  implicit class TgTypeOps(resourceType: ResourceType) {
+    def asTgType(pm: PrefixMapping): ObjectType = {
+      pm.shortForm(resourceType).split(':') pipe { array => s"${array(0).capitalize}_${array(1)}" }
+    }
+  }
 
   def inferCaseInsensitiveResourceTypeFromUri(rUri: String): IO[String] = {
     IO {
@@ -249,7 +245,7 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
-  def lookUpEntityType(lookup: SortedMap[ResourceType, ObjectType])(eUri: EntityUri): IO[EntityType] = {
+  def lookUpEntityType(lookup: SortedMap[ResourceType, IndividualType])(eUri: EntityUri): IO[EntityType] = {
     for {
       insensitiveResType  <- inferCaseInsensitiveResourceTypeFromUri(eUri) onError { _ => IO { error(s"Failed to Infer Case Insensitive Resource Type for Entity: $eUri")} }
       entityType          <- IO { lookup(insensitiveResType).asInstanceOf[EntityType] } onError { _ => IO { error(s"Failed to lookup EntityType for Entity [$eUri] from Its Inferred Case Insensitive Resource Type [$insensitiveResType]")} }
@@ -269,7 +265,7 @@ object JenaRdfTgMessageTranslation extends App {
     } yield UserDefinedAttribute(compositionProperty.linkType, allAttributes.map(attr => attr.aType -> attr))
   }
 
-  def makeAttributeFromCompositionProperty(sourceEntity: EntityResource, lookup: SortedMap[ResourceType, ObjectType]) (compositionProperty: CompositionProperty): IO[Option[UserDefinedAttribute]] = {
+  def makeAttributeFromCompositionProperty(sourceEntity: EntityResource, lookup: SortedMap[ResourceType, IndividualType])(compositionProperty: CompositionProperty): IO[Option[UserDefinedAttribute]] = {
     for {
       maybeSubEntityResource    <- getObjectPropResource(sourceEntity, compositionProperty)
 
@@ -282,20 +278,20 @@ object JenaRdfTgMessageTranslation extends App {
     } yield maybeUserDefinedAttribute
   }
 
-  def makeEdgeFromRelationPropertyTarget(sourceEntity: EntityResource, sourceEntityType: EntityType, relationProperty: RelationProperty, lookup: SortedMap[ResourceType, ObjectType])(targetEntityUri: String): IO[Edge] = {
+  def makeEdgeFromRelationPropertyTarget(sourceEntity: EntityResource, sourceEntityType: EntityType, relationProperty: RelationProperty, lookup: SortedMap[ResourceType, IndividualType])(targetEntityUri: String): IO[Edge] = {
     lookUpEntityType(lookup)(targetEntityUri)
       .map { eType => Edge(relationProperty.linkType, sourceEntity.getURI, sourceEntityType.entityType, targetEntityUri, eType.entityType, List())}
       .onError {_ => IO { error(s"Failed to lookup Entity ResourceType for Target Entity [$targetEntityUri] of RelationProperty [${relationProperty.linkType}] for Entity [${sourceEntity.getURI}]")} }
   }
 
-  def makeEdgesFromRelationProperty(sourceEntity: EntityResource, entityType: EntityType, lookup: SortedMap[ResourceType, ObjectType])(relationProperty: RelationProperty): IO[List[Edge]] = {
+  def makeEdgesFromRelationProperty(sourceEntity: EntityResource, entityType: EntityType, lookup: SortedMap[ResourceType, IndividualType])(relationProperty: RelationProperty): IO[List[Edge]] = {
     for {
       targetEntityUris <- getObjectPropValues(sourceEntity, relationProperty)
       edges            <- targetEntityUris traverse makeEdgeFromRelationPropertyTarget(sourceEntity, entityType, relationProperty, lookup)
     } yield edges
   }
 
-  def getRelationTargetResourceData(relation: RelationResource, relationType: RelationType, lookup: SortedMap[ResourceType, ObjectType]): IO[Option[EntityResourceData]] = {
+  def getRelationTargetResourceData(relation: RelationResource, relationType: RelationType, lookup: SortedMap[ResourceType, IndividualType]): IO[Option[EntityResourceData]] = {
     for {
 
       targetLinkProperty              <- IO.pure { relationType.linkPropertyPairs.head.linkPropertyB }
@@ -317,7 +313,7 @@ object JenaRdfTgMessageTranslation extends App {
     } yield maybeTargetEntityResourceData
   }
 
-  def getRelationSourceResourceData(relation: RelationResource, relationType: RelationType, lookup: SortedMap[ResourceType, ObjectType]): IO[Option[EntityResourceData]] = {
+  def getRelationSourceResourceData(relation: RelationResource, relationType: RelationType, lookup: SortedMap[ResourceType, IndividualType]): IO[Option[EntityResourceData]] = {
 
     for {
 
@@ -342,7 +338,7 @@ object JenaRdfTgMessageTranslation extends App {
 
 
 
-  def translateEntity(entity: EntityResource, entityUri: String, entityType: EntityType, lookup: SortedMap[ResourceType, ObjectType]): IO[TgMessage] = {
+  def translateEntity(entity: EntityResource, entityUri: String, entityType: EntityType, lookupData: SchemaLookupData): IO[TgMessage] = {
 
     for {
 
@@ -357,14 +353,14 @@ object JenaRdfTgMessageTranslation extends App {
       schemeAttributes        <- { schemeProperties traverse makeAttributeFromSchemeProperty(entity) } map { _.flatten }
 
       compositionProperties   <- IO.pure { entityType.compositionProperties}
-      compositionAttributes   <- { compositionProperties traverse makeAttributeFromCompositionProperty(entity,  lookup) } map { _.flatten }
+      compositionAttributes   <- { compositionProperties traverse makeAttributeFromCompositionProperty(entity,  lookupData.lookup) } map { _.flatten }
 
       allAttributes           <- IO.pure { dataAttributes ++ schemeAttributes ++ compositionAttributes }
 
       relationProperties      <- IO.pure {entityType.relationProperties}
-      edges                   <- { relationProperties traverse makeEdgesFromRelationProperty(entity, entityType, lookup) } map {_.flatten}
+      edges                   <- { relationProperties traverse makeEdgesFromRelationProperty(entity, entityType, lookupData.lookup) } map {_.flatten}
 
-      tgMessage               <- IO.pure { TgMessage(List(Vertex(entityType.entityType, entityUri, allAttributes)), edges) }
+      tgMessage               <- IO.pure { TgMessage(List(Vertex(entityType.entityType.asTgType(lookupData.prefixMapping), entityUri, allAttributes)), edges) }
 
       _                       <- IO { info (s"Entity Translation Process for Entity $entityUri was successful" ) }
 
@@ -373,7 +369,7 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
 
-  def translateRelation(relation: RelationResource, relationUri: String, relationType: RelationType,  lookup: SortedMap[ResourceType, ObjectType]): IO[TgMessage] = {
+  def translateRelation(relation: RelationResource, relationUri: String, relationType: RelationType, lookupData: SchemaLookupData): IO[TgMessage] = {
     for {
 
       _                       <- IO { info (s"Starting Relation Translation Process for Relation $relationUri" ) }
@@ -388,8 +384,8 @@ object JenaRdfTgMessageTranslation extends App {
 
       allAttributes           <- IO.pure { dataAttributes ++ associationAttributes }
 
-      maybeSourceResourceData <- getRelationSourceResourceData(relation, relationType, lookup)
-      maybeTargetResourceData <- getRelationTargetResourceData(relation, relationType, lookup)
+      maybeSourceResourceData <- getRelationSourceResourceData(relation, relationType, lookupData.lookup)
+      maybeTargetResourceData <- getRelationTargetResourceData(relation, relationType, lookupData.lookup)
 
 
       maybeTgMessage          <-
@@ -448,8 +444,8 @@ object JenaRdfTgMessageTranslation extends App {
 
       tgMessage             <-
         objType match {
-          case eType: EntityType    => IO { info (s"Resource $resUri Inferred as Entity" ) } *> translateEntity(resource, resUri, eType, lookupData.lookup)
-          case rType: RelationType  => IO { info (s"Resource $resUri Inferred as Relation" ) } *> translateRelation(resource, resUri, rType, lookupData.lookup)
+          case eType: EntityType    => IO { info (s"Resource $resUri Inferred as Entity" ) } *> translateEntity(resource, resUri, eType, lookupData)
+          case rType: RelationType  => IO { info (s"Resource $resUri Inferred as Relation" ) } *> translateRelation(resource, resUri, rType, lookupData)
         }
 
 

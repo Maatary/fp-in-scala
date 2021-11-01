@@ -1,7 +1,7 @@
 package jenaPlayGround
 
 import cats.effect.IO
-import jenaPlayGround.DataTypes.{FdnGraphSchema, ObjectType, ResourceType}
+import jenaPlayGround.DataTypes.{FdnGraphSchema, IndividualType, ResourceType}
 import jenaPlayGround.SchemaLookupDataBuilder.DataTypes.SchemaLookupData
 import cats.syntax.all._
 import scribe._
@@ -13,7 +13,7 @@ object  SchemaLookupDataBuilder {
 
   object DataTypes {
 
-    final case class SchemaLookupData(prefixMapping: PrefixMapping, lookup:  SortedMap[ResourceType, ObjectType])
+    final case class SchemaLookupData(prefixMapping: PrefixMapping, lookup:  SortedMap[ResourceType, IndividualType])
 
   }
 
@@ -21,7 +21,7 @@ object  SchemaLookupDataBuilder {
     for {
 
       fdnSchemas          <- IO.pure { fdnGraphSchemas }
-      prefixUriPairs      = fdnSchemas map { fdnSchema => fdnSchema.ontPrefix -> fdnSchema.ontUri }
+      prefixUriPairs      = fdnSchemas map { fdnSchema => fdnSchema.ontPrefix -> s"${fdnSchema.ontUri}/" }
       resTypeObjTypePairs = fdnSchemas flatMap makeResourceTypeObjectTypePairs
       prefixes            = prefixUriPairs map (_._1)
 
@@ -37,7 +37,7 @@ object  SchemaLookupDataBuilder {
     } yield  lookupData
   }
 
-  private def makeResourceTypeObjectTypePairs(fdnGraphSchema: FdnGraphSchema): List[(ResourceType, ObjectType)] = {
+  private def makeResourceTypeObjectTypePairs(fdnGraphSchema: FdnGraphSchema): List[(ResourceType, IndividualType)] = {
     List (
       fdnGraphSchema.entityTypes.map(entityType => (entityType.entityType, entityType)),
       fdnGraphSchema.relationTypes.map(relationType => (relationType.relationType, relationType))

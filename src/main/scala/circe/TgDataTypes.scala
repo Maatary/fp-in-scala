@@ -20,13 +20,13 @@ object TgDataTypes {
 
   type EntityUri          = String
   type RelationUri        = String
-  //type EntityResourceData = (EntityUri, ResourceType)
 
   /**
    *
    * TYPES ALIASES
    *
    */
+  type ObjectType         = String
   type VertexType         = String
   type EdgeType           = String
   type AttributeType      = String
@@ -45,9 +45,9 @@ object TgDataTypes {
 
   case class TgMessage(vertices: List[Vertex], edges: List[Edge])
 
-  sealed trait TgObject
-  final case class Vertex(vType: VertexType, id: VertexId, attributes: List[TgAttribute]) extends TgObject
-  final case class Edge(eType: EdgeType, sourceVertexId: VertexId, sourceVertexType: VertexType, targetVertexId: VertexId, targetVertexType: VertexType, attributes: List[TgAttribute]) extends TgObject
+  sealed abstract class TgObject(objectType: ObjectType)
+  final case class Vertex(vType: VertexType, id: VertexId, attributes: List[TgAttribute]) extends TgObject(vType)
+  final case class Edge(eType: EdgeType, sourceVertexId: VertexId, sourceVertexType: VertexType, targetVertexId: VertexId, targetVertexType: VertexType, attributes: List[TgAttribute]) extends TgObject(eType)
 
 
   sealed trait TgDataType
