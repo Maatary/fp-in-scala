@@ -107,8 +107,9 @@ object JenaRdfTgMessageTranslation extends App {
   }
 
   implicit class TgTypeOps(resourceType: ResourceType) {
+    import st.process.encase.Encase._
     def asTgType(pm: PrefixMapping): ObjectType = {
-      pm.shortForm(resourceType).split(':') pipe { array => s"${array(0).capitalize}_${array(1)}" }
+      pm.shortForm(resourceType).split(':') pipe { array => s"${toUpperCamel(array(0))}_${array(1)}" }
     }
   }
 
