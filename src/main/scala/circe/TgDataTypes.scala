@@ -45,7 +45,7 @@ object TgDataTypes {
 
   case class TgMessage(vertices: List[Vertex], edges: List[Edge])
 
-  sealed abstract class TgObject(objectType: ObjectType)
+  sealed abstract class TgObject(val objectType: ObjectType)
   final case class Vertex(vType: VertexType, id: VertexId, attributes: List[TgAttribute]) extends TgObject(vType)
   final case class Edge(eType: EdgeType, sourceVertexId: VertexId, sourceVertexType: VertexType, targetVertexId: VertexId, targetVertexType: VertexType, attributes: List[TgAttribute]) extends TgObject(eType)
 

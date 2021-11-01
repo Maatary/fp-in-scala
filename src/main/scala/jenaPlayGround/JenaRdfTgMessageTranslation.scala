@@ -278,16 +278,20 @@ object JenaRdfTgMessageTranslation extends App {
     } yield maybeUserDefinedAttribute
   }
 
-  def makeEdgeFromRelationPropertyTarget(sourceEntity: EntityResource, sourceEntityType: EntityType, relationProperty: RelationProperty, lookup: SortedMap[ResourceType, IndividualType])(targetEntityUri: String): IO[Edge] = {
-    lookUpEntityType(lookup)(targetEntityUri)
-      .map { eType => Edge(relationProperty.linkType, sourceEntity.getURI, sourceEntityType.entityType, targetEntityUri, eType.entityType, List())}
-      .onError {_ => IO { error(s"Failed to lookup Entity ResourceType for Target Entity [$targetEntityUri] of RelationProperty [${relationProperty.linkType}] for Entity [${sourceEntity.getURI}]")} }
+  def makeEdgeFromRelationPropertyTarget(sourceEntity: EntityResource, sourceEntityType: EntityType, relationProperty: RelationProperty, lookupData: SchemaLookupData)(targetEntityUri: String): IO[Edge] = {
+    for {
+      lookup   <- IO.pure { lookupData.lookup }
+      pm       <- IO.pure { lookupData.prefixMapping }
+      eType    <- lookUpEntityType(lookup)(targetEntityUri) onError { _ => IO { error(s"Failed to lookup Entity ResourceType for Target Entity [$targetEntityUri] of RelationProperty [${relationProperty.linkType}] for Entity [${sourceEntity.getURI}]")} }
+      edge     = Edge(relationProperty.linkType.asTgType(pm), sourceEntity.getURI, sourceEntityType.entityType.asTgType(pm), targetEntityUri, eType.entityType.asTgType(pm), List())
+    } yield edge
   }
 
-  def makeEdgesFromRelationProperty(sourceEntity: EntityResource, entityType: EntityType, lookup: SortedMap[ResourceType, IndividualType])(relationProperty: RelationProperty): IO[List[Edge]] = {
+
+  def makeEdgesFromRelationProperty(sourceEntity: EntityResource, entityType: EntityType, lookupData: SchemaLookupData)(relationProperty: RelationProperty): IO[List[Edge]] = {
     for {
       targetEntityUris <- getObjectPropValues(sourceEntity, relationProperty)
-      edges            <- targetEntityUris traverse makeEdgeFromRelationPropertyTarget(sourceEntity, entityType, relationProperty, lookup)
+      edges            <- targetEntityUris traverse makeEdgeFromRelationPropertyTarget(sourceEntity, entityType, relationProperty, lookupData)
     } yield edges
   }
 
@@ -346,6 +350,9 @@ object JenaRdfTgMessageTranslation extends App {
 
       _                       <- IO { debug(s"Entity $entityUri FdnSchema EntityType Description: [${entityType.show}]") }
 
+      lookup                  <- IO.pure { lookupData.lookup }
+      prefixMapping           <- IO.pure { lookupData.prefixMapping }
+
       dataProperties          <- IO.pure { entityType.dataProperties }
       dataAttributes          <- { dataProperties traverse makeAttributeFromDataProperty(entity) } map { _.flatten }
 
@@ -353,14 +360,14 @@ object JenaRdfTgMessageTranslation extends App {
       schemeAttributes        <- { schemeProperties traverse makeAttributeFromSchemeProperty(entity) } map { _.flatten }
 
       compositionProperties   <- IO.pure { entityType.compositionProperties}
-      compositionAttributes   <- { compositionProperties traverse makeAttributeFromCompositionProperty(entity,  lookupData.lookup) } map { _.flatten }
+      compositionAttributes   <- { compositionProperties traverse makeAttributeFromCompositionProperty(entity,  lookup) } map { _.flatten }
 
       allAttributes           <- IO.pure { dataAttributes ++ schemeAttributes ++ compositionAttributes }
 
       relationProperties      <- IO.pure {entityType.relationProperties}
-      edges                   <- { relationProperties traverse makeEdgesFromRelationProperty(entity, entityType, lookupData.lookup) } map {_.flatten}
+      edges                   <- { relationProperties traverse makeEdgesFromRelationProperty(entity, entityType, lookupData) } map {_.flatten}
 
-      tgMessage               <- IO.pure { TgMessage(List(Vertex(entityType.entityType.asTgType(lookupData.prefixMapping), entityUri, allAttributes)), edges) }
+      tgMessage               <- IO.pure { TgMessage(List(Vertex(entityType.entityType.asTgType(prefixMapping), entityUri, allAttributes)), edges) }
 
       _                       <- IO { info (s"Entity Translation Process for Entity $entityUri was successful" ) }
 
@@ -376,6 +383,9 @@ object JenaRdfTgMessageTranslation extends App {
 
       _                       <- IO { debug(s"Relation $relationUri FdnSchema RelationType Description: [${relationType.show}]") }
 
+      lookup                  <- IO.pure { lookupData.lookup }
+      prefixMapping           <- IO.pure { lookupData.prefixMapping }
+
       dataProperties          <- IO.pure { relationType.dataProperties }
       dataAttributes          <- { dataProperties traverse makeAttributeFromDataProperty(relation) } map { _.flatten }
 
@@ -384,15 +394,18 @@ object JenaRdfTgMessageTranslation extends App {
 
       allAttributes           <- IO.pure { dataAttributes ++ associationAttributes }
 
-      maybeSourceResourceData <- getRelationSourceResourceData(relation, relationType, lookupData.lookup)
-      maybeTargetResourceData <- getRelationTargetResourceData(relation, relationType, lookupData.lookup)
+      maybeSourceResourceData <- getRelationSourceResourceData(relation, relationType, lookup)
+      maybeTargetResourceData <- getRelationTargetResourceData(relation, relationType, lookup)
 
 
       maybeTgMessage          <-
 
           IO.pure {
             maybeSourceResourceData -> maybeTargetResourceData mapN { (source, target) =>
-              TgMessage ( List(), List(Edge(relationType.relationType, source.eUri, source.eType, target.eUri, target.eType, allAttributes)) )
+              TgMessage (
+                List(),
+                List(Edge(relationType.relationType.asTgType(prefixMapping), source.eUri, source.eType.asTgType(prefixMapping), target.eUri, target.eType.asTgType(prefixMapping), allAttributes))
+              )
             }
           }
 
@@ -438,12 +451,12 @@ object JenaRdfTgMessageTranslation extends App {
       resType               <- IO { resource.getRDFType.getURI } onError { _ => ontModel.toPrettyString.flatMap { m => IO { error( s"The Resource $resUri does not have a Type in message:\n$m" ) }} }
       _                     <- IO { info (s"Extracted Type $resType from Message for resource $resUri") }
 
-      objType               <- IO { lookupData.lookup(resType) } onError { _ => IO { error(s"Failed to find Type $resType in FdnSchema for Resource $resUri ") } }
+      individualType        <- IO { lookupData.lookup(resType) } onError { _ => IO { error(s"Failed to find Type $resType in FdnSchema for Resource $resUri ") } }
       _                     <- IO { info (s"Successfully looked up $resType in FdnSchema") }
 
 
       tgMessage             <-
-        objType match {
+        individualType match {
           case eType: EntityType    => IO { info (s"Resource $resUri Inferred as Entity" ) } *> translateEntity(resource, resUri, eType, lookupData)
           case rType: RelationType  => IO { info (s"Resource $resUri Inferred as Relation" ) } *> translateRelation(resource, resUri, rType, lookupData)
         }
@@ -461,8 +474,8 @@ object JenaRdfTgMessageTranslation extends App {
 
   val program = for {
 
-    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/reaxys/bioassay/517534" }
-    messageFile                      <- IO.pure { "messages/bioassay.ttl" }
+    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/protein/72057594037931644" }
+    messageFile                      <- IO.pure { "messages/protein.ttl" }
 
     chemblFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_chembl.ttl")
     ppplusFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_ppplus.ttl")
