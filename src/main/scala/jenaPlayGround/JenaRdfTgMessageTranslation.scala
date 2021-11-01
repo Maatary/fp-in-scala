@@ -44,85 +44,7 @@ object JenaRdfTgMessageTranslation extends App {
 
 
 
-  implicit class EmptyMonoidOps(dataType: TgDataType) {
 
-    def empty: String = dataType match {
-      case NUMBER => Monoid[Double].empty.toString
-      case STRING => Monoid[String].empty
-    }
-
-  }
-
-
-
-  implicit class PrettyModelOps(model: OntModel) {
-    def toPrettyString: IO[String] = {
-      for {
-        outStream <- IO.pure { new ByteArrayOutputStream() }
-        _         <- IO { model.write(outStream, Lang.TTL.getName) }
-        outString <- IO { outStream.toString(StandardCharsets.UTF_8)}
-      } yield outString
-    }
-  }
-
-  implicit class OntModelOps(messageStream: String) {
-    def asOntModel: IO[OntModel] = {
-      for {
-        ontDoc       <- IO { OntDocumentManager.getInstance().setProcessImports(false) }
-        messageModel <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
-        _            <- IO { messageModel.read(new ByteArrayInputStream(messageStream.getBytes(StandardCharsets.UTF_8)), null, Lang.TTL.getName) }
-      } yield messageModel
-    }
-  }
-
-
-  /**
-   * DSL to quickly convert RDF DataTypes to TG DataType
-   *
-   * Assume that the RDFDataType have been created with Jena TypeMapper Global Instance.
-   */
-  implicit class RDFDatatypeOps(rdfDataType: RDFDatatype) {
-    def asTgDataType: IO[TgDataType] = rdfDataType match {
-      case _: RDFLangString       => IO.pure(STRING)
-      case _: XSDBaseStringType   => IO.pure(STRING)
-      case _: XSDFloat            => IO.pure(NUMBER)
-      case _: XSDDouble           => IO.pure(NUMBER)
-      case _: XSDBaseNumericType  => IO.pure(NUMBER)
-      case _: XSDDateTimeType     => IO.pure(STRING)
-      case dataType: XSDDatatype if dataType.equals(XSDDatatype.XSDboolean) => IO.pure(STRING)
-      case dataType: XSDDatatype if dataType.equals(XSDDatatype.XSDanyURI) => IO.pure(STRING)
-      case e                      => IO { warn(s"unknown XSD: $e defaulting to String")} *> IO.pure(STRING)
-    }
-  }
-
-
-  /**
-   * DSL to quickly convert Literal to its JavaValue
-   *
-   * Assume that the RDFDataType have been created with Jena TypeMapper Global Instance.
-   */
-  implicit class LiteralOps(literal: Literal) {
-    def asJavaValue(rdfDataType: RDFDatatype): IO[Any] = {
-      rdfDataType match {
-        case _: RDFLangString       => IO { literal.getString }
-        case _: XSDBaseStringType   => IO { literal.getString }
-        case _: XSDFloat            => IO { literal.getDouble }
-        case _: XSDDouble           => IO { literal.getDouble }
-        case _: XSDBaseNumericType  => IO { literal.getDouble }
-        case _: XSDDateTimeType     => IO { literal.getString }
-        case dataType: XSDDatatype if dataType.equals(XSDDatatype.XSDboolean) => IO { literal.getString } //Not quite right but we don't support boolean yet, not even sure jena will let it fly.
-        case dataType: XSDDatatype if dataType.equals(XSDDatatype.XSDanyURI) => IO { literal.getString }
-        case e                      => IO { warn(s"unknown XSD: $e defaulting to trying conversion to a java String")  } *> IO { literal.getString }
-      }
-    } onError { _ => IO { error(s"""Can't convert literal [${literal.getLexicalForm}] of DataType [${literal.getDatatypeURI}] to supplied DataType [${rdfDataType.getURI}]""") } }
-  }
-
-  implicit class TgTypeOps(resourceType: ResourceType) {
-    import st.process.encase.Encase._
-    def asTgType(pm: PrefixMapping): ObjectType = {
-      pm.shortForm(resourceType).split(':') pipe { array => s"${toUpperCamel(array(0))}_${array(1)}" }
-    }
-  }
 
 
 
@@ -490,13 +412,11 @@ object JenaRdfTgMessageTranslation extends App {
     eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/protein/72057594037931644" }
     message                          <- Files[IO].readAll(Path("src/main/resources/messages/protein.ttl")).through(text.utf8.decode).compile.string
 
-
-
     chemblFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_chembl.ttl")
     ppplusFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_ppplus.ttl")
     resnetFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_resnet.ttl")
     reaxysFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_reaxys.ttl")
-    lookupData                       <-  SchemaLookupDataBuilder.makeLookUpFromFdnSchemas(List(resnetFdnSchema, reaxysFdnSchema, ppplusFdnSchema, chemblFdnSchema))
+    lookupData                       <-  SchemaLookupDataBuilder.makeLookupDataFromFdnSchemas(List(resnetFdnSchema, reaxysFdnSchema, ppplusFdnSchema, chemblFdnSchema))
 
     // _                                <- IO {info(fdnSchema.show)}
 

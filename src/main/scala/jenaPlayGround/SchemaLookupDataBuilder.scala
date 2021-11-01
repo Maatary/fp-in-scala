@@ -17,7 +17,7 @@ object  SchemaLookupDataBuilder {
 
   }
 
-  def makeLookUpFromFdnSchemas(fdnGraphSchemas: List[FdnGraphSchema]): IO[SchemaLookupData] = {
+  def makeLookupDataFromFdnSchemas(fdnGraphSchemas: List[FdnGraphSchema]): IO[SchemaLookupData] = {
     for {
 
       fdnSchemas          <- IO.pure { fdnGraphSchemas }
