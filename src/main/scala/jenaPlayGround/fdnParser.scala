@@ -45,7 +45,7 @@ object DataTypes {
   sealed trait FdnGraphSchemaElt
 
   sealed trait IndividualType extends FdnGraphSchemaElt
-  final case class EntityType(entityType: ResourceType, dataProperties: List[DataProperty], relationProperties: List[RelationProperty], compositionProperties: List[CompositionProperty], schemeProperties: List[SchemeProperty]) extends IndividualType
+  final case class EntityType(entityType: ResourceType, dataProperties: List[DataProperty], relationProperties: List[RelationProperty], compositionProperties: List[CompositionProperty], schemeProperty: Option[SchemeProperty]) extends IndividualType
   final case class RelationType(relationType: ResourceType, linkPropertyPairs: List[LinkPropertyPair], dataProperties: List[DataProperty], associationProperties: List[AssociationProperty]) extends IndividualType
 
   sealed trait PropertyType extends FdnGraphSchemaElt
@@ -80,7 +80,7 @@ object DataTypes {
        |DataProperties: ${eType.dataProperties.map(_.show).mkString("\n", "\n", "")}
        |relationProperties: ${eType.relationProperties.map(_.show).mkString("\n", "\n", "")}
        |compositionProperties: ${eType.compositionProperties.map(_.show).mkString("\n", "\n", "")}
-       |schemeProperties: ${eType.schemeProperties.map(_.show).mkString("\n", "\n", "")}
+       |schemeProperty: ${eType.schemeProperty.map(_.show).mkString("\n", "\n", "")}
        |]""".stripMargin
   }
 
@@ -293,7 +293,7 @@ import DataTypes._
 
       relationProperties     <- getRelationProperties(directProperties).map(_.filterNot(_.entityTypes == List(OWL.Thing.getURI))).map(_.distinct)
 
-      schemeProperties       <- getSchemeProperties(directProperties)
+      schemeProperties       <- getSchemeProperty(directProperties)
 
       eType                  <- IO.pure(eShape.getShapeNode.getURI)
 
@@ -571,8 +571,8 @@ import DataTypes._
     properties.collect { case cp: CompositionProperty => cp }
   }
 
-  def getSchemeProperties(properties: List[PropertyType]): IO [List[SchemeProperty]] = IO {
-    properties.collect { case sp: SchemeProperty => sp }
+  protected  def getSchemeProperty(properties: List[PropertyType]): IO[Option[SchemeProperty]] = IO {
+    properties.collectFirst { case sp: SchemeProperty => sp }
   }
 
   def isOfKind(propertyShape: PropertyShape, kind: Node): Boolean = {

@@ -32,7 +32,11 @@ object TgCirceApp extends App {
 
 
   def makeTgRequest(msg: TgMessage):  Request[IO] = {
-    POST(msg.asJson.spaces2, uri"http://localhost:9000/graph/Entellect?ack=all&new_vertex_only=false&vertex_must_exist=false").withContentType(`Content-Type`(MediaType.application.json, DefaultCharset))
+    POST(
+      msg.asJson.spaces2,
+      uri"https://tigergraph-api.sdc-oxygen-dev.nonprod.entellect.com/graph/Entellect?ack=all&new_vertex_only=false&vertex_must_exist=false",
+      Authorization(Credentials.Token(AuthScheme.Bearer, "02hriecshllksn0bgtf1nse2918k97m2")))
+      .withContentType(`Content-Type`(MediaType.application.json, DefaultCharset))
   }
 
 
@@ -64,7 +68,7 @@ object TgCirceApp extends App {
   val v1 =
     Vertex(
       "Resnet_Protein",
-      "protein_1",
+      "protein_656",
       List(
         SingleValuedAttribute("dateCreated", "10-16-2021", STRING),
         SingleValuedAttribute("dateModified", "10-05-2022", STRING),
@@ -76,7 +80,7 @@ object TgCirceApp extends App {
   val v2 =
     Vertex(
       "Resnet_Protein",
-      "protein_2",
+      "protein_909",
       List(
         SingleValuedAttribute("dateCreated", "10-18-2021", STRING),
         SingleValuedAttribute("dateModified", "10-05-2022", STRING),

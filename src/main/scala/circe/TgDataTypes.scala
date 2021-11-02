@@ -24,6 +24,9 @@ import scribe._
 
 object TgDataTypes {
 
+  type ResourceUri        = String
+  type ResourceMessage    = String
+
   type EntityResource     = OntResource
   type RelationResource   = OntResource
 
@@ -141,12 +144,12 @@ object TgDataTypes {
     }
   }
 
-  implicit class OntModelOps(messageStream: String) {
+  implicit class OntModelOps(resourceMessage: ResourceMessage) {
     def asOntModel: IO[OntModel] = {
       for {
-        ontDoc       <- IO { OntDocumentManager.getInstance().setProcessImports(false) }
+        _            <- IO { OntDocumentManager.getInstance().setProcessImports(false) }
         messageModel <- IO { ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) }
-        _            <- IO { messageModel.read(new ByteArrayInputStream(messageStream.getBytes(StandardCharsets.UTF_8)), null, Lang.TTL.getName) }
+        _            <- IO { messageModel.read(new ByteArrayInputStream(resourceMessage.getBytes(StandardCharsets.UTF_8)), null, Lang.TTL.getName) }
       } yield messageModel
     }
   }
