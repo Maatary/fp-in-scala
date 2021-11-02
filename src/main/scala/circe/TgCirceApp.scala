@@ -14,8 +14,7 @@ import org.http4s.implicits._
 import org.http4s.client.dsl.Http4sClientDsl
 import org.http4s.client.Client
 import cats.syntax.all._
-import org.apache.commons.io.output.ByteArrayOutputStream
-import org.apache.jena.ontology.OntDocumentManager
+
 import scribe._
 import io.circe.syntax._
 import io.circe.parser._
