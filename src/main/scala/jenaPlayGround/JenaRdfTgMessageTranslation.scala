@@ -37,8 +37,8 @@ object JenaRdfTgMessageTranslation extends IOApp.Simple {
 
   val program = for {
 
-    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/protein/72057594037931644" }
-    message                          <- Files[IO].readAll(Path("src/main/resources/messages/protein.ttl")).through(text.utf8.decode).compile.string
+    eUri                             <- IO.pure { "https://data.elsevier.com/lifescience/entity/resnet/directregulation/216172782114755708" }
+    message                          <- Files[IO].readAll(Path("src/main/resources/messages/directregulation.ttl")).through(text.utf8.decode).compile.string
 
     chemblFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_chembl.ttl")
     ppplusFdnSchema                  <- fdnParser.program("elsevier_entellect_proxy_schema_ppplus.ttl")
@@ -104,7 +104,7 @@ object JenaRdfTgMessageTranslation extends IOApp.Simple {
 
   }
 
-  def translateRelation(relation: RelationResource, relationUri: String, relationType: RelationType, lookupData: SchemaLookupData): IO[TgMessage] = {
+  def translateRelation(relation: RelationResource, relationUri: ResourceUri, relationType: RelationType, lookupData: SchemaLookupData): IO[TgMessage] = {
     for {
 
       _                       <- IO { info (s"Starting Relation Translation Process for Relation $relationUri" ) }
@@ -126,10 +126,12 @@ object JenaRdfTgMessageTranslation extends IOApp.Simple {
       maybeTargetResourceData <- getRelationTargetResourceData(relation, relationType, lookup)
 
 
+      maybeLegalPair          <- findSchemaPair(relationUri, relationType, maybeSourceResourceData, maybeTargetResourceData)
+
       maybeTgMessage          <-
 
         IO.pure {
-          maybeSourceResourceData -> maybeTargetResourceData mapN { (source, target) =>
+          (maybeSourceResourceData, maybeTargetResourceData, maybeLegalPair) mapN { (source, target, _) =>
             TgMessage (
               List(),
               List(Edge(relationType.relationType.asTgType(prefixMapping), source.eUri, source.eType.asTgType(prefixMapping), target.eUri, target.eType.asTgType(prefixMapping), allAttributes))
@@ -142,7 +144,7 @@ object JenaRdfTgMessageTranslation extends IOApp.Simple {
         maybeTgMessage
           .fold
           {
-            IO.pure { TgMessage(List(), List()) } <* IO { warn(s"Relation Translation Process for Relation $relationUri resulted in an Empty Message because of missing Mandatory LinkPair." ) }
+            IO.pure { TgMessage(List(), List()) } <* IO { warn(s"Relation Translation Process for Relation $relationUri resulted in an Empty Message because the Relation is Invalid." ) }
           }
           { msg =>
             IO.pure { msg } <* IO { info (s"Relation Translation Process for Relation $relationUri was successful" ) }
@@ -150,6 +152,29 @@ object JenaRdfTgMessageTranslation extends IOApp.Simple {
 
 
     } yield tgMessage
+  }
+
+  protected def findSchemaPair(relationUri: ResourceUri, relationType: RelationType, maybeSourceResourceData: Option[EntityResourceData], maybeTargetResourceData: Option[EntityResourceData]): IO[Option[LinkPropertyPair]] = {
+
+    (maybeSourceResourceData, maybeTargetResourceData) match {
+
+      case (Some(EntityResourceData(_, sourceResourceType)) , Some(EntityResourceData(_, targetResourceType))) =>
+
+        relationType.linkPropertyPairs.find{ linkPair => linkPair.linkPropertyA.entityType == sourceResourceType && linkPair.linkPropertyB.entityType == targetResourceType }
+        .fold[IO[Option[LinkPropertyPair]]]
+        {
+            IO { warn(s"The Relation $relationUri of Type ${relationType.relationType} will be skipped because it has an invalid Source -> Target Pair : [$sourceResourceType -> $targetResourceType]") } *> IO.pure { None }
+        }
+        { linkPair =>
+            IO.pure { Option(linkPair) }
+        }
+
+      case _                                        =>
+
+        IO { warn(s"The Relation $relationUri of Type ${relationType.relationType} will be skipped because its Mandatory LinkPair is incomplete") } *> IO.pure { None }
+
+    }
+
   }
 
   def translateEntity(entity: EntityResource, entityUri: String, entityType: EntityType, lookupData: SchemaLookupData): IO[TgMessage] = {
