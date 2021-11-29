@@ -84,11 +84,11 @@ val booleanAnd: Monoid[Boolean] = new Monoid[Boolean] {
 
 
 /**
- *  == Notes ==
+ *  == optionMonoid ==
  *
- *  Technically it could be said that this combine nothing, but type wise, it just work.
+ *  Personal remark: technically it could be said that this combine nothing, but type wise, it just work, see proof below.
  *
- *  ==== Identity law expanded ====
+ *  ==== Identity law compliance ====
  *
  *  `op(x, zero) == x and op(zero, x) == x`
  *
@@ -96,13 +96,25 @@ val booleanAnd: Monoid[Boolean] = new Monoid[Boolean] {
  *
  *  `x orElse None == x and None orElse x == x`
  *
- *  ==== Associativity Law ====
+ *  ==== Associativity Law compliance ====
  *
  *  x orElse (y orElse z) == (x orElse y) orElse Z
  *
  *  e.g.
  *
  *  None orElse( None orElse Option (1) ) == (None orElse None ) orElse Option (1) == Option (1)
+ *
+ *  == Notes ==
+ *
+ *  Notice that we have a choice in how we implement `op`.
+ *  We can compose the options in either order. Both of those implementations
+ *  satisfy the monoid laws, but they are not equivalent.
+ *  This is true in general--that is, every monoid has a _dual_ where the
+ *  `op` combines things in the opposite order.
+ *
+ *  Monoids like `booleanOr` and
+ *  `intAddition` are equivalent to their duals because their `op` is commutative
+ *  as well as associative.
  *
  */
 def optionMonoid[A]: Monoid[Option[A]] = new Monoid[Option[A]] {
@@ -116,3 +128,27 @@ Option(2) orElse( Option(3) orElse Option (1) )
 //Associativity Law illustrated.
 None orElse( None orElse Option (1) )
 (None orElse None ) orElse Option (1)
+
+/**
+ * We can get the dual of any monoid just by flipping the `op`.
+ */
+def dual[A](m: Monoid[A]): Monoid[A] = new Monoid[A] {
+  def op(x: A, y: A): A = m.op(y, x)
+  val zero = m.zero
+}
+
+// Now we can have both monoids on hand:
+def firstOptionMonoid[A]: Monoid[Option[A]] = optionMonoid[A]
+def lastOptionMonoid[A]: Monoid[Option[A]] = dual(firstOptionMonoid)
+
+/**
+ * EndoFunction
+ *
+ * There is a choice of implementation here:
+ * Do we implement it as `f compose g` or `f andThen g`? We have to pick one.
+ * We can then get the other one using the `dual` construct (see previous answer).
+ */
+def endoMonoid[A]: Monoid[A => A] = new Monoid[A => A] {
+  def op(a1: A => A, a2: A => A): A => A = (a:A) => a1(a2(a)) // a1 compose a2
+  def zero: A => A = identity[A]
+}
