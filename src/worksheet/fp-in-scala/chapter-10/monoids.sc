@@ -32,7 +32,7 @@
  *
  *  == Notes ==
  *
- *  '''The answer to the question “What is a monoid?” is simply that a monoid is a type, together with the monoid operations and a set of laws. '''
+ *  '''The answer to the question “What is a monoid?” is simply that a monoid is a type, together with the monoid operations and a set of laws.'''
  *  '''A monoid is the algebra, and nothing more.'''
  *
  */
@@ -48,9 +48,8 @@ trait Monoid[A] {
 
 val stringMonoid: Monoid[String] = new Monoid[String] {
 
-  override def op(a1: String, a2: String): String = a1 + a2
-
-  override def zero: String = ""
+  def op(a1: String, a2: String): String = a1 + a2
+  val zero: String = ""
 }
 
 /**
@@ -58,7 +57,62 @@ val stringMonoid: Monoid[String] = new Monoid[String] {
  */
 
 def listMonoid[A]: Monoid[List[A]] = new Monoid[List[A]] {
-  override def op(a1: List[A], a2: List[A]) =  a1 ++ a2
-
-  override def zero = List.empty[A]
+  def op(a1: List[A], a2: List[A]) =  a1 ++ a2
+  val zero = List.empty[A]
 }
+
+
+val intAddition: Monoid[Int] = new Monoid[Int] {
+  def op(a1: Int, a2: Int) = a1 + a2
+  val zero = 0
+}
+
+val intMultiplication: Monoid[Int] = new Monoid[Int] {
+  def op(a1: Int, a2: Int) = a1 * a2
+  def zero = 1
+}
+
+val booleanOr: Monoid[Boolean] = new Monoid[Boolean] {
+  def op(x: Boolean, y: Boolean) = x || y
+  val zero = false
+}
+
+val booleanAnd: Monoid[Boolean] = new Monoid[Boolean] {
+  def op(x: Boolean, y: Boolean) = x && y
+  val zero = true
+}
+
+
+/**
+ *  == Notes ==
+ *
+ *  Technically it could be said that this combine nothing, but type wise, it just work.
+ *
+ *  ==== Identity law expanded ====
+ *
+ *  `op(x, zero) == x and op(zero, x) == x`
+ *
+ *  expands to
+ *
+ *  `x orElse None == x and None orElse x == x`
+ *
+ *  ==== Associativity Law ====
+ *
+ *  x orElse (y orElse z) == (x orElse y) orElse Z
+ *
+ *  e.g.
+ *
+ *  None orElse( None orElse Option (1) ) == (None orElse None ) orElse Option (1) == Option (1)
+ *
+ */
+def optionMonoid[A]: Monoid[Option[A]] = new Monoid[Option[A]] {
+  def op(x: Option[A], y: Option[A]) = x orElse y
+  val zero = None
+}
+
+//Associativity Law illustrated.
+Option(2) orElse( Option(3) orElse Option (1) )
+(Option(2) orElse Option(3) ) orElse Option (1)
+//Associativity Law illustrated.
+None orElse( None orElse Option (1) )
+(None orElse None ) orElse Option (1)
