@@ -4,9 +4,13 @@ import cats.syntax.all._
 import cats.Show
 import cats.effect.IO
 import cats.kernel.Monoid
-import io.circe.Json._
+
 import io.circe._
+import io.circe.Json._
 import io.circe.syntax._
+import io.circe.generic.auto._
+import io.circe.generic.semiauto._
+
 import jenaPlayGround.DataTypes._
 import org.apache.jena.ontology._
 import org.apache.jena.datatypes.RDFDatatype
@@ -19,7 +23,6 @@ import org.apache.jena.shared.PrefixMapping
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 import java.nio.charset.StandardCharsets
 import scala.util.chaining.scalaUtilChainingOps
-
 import scribe._
 
 object TgDataTypes {
@@ -440,5 +443,17 @@ object TgDataTypes {
       obj("vertices" -> a.vertices.asJson, "edges" -> a.edges.asJson)
     }
   }
+
+  /**
+   * TG RESPONSE MESSAGE DATATYPE
+   */
+
+  case class Result(accepted_vertices: Int, accepted_edges: Int)
+  case class Version(edition: String, api: String, schema: Int)
+  case class TgResponse(version: Version, error: Boolean, message: String,  results: List[Result], code: String)
+
+
+  implicit val tgResponseDecoder: Decoder[TgResponse] = deriveDecoder[TgResponse]
+  implicit val tgResponseEncoder: Encoder[TgResponse] = deriveEncoder[TgResponse]
 
 }

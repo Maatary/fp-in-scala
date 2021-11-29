@@ -6,7 +6,9 @@ import cats.syntax.all._
 import fs2.kafka.{AutoOffsetReset, ConsumerRecord, ConsumerSettings, Deserializer, KafkaConsumer}
 
 import java.util.EmptyStackException
-import scala.concurrent.duration.Duration
+import java.util.concurrent.TimeUnit
+import scala.concurrent.duration.{Duration, FiniteDuration}
+import scala.language.postfixOps
 
 
 
@@ -14,11 +16,11 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 
-val s1 = Stream(1,2,3,4,5,8,7,8)
+/*val s1 = Stream(1,2,3,4,5,8,7,8)
 
 s1.take(6)
 
-Stream(1,2,3).map(_ + 1).toList
+Stream(1,2,3).map(_ + 1).toList*/
 
 //Stream(List(1,2,3,4,5):_*).take(1).toList
 
@@ -34,6 +36,7 @@ implicit def ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionC
 
 Future{throw new EmptyStackException }*/
 
+/*
 val eff = Stream.eval(IO { println("BEING RUN!!"); 1 + 1 })
 
 
@@ -59,9 +62,43 @@ val e3 = Stream(List(1,2,3,4), List(3,33,56,7))
       .evalMap(_ => IO.println(s"done with batch:$list"))
       .as(list.last)
   }.compile.toVector.unsafeRunSync()
+*/
 
+/*
+Stream(1,2,3).chunkN(1).unchunks
 
+Stream.range(1,8).evalMapChunk(i => IO.println(i)).take(2).compile.drain.unsafeRunSync()
+Stream.range(1,8).buffer(4).evalMapChunk(i => IO.println(i)).take(2).compile.drain.unsafeRunSync()
+*/
 
+Stream.emits(1 to 20 toList).covary[IO]
+  .mapAsync(20)(i => IO.println(Thread.currentThread().getName + ": " + i))
+  .take(4)
+  .compile
+  .drain
+  .unsafeRunSync()
+
+Stream.emits(1 to 20 toList).covary[IO]
+  .evalMap(i => IO.println(Thread.currentThread().getName + ": " + i))
+  .prefetchN(20)
+  .take(4)
+  .compile
+  .drain
+  .unsafeRunSync()
+
+Stream.range(1,20).buffer(4).covary[IO]
+  .mapAsync(2)(i => IO.println(Thread.currentThread().getName + ": " + i))
+  .take(2)
+  .compile
+  .drain
+  .unsafeRunSync()
+
+Stream.range(1,20).covary[IO]
+  .evalMapChunk(i => IO.println(Thread.currentThread().getName + ": " + i))
+  .take(2)
+  .compile
+  .drain
+  .unsafeRunSync()
 /*def processRecord(record: ConsumerRecord[String, String]): IO[Unit] =
   IO(println(s"Processing record: $record"))
 
@@ -83,7 +120,4 @@ val stream =
         }
     }
     .parJoinUnbounded*/
-
-
-
 

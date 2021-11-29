@@ -33,8 +33,10 @@ object TgCirceApp extends App {
   def makeTgRequest(msg: TgMessage):  Request[IO] = {
     POST(
       msg.asJson.spaces2,
-      uri"https://tigergraph-api.sdc-oxygen-dev.nonprod.entellect.com/graph/Entellect?ack=all&new_vertex_only=false&vertex_must_exist=false",
-      Authorization(Credentials.Token(AuthScheme.Bearer, "02hriecshllksn0bgtf1nse2918k97m2")))
+      /*uri"https://tigergraph-api.sdc-oxygen-dev.nonprod.entellect.com/graph/Entellect?ack=all&new_vertex_only=false&vertex_must_exist=false",
+      Authorization(Credentials.Token(AuthScheme.Bearer, "02hriecshllksn0bgtf1nse2918k97m2"))*/
+      uri"http://localhost:9000/graph/Entellect?ack=all&new_vertex_only=false&vertex_must_exist=false"
+    )
       .withContentType(`Content-Type`(MediaType.application.json, DefaultCharset))
   }
 
@@ -131,9 +133,10 @@ object TgCirceApp extends App {
     _        <-
       Stream
       .emits(List(TgMessage(List(v0,v1), List(e1,e2,e3))))
-      .evalTap { msg  => IO { info("Sending Request: \n" +  msg.asJson.spaces2) } }
-      .evalMap { msg  => client.expect[String](makeTgRequest(msg)) }
-      .evalMap { resp => IO { info("Received Response: \n" + parse(resp).getOrElse(Json.Null).spaces2) } }
+      .evalTap { msg    => IO { info("Sending Request: \n" +  msg.asJson.spaces2) } }
+      .evalMap { msg    => client.expect[String](makeTgRequest(msg)) }
+      .evalMap { resp   => IO.fromEither { parse(resp).flatMap(_.as[TgResponse]) } }
+      .evalMap { tgResp => IO { info("Received Response: \n" + tgResp.asJson) } }
 
   } yield ()
 
