@@ -71,6 +71,7 @@ Stream.range(1,8).evalMapChunk(i => IO.println(i)).take(2).compile.drain.unsafeR
 Stream.range(1,8).buffer(4).evalMapChunk(i => IO.println(i)).take(2).compile.drain.unsafeRunSync()
 */
 
+/*
 Stream.emits(1 to 20 toList).covary[IO]
   .mapAsync(20)(i => IO.println(Thread.currentThread().getName + ": " + i))
   .take(4)
@@ -99,6 +100,44 @@ Stream.range(1,20).covary[IO]
   .compile
   .drain
   .unsafeRunSync()
+*/
+
+/**
+ * Testing Chunks
+ */
+Stream.range(1, 5).debugChunks().compile.drain  // chunk of 1 element
+Stream.emits(1 to 4).debugChunks().compile.drain //chunk of 4 element but stream of Int
+Stream.emits(1 to 4 toList).debugChunks().compile.drain //chunk of 4 element but stream of Int
+
+
+Stream.range(1, 4).debugChunks().map{_ * 2}.take(2).debugChunks().compile.drain
+
+// u need a println in  map to see
+Stream.emits(1 to 4).debugChunks().map{e => println(e); e * 2}.take(2).debugChunks().compile.drain
+
+
+
+Stream.emit(1,2,3,4).debugChunks().compile.drain // weird make a 4-tuple
+
+import fs2.Chunk
+Stream.chunk(Chunk(1,2,3,4)).debugChunks().compile.drain // you set the chunk but it is a stream of element here not chunk
+Stream.chunk(Chunk(1,2,3,4)).chunks // to make the chunk explicit
+
+
+Stream.emits(1 to 20 toList).debugChunks()
+  .unchunk.debugChunks()
+  /*.unchunks.debugChunks()
+  .chunkN(4).debugChunks()
+  .unchunks.debugChunks()*/
+  .compile.drain
+
+/*Stream.emits(1 to 20 toList).covary[IO].chunkN(20).unchunks
+  .mapAsync(20)(i => IO.println(Thread.currentThread().getName + ": " + i))
+  .take(4)
+  .compile
+  .drain
+  .unsafeRunSync()*/
+
 /*def processRecord(record: ConsumerRecord[String, String]): IO[Unit] =
   IO(println(s"Processing record: $record"))
 
