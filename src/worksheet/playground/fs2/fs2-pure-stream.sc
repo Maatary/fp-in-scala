@@ -160,3 +160,13 @@ val stream =
     }
     .parJoinUnbounded*/
 
+Stream(1,2,3,4).debugChunks().compile.drain
+
+//Repeat is Lazy, that is, you repeat on call.
+Stream
+  .repeatEval(IO {List (1,2,3,4)})
+  .flatMap{list  => Stream.emits(list) }
+  .take(8)
+  .evalMap(IO.println(_))
+  .compile
+  .drain.unsafeRunSync()
